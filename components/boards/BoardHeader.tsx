@@ -21,6 +21,7 @@ export function BoardHeader({
     name: string;
     members: Member[];
     listingCount: number;
+    pendingInvites: string[];
   };
   isOwner: boolean;
 }) {
@@ -74,6 +75,7 @@ export function BoardHeader({
           boardName={board.name}
           isOwner={isOwner}
           members={board.members}
+          initialPendingInvites={board.pendingInvites}
           onClose={() => setShowSettings(false)}
         />
       )}

@@ -34,6 +34,9 @@ export default async function BoardDetailPage({
           user: { select: { id: true, name: true, email: true } },
         },
       },
+      invites: {
+        select: { email: true },
+      },
     },
   });
   if (!board) notFound();
@@ -48,6 +51,7 @@ export default async function BoardDetailPage({
           name: board.name,
           members: board.members,
           listingCount: board.listings.length,
+          pendingInvites: board.invites.map((i) => i.email),
         }}
         isOwner={isOwner}
       />

@@ -28,6 +28,7 @@ model Board {
   members  BoardMember[]
   listings Listing[]
   tags     Tag[]
+  invites  BoardInvite[]
 }
 
 model BoardMember {
@@ -83,6 +84,17 @@ model ListingTag {
   tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([listingId, tagId])
+}
+
+model BoardInvite {
+  id        String   @id @default(cuid())
+  boardId   String
+  email     String
+  createdAt DateTime @default(now())
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@unique([boardId, email])
 }
 
 model Comment {

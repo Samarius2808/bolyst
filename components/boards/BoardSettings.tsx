@@ -15,12 +15,14 @@ export function BoardSettings({
   boardName,
   isOwner,
   members,
+  initialPendingInvites = [],
   onClose,
 }: {
   boardId: string;
   boardName: string;
   isOwner: boolean;
   members: Member[];
+  initialPendingInvites?: string[];
   onClose: () => void;
 }) {
   const [name, setName] = useState(boardName);
@@ -29,6 +31,7 @@ export function BoardSettings({
   const [inviting, setInviting] = useState(false);
   const [error, setError] = useState("");
   const [memberList, setMemberList] = useState(members);
+  const [pendingInvites, setPendingInvites] = useState(initialPendingInvites);
   const router = useRouter();
 
   async function handleRename(e: React.FormEvent) {
@@ -57,8 +60,12 @@ export function BoardSettings({
       body: JSON.stringify({ email }),
     });
     if (res.ok) {
-      const member = await res.json();
-      setMemberList((prev) => [...prev, member]);
+      const data = await res.json();
+      if (data.pending) {
+        setPendingInvites((prev) => [...prev, data.email]);
+      } else {
+        setMemberList((prev) => [...prev, data]);
+      }
       setEmail("");
       router.refresh();
     } else {
@@ -174,6 +181,25 @@ export function BoardSettings({
                 </div>
               ))}
             </div>
+
+            {/* Pending invites */}
+            {pendingInvites.length > 0 && (
+              <div className="space-y-2 mb-3">
+                {pendingInvites.map((inviteEmail) => (
+                  <div
+                    key={inviteEmail}
+                    className="flex items-center justify-between py-2.5 px-3.5 rounded-xl bg-amber-50 border border-amber-100"
+                  >
+                    <p className="text-sm text-amber-700 truncate">
+                      {inviteEmail}
+                    </p>
+                    <span className="text-xs text-amber-500 ml-3 shrink-0">
+                      Pending
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Invite */}
             {isOwner && (

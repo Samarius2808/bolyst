@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendBoardInviteEmail } from "@/lib/email";
 
 export async function GET(
   _req: Request,
@@ -41,27 +42,59 @@ export async function POST(
     return NextResponse.json({ error: "Email is required" }, { status: 400 });
   }
 
-  const invitee = await prisma.user.findUnique({ where: { email: email.trim() } });
-  if (!invitee) {
-    return NextResponse.json(
-      { error: "No user found with that email. They need to sign up first." },
-      { status: 404 }
-    );
+  const trimmedEmail = email.trim().toLowerCase();
+
+  const invitee = await prisma.user.findUnique({ where: { email: trimmedEmail } });
+
+  if (invitee) {
+    // User exists — add them directly
+    const existing = await prisma.boardMember.findUnique({
+      where: { boardId_userId: { boardId, userId: invitee.id } },
+    });
+    if (existing) {
+      return NextResponse.json({ error: "Already a member" }, { status: 409 });
+    }
+
+    const member = await prisma.boardMember.create({
+      data: { boardId, userId: invitee.id, role: "COLLABORATOR" },
+      include: { user: { select: { id: true, name: true, email: true } } },
+    });
+
+    return NextResponse.json(member, { status: 201 });
   }
 
-  const existing = await prisma.boardMember.findUnique({
-    where: { boardId_userId: { boardId, userId: invitee.id } },
+  // User doesn't exist — create a pending invite
+  const existingInvite = await prisma.boardInvite.findUnique({
+    where: { boardId_email: { boardId, email: trimmedEmail } },
   });
-  if (existing) {
-    return NextResponse.json({ error: "Already a member" }, { status: 409 });
+  if (existingInvite) {
+    return NextResponse.json({ error: "Invite already sent" }, { status: 409 });
   }
 
-  const member = await prisma.boardMember.create({
-    data: { boardId, userId: invitee.id, role: "COLLABORATOR" },
-    include: { user: { select: { id: true, name: true, email: true } } },
+  await prisma.boardInvite.create({
+    data: { boardId, email: trimmedEmail },
   });
 
-  return NextResponse.json(member, { status: 201 });
+  // Send invite email
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || req.headers.get("origin") || "";
+  const signUpUrl = `${baseUrl}/sign-up`;
+  const inviterName = user.name || user.email;
+
+  try {
+    await sendBoardInviteEmail({
+      to: trimmedEmail,
+      boardName: board.name,
+      inviterName,
+      signUpUrl,
+    });
+  } catch {
+    // Email failed but invite is saved — they'll still be added on signup
+  }
+
+  return NextResponse.json(
+    { pending: true, email: trimmedEmail, message: "Invite sent" },
+    { status: 201 }
+  );
 }
 
 export async function DELETE(
