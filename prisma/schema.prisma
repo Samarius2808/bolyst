@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+
+  boards       Board[]
+  boardMembers BoardMember[]
+  comments     Comment[]
+}
+
+model Board {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  createdAt DateTime @default(now())
+
+  owner    User          @relation(fields: [ownerId], references: [id])
+  members  BoardMember[]
+  listings Listing[]
+  tags     Tag[]
+}
+
+model BoardMember {
+  id      String @id @default(cuid())
+  boardId String
+  userId  String
+  role    Role   @default(COLLABORATOR)
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([boardId, userId])
+}
+
+enum Role {
+  OWNER
+  COLLABORATOR
+}
+
+model Listing {
+  id          String   @id @default(cuid())
+  boardId     String
+  title       String
+  sourceUrl   String?
+  price       Int?
+  size        Float?
+  location    String?
+  description String?
+  imageUrls   String[]
+  createdAt   DateTime @default(now())
+
+  board    Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tags     ListingTag[]
+  comments Comment[]
+}
+
+model Tag {
+  id      String @id @default(cuid())
+  name    String
+  boardId String
+
+  board    Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  listings ListingTag[]
+
+  @@unique([boardId, name])
+}
+
+model ListingTag {
+  listingId String
+  tagId     String
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([listingId, tagId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  listingId String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+}
