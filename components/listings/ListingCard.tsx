@@ -13,6 +13,20 @@ interface ListingCardProps {
   onClick: () => void;
 }
 
+const tagColors = [
+  "bg-violet-50 text-violet-600",
+  "bg-blue-50 text-blue-600",
+  "bg-emerald-50 text-emerald-600",
+  "bg-amber-50 text-amber-700",
+  "bg-rose-50 text-rose-600",
+];
+
+function hashColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return tagColors[Math.abs(hash) % tagColors.length];
+}
+
 export function ListingCard({
   title,
   price,
@@ -27,59 +41,96 @@ export function ListingCard({
   return (
     <button
       onClick={onClick}
-      className="group bg-white border border-zinc-100 rounded-2xl overflow-hidden hover:shadow-lg hover:border-zinc-200 transition-all duration-200 text-left w-full"
+      className="group bg-white border border-zinc-100/80 rounded-2xl overflow-hidden hover:shadow-xl hover:border-violet-200/60 hover:-translate-y-1 transition-all duration-200 text-left w-full break-inside-avoid"
     >
-      {imageUrls.length > 0 && (
-        <div className="w-full h-40 bg-zinc-100 overflow-hidden">
+      {/* Image */}
+      <div className="relative aspect-[4/3] bg-gradient-to-br from-violet-50 to-zinc-100 overflow-hidden">
+        {imageUrls.length > 0 ? (
           <img
             src={imageUrls[0]}
             alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
-        </div>
-      )}
-      <div className="p-5">
-      <h3 className="font-semibold text-sm text-zinc-900 truncate group-hover:text-violet-600 transition-colors">
-        {title}
-      </h3>
-
-      <div className="mt-2.5 space-y-1">
-        {price != null && (
-          <p className="text-base font-bold text-zinc-900">
-            &euro;{price.toLocaleString()}/mo
-          </p>
-        )}
-        <div className="flex gap-3 text-sm text-zinc-400">
-          {size != null && <span>{size} m&sup2;</span>}
-          {location && <span className="truncate">{location}</span>}
-        </div>
-      </div>
-
-      {tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          {tags.map((t) => (
-            <span
-              key={t.tag.id}
-              className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-violet-50 text-violet-600"
-            >
-              {t.tag.name}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-50 text-xs text-zinc-300">
-        {sourceUrl ? (
-          <span className="text-violet-400">Has link</span>
         ) : (
-          <span>Manual</span>
+          <div className="w-full h-full flex items-center justify-center">
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              className="text-violet-200"
+            >
+              <path d="M8 32V12a2 2 0 012-2h20a2 2 0 012 2v20a2 2 0 01-2 2H10a2 2 0 01-2-2z" />
+              <path d="M14 20l4-4 8 8M24 18a2 2 0 100-4 2 2 0 000 4z" />
+            </svg>
+          </div>
         )}
-        {commentCount > 0 && (
-          <span>
-            {commentCount} comment{commentCount !== 1 && "s"}
+        {/* Price overlay */}
+        {price != null && (
+          <span className="absolute bottom-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-sm font-bold text-zinc-900 shadow-sm">
+            &euro;{price.toLocaleString()}/mo
           </span>
         )}
       </div>
+
+      {/* Content */}
+      <div className="px-4 py-3.5">
+        <h3 className="font-semibold text-[13px] text-zinc-900 leading-snug line-clamp-2 group-hover:text-violet-600 transition-colors">
+          {title}
+        </h3>
+
+        <div className="flex items-center gap-2.5 mt-1.5 text-xs text-zinc-400">
+          {size != null && <span>{size} m&sup2;</span>}
+          {location && (
+            <span className="truncate flex items-center gap-1">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
+              </svg>
+              {location}
+            </span>
+          )}
+        </div>
+
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-2.5">
+            {tags.slice(0, 2).map((t) => (
+              <span
+                key={t.tag.id}
+                className={`px-2 py-0.5 text-[11px] font-medium rounded-full ${hashColor(t.tag.name)}`}
+              >
+                {t.tag.name}
+              </span>
+            ))}
+            {tags.length > 2 && (
+              <span className="px-2 py-0.5 text-[11px] font-medium rounded-full bg-zinc-100 text-zinc-500">
+                +{tags.length - 2}
+              </span>
+            )}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-zinc-50 text-xs text-zinc-300">
+          {sourceUrl ? (
+            <span className="text-violet-400 inline-flex items-center gap-1">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
+              </svg>
+              Link
+            </span>
+          ) : (
+            <span>Manual</span>
+          )}
+          {commentCount > 0 && (
+            <span className="inline-flex items-center gap-1 text-zinc-400">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v5a2 2 0 01-2 2H6l-3 3V4z" />
+              </svg>
+              {commentCount}
+            </span>
+          )}
+        </div>
       </div>
     </button>
   );

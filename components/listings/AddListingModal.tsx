@@ -22,6 +22,7 @@ export function AddListingModal({
   const [loading, setLoading] = useState(false);
   const [scraping, setScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState("");
+  const [scraped, setScraped] = useState(false);
   const router = useRouter();
 
   async function handleScrape(e: React.FormEvent) {
@@ -46,6 +47,7 @@ export function AddListingModal({
       setLocation(data.location || "");
       setDescription(data.description || "");
       setImageUrls(data.imageUrls || []);
+      setScraped(true);
       setMode("manual");
     } else {
       const data = await res.json();
@@ -83,70 +85,109 @@ export function AddListingModal({
   }
 
   const inputClass =
-    "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent";
+    "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-colors";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-lg font-semibold text-zinc-900 mb-1">
-          Add a listing
-        </h2>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm modal-backdrop"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-2xl shadow-2xl shadow-black/10 p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll"
+      >
+        <div className="flex items-start justify-between mb-4">
+          <h2 className="text-lg font-semibold text-zinc-900">
+            Add a listing
+          </h2>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M4 4l8 8M12 4l-8 8" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Mode toggle */}
+        <div className="flex bg-zinc-100 rounded-xl p-1 mb-5">
+          <button
+            type="button"
+            onClick={() => setMode("url")}
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
+              mode === "url"
+                ? "bg-white shadow-sm text-zinc-900"
+                : "text-zinc-400 hover:text-zinc-600"
+            }`}
+          >
+            Paste URL
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("manual")}
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
+              mode === "manual"
+                ? "bg-white shadow-sm text-zinc-900"
+                : "text-zinc-400 hover:text-zinc-600"
+            }`}
+          >
+            Manual entry
+          </button>
+        </div>
 
         {mode === "url" ? (
-          <>
-            <p className="text-sm text-zinc-400 mb-5">
+          <form onSubmit={handleScrape}>
+            <p className="text-sm text-zinc-400 mb-3">
               Paste a listing URL to auto-fill details.
             </p>
-
-            <form onSubmit={handleScrape}>
-              <input
-                type="url"
-                value={url}
-                onChange={(e) => {
-                  setUrl(e.target.value);
-                  setScrapeError("");
-                }}
-                placeholder="https://..."
-                autoFocus
-                className={inputClass}
-              />
-              {scrapeError && (
-                <p className="text-xs text-red-500 mt-2">{scrapeError}</p>
-              )}
-              <div className="flex items-center justify-between mt-5">
-                <button
-                  type="button"
-                  onClick={() => setMode("manual")}
-                  className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors"
-                >
-                  Enter manually instead
-                </button>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={scraping || !url.trim()}
-                    className="px-5 py-2.5 text-sm font-medium bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-40 transition-colors"
-                  >
-                    {scraping ? "Extracting…" : "Extract"}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </>
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => {
+                setUrl(e.target.value);
+                setScrapeError("");
+              }}
+              placeholder="https://..."
+              autoFocus
+              className={inputClass}
+            />
+            {scrapeError && (
+              <p className="text-xs text-red-500 mt-2">{scrapeError}</p>
+            )}
+            <div className="flex justify-end gap-2 mt-5">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={scraping || !url.trim()}
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-violet-600/20"
+              >
+                {scraping && (
+                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                )}
+                {scraping ? "Extracting…" : "Extract"}
+              </button>
+            </div>
+          </form>
         ) : (
           <>
-            <p className="text-sm text-zinc-400 mb-5">
-              {sourceUrl
-                ? "Review and edit the extracted details."
-                : "Enter listing details manually."}
-            </p>
+            {scraped && (
+              <p className="text-xs text-emerald-500 mb-3 inline-flex items-center gap-1">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M3 8.5l3 3 7-7" />
+                </svg>
+                Data extracted from URL
+              </p>
+            )}
 
             <form onSubmit={handleSubmit}>
               <div className="space-y-3">
@@ -198,32 +239,21 @@ export function AddListingModal({
                 />
               </div>
 
-              <div className="flex items-center justify-between mt-5">
-                {!sourceUrl && (
-                  <button
-                    type="button"
-                    onClick={() => setMode("url")}
-                    className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors"
-                  >
-                    &larr; Paste URL instead
-                  </button>
-                )}
-                <div className="flex gap-2 ml-auto">
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading || !title.trim()}
-                    className="px-5 py-2.5 text-sm font-medium bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-40 transition-colors"
-                  >
-                    {loading ? "Adding…" : "Add listing"}
-                  </button>
-                </div>
+              <div className="flex justify-end gap-2 mt-5">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading || !title.trim()}
+                  className="px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-violet-600/20"
+                >
+                  {loading ? "Adding…" : "Add listing"}
+                </button>
               </div>
             </form>
           </>

@@ -17,23 +17,32 @@ export default async function BoardsPage() {
     },
     include: {
       _count: { select: { listings: true, members: true } },
+      members: {
+        include: { user: { select: { name: true, email: true } } },
+        take: 4,
+      },
     },
     orderBy: { createdAt: "desc" },
   });
 
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
-      <div className="flex items-center justify-between mb-10">
+      <header className="flex items-center justify-between mb-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
-            SVEEN
-          </h1>
-          <p className="text-sm text-zinc-400 mt-0.5">
+          <div className="inline-flex items-center gap-2.5">
+            <span className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-violet-600/20">
+              S
+            </span>
+            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">
+              SVEEN
+            </h1>
+          </div>
+          <p className="text-base text-zinc-500 mt-1">
             Your apartment search boards
           </p>
         </div>
         <UserButton />
-      </div>
+      </header>
       <BoardList boards={boards} />
     </main>
   );

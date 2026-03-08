@@ -34,26 +34,28 @@ export function ListingGrid({
   return (
     <>
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-          {listings.length > 0
-            ? `${listings.length} listing${listings.length !== 1 ? "s" : ""}`
-            : "No listings yet"}
-        </h2>
-        <div className="flex items-center gap-2">
+        {listings.length > 0 ? (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 text-zinc-500 rounded-full text-xs font-medium">
+            {listings.length} listing{listings.length !== 1 ? "s" : ""}
+          </span>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center gap-2.5">
           {listings.length > 0 && (
             <div className="flex border border-zinc-200 rounded-xl overflow-hidden">
               <button
                 onClick={() => setView("grid")}
-                className={`px-3 py-2 text-sm transition-colors ${
+                className={`px-3 py-2 transition-all ${
                   view === "grid"
-                    ? "bg-violet-600 text-white"
-                    : "text-zinc-500 hover:bg-zinc-50"
+                    ? "bg-violet-100 text-violet-600"
+                    : "text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50"
                 }`}
                 title="Grid view"
               >
                 <svg
-                  width="16"
-                  height="16"
+                  width="15"
+                  height="15"
                   viewBox="0 0 16 16"
                   fill="none"
                   stroke="currentColor"
@@ -67,16 +69,16 @@ export function ListingGrid({
               </button>
               <button
                 onClick={() => setView("map")}
-                className={`px-3 py-2 text-sm transition-colors ${
+                className={`px-3 py-2 transition-all ${
                   view === "map"
-                    ? "bg-violet-600 text-white"
-                    : "text-zinc-500 hover:bg-zinc-50"
+                    ? "bg-violet-100 text-violet-600"
+                    : "text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50"
                 }`}
                 title="Map view"
               >
                 <svg
-                  width="16"
-                  height="16"
+                  width="15"
+                  height="15"
                   viewBox="0 0 16 16"
                   fill="none"
                   stroke="currentColor"
@@ -90,7 +92,7 @@ export function ListingGrid({
           )}
           <button
             onClick={() => setShowAdd(true)}
-            className="px-4 py-2.5 text-sm font-medium bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-violet-600/20"
           >
             + Add listing
           </button>
@@ -98,16 +100,34 @@ export function ListingGrid({
       </div>
 
       {listings.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-zinc-100 rounded-2xl">
-          <p className="text-zinc-500 mb-1">
-            Add your first listing to start comparing.
+        <div className="text-center py-24 bg-white border border-zinc-100/80 rounded-2xl">
+          <svg
+            className="mx-auto mb-5 text-violet-200"
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+          >
+            <rect x="6" y="10" width="36" height="28" rx="4" />
+            <path d="M14 22l6-6 10 10M30 20a3 3 0 100-6 3 3 0 000 6z" />
+          </svg>
+          <h3 className="text-lg font-semibold text-zinc-700 mb-2">
+            No listings yet
+          </h3>
+          <p className="text-sm text-zinc-400 mb-6 max-w-xs mx-auto">
+            Paste a URL or add details manually to save your first apartment.
           </p>
-          <p className="text-sm text-zinc-400">
-            Paste a URL or enter details manually.
-          </p>
+          <button
+            onClick={() => setShowAdd(true)}
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-violet-600/20"
+          >
+            + Add listing
+          </button>
         </div>
       ) : view === "grid" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5 [&>*]:break-inside-avoid">
           {listings.map((l) => (
             <ListingCard
               key={l.id}
