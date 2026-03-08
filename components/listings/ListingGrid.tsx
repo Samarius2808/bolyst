@@ -134,6 +134,11 @@ export function ListingGrid({
           {/* Sticky map on the right (desktop only) */}
           {hasGeocodedListings && (
             <div className="hidden lg:block w-[480px] flex-shrink-0 sticky top-6 space-y-3">
+              <PinManager
+                boardId={boardId}
+                pins={boardPins}
+                onPinsChange={setBoardPins}
+              />
               <div className="h-[calc(100vh-14rem)]">
                 <ListingMapWrapper
                   listings={listings}
@@ -141,11 +146,6 @@ export function ListingGrid({
                   onListingClick={(id) => setSelectedId(id)}
                 />
               </div>
-              <PinManager
-                boardId={boardId}
-                pins={boardPins}
-                onPinsChange={setBoardPins}
-              />
             </div>
           )}
         </div>
