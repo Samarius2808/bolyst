@@ -44,7 +44,7 @@ export default async function BoardDetailPage({
   const isOwner = board.ownerId === user.id;
 
   return (
-    <main className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
+    <main className="max-w-[1600px] mx-auto px-4 sm:px-8 py-6 sm:py-10">
       <BoardHeader
         board={{
           id: board.id,

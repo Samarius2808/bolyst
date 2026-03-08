@@ -74,11 +74,12 @@ export function ListingMap({
   const center: [number, number] = [geocoded[0].latitude, geocoded[0].longitude];
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-zinc-100 bg-white">
+    <div className="rounded-2xl overflow-hidden border border-zinc-100 bg-white h-full">
       <MapContainer
         center={center}
         zoom={13}
-        className="h-[500px] w-full"
+        className="h-full w-full"
+        style={{ minHeight: "400px" }}
         scrollWheelZoom={true}
       >
         <TileLayer

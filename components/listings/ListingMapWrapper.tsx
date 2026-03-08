@@ -7,7 +7,7 @@ export const ListingMapWrapper = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-[500px] bg-zinc-100 rounded-2xl animate-pulse" />
+      <div className="h-full min-h-[400px] bg-zinc-100 rounded-2xl animate-pulse" />
     ),
   }
 );
