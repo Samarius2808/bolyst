@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { geocodeLocation } from "@/lib/geocode";
 
 export async function POST(req: Request) {
   const user = await getOrCreateUser();
@@ -18,6 +19,8 @@ export async function POST(req: Request) {
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  const coords = location ? await geocodeLocation(location) : null;
+
   const listing = await prisma.listing.create({
     data: {
       boardId,
@@ -28,6 +31,8 @@ export async function POST(req: Request) {
       location: location || null,
       description: description || null,
       imageUrls: imageUrls || [],
+      latitude: coords?.lat ?? null,
+      longitude: coords?.lng ?? null,
     },
   });
 

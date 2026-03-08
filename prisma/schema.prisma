@@ -58,6 +58,8 @@ model Listing {
   location    String?
   description String?
   imageUrls   String[]
+  latitude    Float?
+  longitude   Float?
   createdAt   DateTime @default(now())
 
   board    Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)

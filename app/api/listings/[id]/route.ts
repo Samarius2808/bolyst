@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { geocodeLocation } from "@/lib/geocode";
 
 async function getListingWithAccess(listingId: string, userId: string) {
   const listing = await prisma.listing.findUnique({
@@ -53,6 +54,16 @@ export async function PATCH(
   const body = await req.json();
   const { title, sourceUrl, price, size, location, description, imageUrls } = body;
 
+  let coordsUpdate = {};
+  if (location !== undefined) {
+    if (location) {
+      const coords = await geocodeLocation(location);
+      coordsUpdate = { latitude: coords?.lat ?? null, longitude: coords?.lng ?? null };
+    } else {
+      coordsUpdate = { latitude: null, longitude: null };
+    }
+  }
+
   const updated = await prisma.listing.update({
     where: { id },
     data: {
@@ -63,6 +74,7 @@ export async function PATCH(
       ...(location !== undefined && { location }),
       ...(description !== undefined && { description }),
       ...(imageUrls !== undefined && { imageUrls }),
+      ...coordsUpdate,
     },
   });
 
