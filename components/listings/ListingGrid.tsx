@@ -5,6 +5,8 @@ import { ListingCard } from "./ListingCard";
 import { AddListingModal } from "./AddListingModal";
 import { ListingDetail } from "./ListingDetail";
 import { ListingMapWrapper } from "./ListingMapWrapper";
+import { PinManager } from "./PinManager";
+import { nearestPinDistance } from "@/lib/haversine";
 
 interface Listing {
   id: string;
@@ -20,15 +22,25 @@ interface Listing {
   _count: { comments: number };
 }
 
+export interface BoardPin {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
 export function ListingGrid({
   boardId,
   listings,
+  pins,
 }: {
   boardId: string;
   listings: Listing[];
+  pins: BoardPin[];
 }) {
   const [showAdd, setShowAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [boardPins, setBoardPins] = useState<BoardPin[]>(pins);
 
   const hasGeocodedListings = listings.some(
     (l) => l.latitude != null && l.longitude != null
@@ -95,29 +107,44 @@ export function ListingGrid({
                 : "columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5 [&>*]:break-inside-avoid"
             }
           >
-            {listings.map((l) => (
-              <ListingCard
-                key={l.id}
-                id={l.id}
-                title={l.title}
-                price={l.price}
-                size={l.size}
-                location={l.location}
-                sourceUrl={l.sourceUrl}
-                imageUrls={l.imageUrls}
-                tags={l.tags}
-                commentCount={l._count.comments}
-                onClick={() => setSelectedId(l.id)}
-              />
-            ))}
+            {listings.map((l) => {
+              const dist =
+                l.latitude != null && l.longitude != null
+                  ? nearestPinDistance(l.latitude, l.longitude, boardPins)
+                  : null;
+              return (
+                <ListingCard
+                  key={l.id}
+                  id={l.id}
+                  title={l.title}
+                  price={l.price}
+                  size={l.size}
+                  location={l.location}
+                  sourceUrl={l.sourceUrl}
+                  imageUrls={l.imageUrls}
+                  tags={l.tags}
+                  commentCount={l._count.comments}
+                  nearestPinKm={dist}
+                  onClick={() => setSelectedId(l.id)}
+                />
+              );
+            })}
           </div>
 
           {/* Sticky map on the right (desktop only) */}
           {hasGeocodedListings && (
-            <div className="hidden lg:block w-[480px] flex-shrink-0 sticky top-6 h-[calc(100vh-8rem)]">
-              <ListingMapWrapper
-                listings={listings}
-                onListingClick={(id) => setSelectedId(id)}
+            <div className="hidden lg:block w-[480px] flex-shrink-0 sticky top-6 space-y-3">
+              <div className="h-[calc(100vh-14rem)]">
+                <ListingMapWrapper
+                  listings={listings}
+                  pins={boardPins}
+                  onListingClick={(id) => setSelectedId(id)}
+                />
+              </div>
+              <PinManager
+                boardId={boardId}
+                pins={boardPins}
+                onPinsChange={setBoardPins}
               />
             </div>
           )}

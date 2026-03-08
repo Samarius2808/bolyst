@@ -37,6 +37,7 @@ export default async function BoardDetailPage({
       invites: {
         select: { email: true },
       },
+      pins: true,
     },
   });
   if (!board) notFound();
@@ -55,7 +56,7 @@ export default async function BoardDetailPage({
         }}
         isOwner={isOwner}
       />
-      <ListingGrid boardId={board.id} listings={board.listings} />
+      <ListingGrid boardId={board.id} listings={board.listings} pins={board.pins} />
     </main>
   );
 }

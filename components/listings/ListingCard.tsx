@@ -10,6 +10,7 @@ interface ListingCardProps {
   imageUrls: string[];
   commentCount: number;
   tags: { tag: { id: string; name: string } }[];
+  nearestPinKm?: number | null;
   onClick: () => void;
 }
 
@@ -36,6 +37,7 @@ export function ListingCard({
   imageUrls,
   commentCount,
   tags,
+  nearestPinKm,
   onClick,
 }: ListingCardProps) {
   return (
@@ -89,6 +91,12 @@ export function ListingCard({
                 <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
               </svg>
               {location}
+            </span>
+          )}
+          {nearestPinKm != null && (
+            <span className="flex items-center gap-1 text-violet-500 font-medium">
+              <span className="text-[10px]">★</span>
+              {nearestPinKm < 1 ? `${Math.round(nearestPinKm * 1000)}m` : `${nearestPinKm} km`}
             </span>
           )}
         </div>

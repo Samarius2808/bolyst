@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-export const ListingMapWrapper = dynamic(
+const ListingMapInner = dynamic(
   () => import("./ListingMap").then((mod) => mod.ListingMap),
   {
     ssr: false,
@@ -11,3 +11,7 @@ export const ListingMapWrapper = dynamic(
     ),
   }
 );
+
+export function ListingMapWrapper(props: React.ComponentProps<typeof ListingMapInner>) {
+  return <ListingMapInner {...props} />;
+}
