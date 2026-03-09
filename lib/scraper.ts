@@ -131,10 +131,11 @@ function extractDescription(html: string): string | null {
 function normalizeImageUrl(url: string): string {
   try {
     const u = new URL(url);
-    // Extract just the filename (last path segment) for dedup —
-    // catches CDNs serving same image at different sizes/paths
+    // Extract filename without extension for dedup —
+    // catches same image at different sizes/paths/formats (jpg vs webp)
     const filename = u.pathname.split("/").pop() || u.pathname;
-    return u.hostname + "/" + filename;
+    const stem = filename.replace(/\.[^.]+$/, "");
+    return u.hostname + "/" + stem;
   } catch {
     return url;
   }
@@ -225,11 +226,13 @@ function extractImages(html: string, baseUrl: string): string[] {
   }
 
   // 4. Inline image URLs in JS/JSON (catches galleries loaded via JavaScript)
+  // Prefer larger images — skip small thumbnail sizes
   const inlineUrlPattern = /"(https?:\/\/[^"]+\.(?:jpg|jpeg|png|webp))"/gi;
   while ((match = inlineUrlPattern.exec(html)) !== null && images.length < 20) {
     const src = match[1];
     if (
-      /logo|icon|avatar|badge|button|sprite|pixel|track|placeholder|favicon/i.test(src)
+      /logo|icon|avatar|badge|button|sprite|pixel|track|placeholder|favicon/i.test(src) ||
+      /(?:_|\/)(?:thumb|tiny|micro|pt_\d+_\d+|smw_\d+|fspt_)\//i.test(src)
     ) {
       continue;
     }
