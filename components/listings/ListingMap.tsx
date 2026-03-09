@@ -23,19 +23,14 @@ interface MapPin {
   longitude: number;
 }
 
-function makeSvgIcon(svg: string, size: [number, number], anchor: [number, number], popupAnchor: [number, number]) {
-  return new L.Icon({
-    iconUrl: "data:image/svg+xml," + encodeURIComponent(svg),
-    iconSize: size,
-    iconAnchor: anchor,
-    popupAnchor: popupAnchor,
-  });
-}
-
-const pinIcon = makeSvgIcon(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="%237c3aed" stroke="white" stroke-width="3"/><text x="14" y="18" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="sans-serif">★</text></svg>',
-  [28, 28], [14, 14], [0, -14]
-);
+// Reference point icon (violet circle with star)
+const pinIcon = L.divIcon({
+  className: "",
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
+  popupAnchor: [0, -14],
+  html: '<div style="width:28px;height:28px;border-radius:50%;background:#7c3aed;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:bold;line-height:1;">★</div>',
+});
 
 function FitBounds({
   points,
@@ -60,17 +55,31 @@ function FitBounds({
   return null;
 }
 
-// Violet pin for regular listings
-const defaultIcon = makeSvgIcon(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 30 42"><path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 27 15 27s15-15.75 15-27C30 6.7 23.3 0 15 0z" fill="%237c3aed" stroke="white" stroke-width="1.5"/><circle cx="15" cy="15" r="6" fill="white"/></svg>',
-  [30, 42], [15, 42], [0, -42]
-);
+// Violet drop pin for regular listings
+const defaultIcon = L.divIcon({
+  className: "",
+  iconSize: [30, 40],
+  iconAnchor: [15, 40],
+  popupAnchor: [0, -40],
+  html: `<div style="position:relative;width:30px;height:40px;">
+    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#7c3aed;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;">
+      <div style="width:10px;height:10px;border-radius:50%;background:white;position:absolute;top:8px;left:8px;"></div>
+    </div>
+  </div>`,
+});
 
-// Rose pin for favorited listings
-const favoriteIcon = makeSvgIcon(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 30 42"><path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 27 15 27s15-15.75 15-27C30 6.7 23.3 0 15 0z" fill="%23e11d48" stroke="white" stroke-width="1.5"/><path d="M15 22s-5.5-3.5-5.5-7.5C9.5 12 11.5 10 13.5 10c1.1 0 2.1.5 2.5 1.5.4-1 1.4-1.5 2.5-1.5 2 0 3.5 1.5 3.5 3.5S20.5 18.5 15 22z" fill="white"/></svg>',
-  [30, 42], [15, 42], [0, -42]
-);
+// Rose drop pin for favorited listings
+const favoriteIcon = L.divIcon({
+  className: "",
+  iconSize: [30, 40],
+  iconAnchor: [15, 40],
+  popupAnchor: [0, -40],
+  html: `<div style="position:relative;width:30px;height:40px;">
+    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#e11d48;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;">
+      <div style="transform:rotate(45deg);position:absolute;top:5px;left:5px;color:white;font-size:14px;line-height:1;">♥</div>
+    </div>
+  </div>`,
+});
 
 export function ListingMap({
   listings,
