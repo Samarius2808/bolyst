@@ -128,14 +128,25 @@ function extractDescription(html: string): string | null {
   return null;
 }
 
+function normalizeImageUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    // Strip query params and hash for dedup comparison
+    return u.origin + u.pathname;
+  } catch {
+    return url;
+  }
+}
+
 function extractImages(html: string, baseUrl: string): string[] {
   const images: string[] = [];
   const seen = new Set<string>();
 
   function add(src: string) {
     const resolved = resolveUrl(src, baseUrl);
-    if (!seen.has(resolved)) {
-      seen.add(resolved);
+    const key = normalizeImageUrl(resolved);
+    if (!seen.has(key)) {
+      seen.add(key);
       images.push(resolved);
     }
   }
@@ -168,21 +179,47 @@ function extractImages(html: string, baseUrl: string): string[] {
     }
   }
 
-  // 3. Large <img> tags (likely listing photos, skip icons/logos)
-  const imgPattern = /<img[^>]*src=["']([^"']+)["'][^>]*>/gi;
-  while ((match = imgPattern.exec(html)) !== null && images.length < 10) {
-    const src = match[1];
+  // 3. <img> tags — check src, data-src, data-lazy-src, srcset for lazy-loaded images
+  const imgTagPattern = /<img[^>]*>/gi;
+  while ((match = imgTagPattern.exec(html)) !== null && images.length < 20) {
+    const tag = match[0];
+
     // Skip tiny images, icons, tracking pixels, SVGs, data URIs
     if (
-      /\.(svg|gif|ico)(\?|$)/i.test(src) ||
-      src.startsWith("data:") ||
-      /logo|icon|avatar|badge|button|sprite|pixel|track|1x1/i.test(src) ||
-      /width=["']?\d{1,2}['" ]/i.test(match[0]) ||
-      /height=["']?\d{1,2}['" ]/i.test(match[0])
+      /width=["']?\d{1,2}['" ]/i.test(tag) ||
+      /height=["']?\d{1,2}['" ]/i.test(tag)
     ) {
       continue;
     }
-    add(src);
+
+    // Try multiple attributes where the real image URL might be
+    const srcAttrs = ["data-src", "data-lazy-src", "data-original", "src"];
+    for (const attr of srcAttrs) {
+      const attrMatch = tag.match(new RegExp(`${attr}=["']([^"']+)["']`, "i"));
+      if (attrMatch) {
+        const src = attrMatch[1];
+        if (
+          /\.(svg|gif|ico)(\?|$)/i.test(src) ||
+          src.startsWith("data:") ||
+          /logo|icon|avatar|badge|button|sprite|pixel|track|1x1|placeholder/i.test(src)
+        ) {
+          break; // skip this img tag entirely
+        }
+        add(src);
+        break; // only add one URL per img tag
+      }
+    }
+
+    // Also check srcset for high-res images
+    const srcsetMatch = tag.match(/srcset=["']([^"']+)["']/i);
+    if (srcsetMatch && images.length < 20) {
+      // srcset format: "url1 1x, url2 2x" or "url1 300w, url2 600w"
+      const entries = srcsetMatch[1].split(",").map((s) => s.trim().split(/\s+/)[0]);
+      const best = entries[entries.length - 1]; // last entry is usually highest res
+      if (best && !best.startsWith("data:") && !/\.(svg|gif|ico)(\?|$)/i.test(best)) {
+        add(best);
+      }
+    }
   }
 
   // Limit to 5 images
