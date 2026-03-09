@@ -75,9 +75,8 @@ const favoriteIcon = L.divIcon({
   iconAnchor: [15, 40],
   popupAnchor: [0, -40],
   html: `<div style="position:relative;width:30px;height:40px;">
-    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#e11d48;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;">
-      <div style="transform:rotate(45deg);position:absolute;top:5px;left:5px;color:white;font-size:14px;line-height:1;">♥</div>
-    </div>
+    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#e11d48;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;"></div>
+    <div style="position:absolute;top:3px;left:0;width:30px;height:26px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;line-height:1;">♥</div>
   </div>`,
 });
 
