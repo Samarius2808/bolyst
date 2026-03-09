@@ -41,18 +41,28 @@ interface BoardTag {
   name: string;
 }
 
+interface MemberFavorite {
+  id: string;
+  name: string | null;
+  email: string;
+}
+
 export function ListingGrid({
   boardId,
   listings,
   pins,
   boardTags = [],
   favoritedIds = [],
+  memberFavorites = {},
+  currentUserId,
 }: {
   boardId: string;
   listings: Listing[];
   pins: BoardPin[];
   boardTags?: BoardTag[];
   favoritedIds?: string[];
+  memberFavorites?: Record<string, MemberFavorite[]>;
+  currentUserId?: string;
 }) {
   const router = useRouter();
   const [showAdd, setShowAdd] = useState(false);
@@ -276,6 +286,7 @@ export function ListingGrid({
                 addedBy={l.addedBy}
                 isFavorited={favorites.has(l.id)}
                 onToggleFavorite={() => toggleFavorite(l.id)}
+                favoritedBy={(memberFavorites[l.id] || []).filter((u) => u.id !== currentUserId)}
                 selectable={compareMode}
                 selected={compareSet.has(l.id)}
                 onToggleSelect={() => toggleCompare(l.id)}

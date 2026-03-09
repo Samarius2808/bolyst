@@ -5,16 +5,6 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Fix Leaflet default icon paths broken by webpack
-delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)
-  ._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
-
 interface MapListing {
   id: string;
   title: string;
@@ -33,16 +23,19 @@ interface MapPin {
   longitude: number;
 }
 
-const pinIcon = new L.Icon({
-  iconUrl:
-    "data:image/svg+xml," +
-    encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="%237c3aed" stroke="white" stroke-width="3"/><text x="14" y="18" text-anchor="middle" fill="white" font-size="14" font-weight="bold">★</text></svg>'
-    ),
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
-  popupAnchor: [0, -14],
-});
+function makeSvgIcon(svg: string, size: [number, number], anchor: [number, number], popupAnchor: [number, number]) {
+  return new L.Icon({
+    iconUrl: "data:image/svg+xml," + encodeURIComponent(svg),
+    iconSize: size,
+    iconAnchor: anchor,
+    popupAnchor: popupAnchor,
+  });
+}
+
+const pinIcon = makeSvgIcon(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="%237c3aed" stroke="white" stroke-width="3"/><text x="14" y="18" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="sans-serif">★</text></svg>',
+  [28, 28], [14, 14], [0, -14]
+);
 
 function FitBounds({
   points,
@@ -67,27 +60,17 @@ function FitBounds({
   return null;
 }
 
-const defaultIcon = new L.Icon({
-  iconUrl:
-    "data:image/svg+xml," +
-    encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="%237c3aed"/><circle cx="14" cy="14" r="6" fill="white"/></svg>'
-    ),
-  iconSize: [28, 40],
-  iconAnchor: [14, 40],
-  popupAnchor: [0, -40],
-});
+// Violet pin for regular listings
+const defaultIcon = makeSvgIcon(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 30 42"><path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 27 15 27s15-15.75 15-27C30 6.7 23.3 0 15 0z" fill="%237c3aed" stroke="white" stroke-width="1.5"/><circle cx="15" cy="15" r="6" fill="white"/></svg>',
+  [30, 42], [15, 42], [0, -42]
+);
 
-const favoriteIcon = new L.Icon({
-  iconUrl:
-    "data:image/svg+xml," +
-    encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="%23e11d48"/><circle cx="14" cy="14" r="6" fill="white"/><path d="M14 18s-4-2.5-4-5.5a2.5 2.5 0 015 0 2.5 2.5 0 015 0c0 3-4 5.5-4 5.5z" fill="%23e11d48" transform="translate(-2,-2) scale(0.7)"/></svg>'
-    ),
-  iconSize: [28, 40],
-  iconAnchor: [14, 40],
-  popupAnchor: [0, -40],
-});
+// Rose pin for favorited listings
+const favoriteIcon = makeSvgIcon(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 30 42"><path d="M15 0C6.7 0 0 6.7 0 15c0 11.25 15 27 15 27s15-15.75 15-27C30 6.7 23.3 0 15 0z" fill="%23e11d48" stroke="white" stroke-width="1.5"/><path d="M15 22s-5.5-3.5-5.5-7.5C9.5 12 11.5 10 13.5 10c1.1 0 2.1.5 2.5 1.5.4-1 1.4-1.5 2.5-1.5 2 0 3.5 1.5 3.5 3.5S20.5 18.5 15 22z" fill="white"/></svg>',
+  [30, 42], [15, 42], [0, -42]
+);
 
 export function ListingMap({
   listings,

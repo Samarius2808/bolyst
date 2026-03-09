@@ -50,6 +50,21 @@ export default async function BoardDetailPage({
   });
   const favoritedIds = favorites.map((f) => f.listingId);
 
+  // Fetch all board members' favorites for per-member visibility
+  const allFavorites = await prisma.favorite.findMany({
+    where: { listing: { boardId: id } },
+    select: {
+      listingId: true,
+      user: { select: { id: true, name: true, email: true } },
+    },
+  });
+  // Group by listingId → array of users who favorited
+  const memberFavoritesMap: Record<string, { id: string; name: string | null; email: string }[]> = {};
+  for (const fav of allFavorites) {
+    if (!memberFavoritesMap[fav.listingId]) memberFavoritesMap[fav.listingId] = [];
+    memberFavoritesMap[fav.listingId].push(fav.user);
+  }
+
   const isOwner = board.ownerId === user.id;
 
   return (
@@ -70,6 +85,8 @@ export default async function BoardDetailPage({
         pins={board.pins}
         boardTags={board.tags}
         favoritedIds={favoritedIds}
+        memberFavorites={memberFavoritesMap}
+        currentUserId={user.id}
       />
     </main>
   );

@@ -19,6 +19,7 @@ interface ListingCardProps {
   addedBy?: { id: string; name: string | null; email: string } | null;
   isFavorited?: boolean;
   onToggleFavorite?: () => void;
+  favoritedBy?: { id: string; name: string | null; email: string }[];
   selectable?: boolean;
   selected?: boolean;
   onToggleSelect?: () => void;
@@ -42,6 +43,20 @@ const tagColors = [
   "bg-rose-50 text-rose-600",
 ];
 
+const heartColors = [
+  { bg: "bg-rose-400", text: "text-white" },
+  { bg: "bg-blue-400", text: "text-white" },
+  { bg: "bg-emerald-400", text: "text-white" },
+  { bg: "bg-amber-400", text: "text-white" },
+  { bg: "bg-violet-400", text: "text-white" },
+];
+
+function hashHeartColor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return heartColors[Math.abs(hash) % heartColors.length];
+}
+
 function hashColor(name: string): string {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -62,6 +77,7 @@ export function ListingCard({
   addedBy,
   isFavorited = false,
   onToggleFavorite,
+  favoritedBy = [],
   selectable = false,
   selected = false,
   onToggleSelect,
@@ -257,6 +273,27 @@ export function ListingCard({
                 +{tags.length - 2}
               </span>
             )}
+          </div>
+        )}
+
+        {favoritedBy.length > 0 && (
+          <div className="flex items-center gap-1 mt-2">
+            {favoritedBy.map((u) => {
+              const name = u.name || u.email.split("@")[0];
+              const color = hashHeartColor(name);
+              return (
+                <span
+                  key={u.id}
+                  title={`${name} liked this`}
+                  className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium ${color.bg} ${color.text}`}
+                >
+                  <svg width="8" height="8" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 14s-5.5-3.5-5.5-7.5C2.5 4 4.5 2 6.5 2c1.1 0 2.1.5 2.5 1.5C9.4 2.5 10.4 2 11.5 2c2 0 3.5 1.5 3.5 3.5S13.5 10.5 8 14z" />
+                  </svg>
+                  {name.split(" ")[0]}
+                </span>
+              );
+            })}
           </div>
         )}
 
