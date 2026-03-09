@@ -51,6 +51,15 @@ enum Role {
   COLLABORATOR
 }
 
+enum ListingStatus {
+  NEW
+  VIEWING
+  APPLIED
+  REJECTED
+  ACCEPTED
+  DELISTED
+}
+
 model Listing {
   id          String   @id @default(cuid())
   boardId     String
@@ -64,6 +73,7 @@ model Listing {
   imageUrls   String[]
   latitude    Float?
   longitude   Float?
+  status      ListingStatus @default(NEW)
   createdAt   DateTime @default(now())
 
   board     Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)

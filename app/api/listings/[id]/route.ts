@@ -53,7 +53,7 @@ export async function PATCH(
   if (!result) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const body = await req.json();
-  const { title, sourceUrl, price, size, location, description, imageUrls } = body;
+  const { title, sourceUrl, price, size, location, description, imageUrls, status } = body;
 
   let coordsUpdate = {};
   if (location !== undefined) {
@@ -75,6 +75,7 @@ export async function PATCH(
       ...(location !== undefined && { location }),
       ...(description !== undefined && { description }),
       ...(imageUrls !== undefined && { imageUrls }),
+      ...(status !== undefined && { status }),
       ...coordsUpdate,
     },
   });

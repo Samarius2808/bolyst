@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+
 interface ListingCardProps {
   id: string;
   title: string;
@@ -10,6 +12,7 @@ interface ListingCardProps {
   location: string | null;
   sourceUrl: string | null;
   imageUrls: string[];
+  status?: ListingStatus;
   commentCount: number;
   tags: { tag: { id: string; name: string } }[];
   nearestPinKm?: number | null;
@@ -21,6 +24,15 @@ interface ListingCardProps {
   onToggleSelect?: () => void;
   onClick: () => void;
 }
+
+const statusConfig: Record<ListingStatus, { label: string; color: string }> = {
+  NEW: { label: "New", color: "bg-zinc-100 text-zinc-500" },
+  VIEWING: { label: "Viewing", color: "bg-blue-50 text-blue-600" },
+  APPLIED: { label: "Applied", color: "bg-amber-50 text-amber-600" },
+  REJECTED: { label: "Rejected", color: "bg-red-50 text-red-500" },
+  ACCEPTED: { label: "Accepted", color: "bg-emerald-50 text-emerald-600" },
+  DELISTED: { label: "Delisted", color: "bg-zinc-200 text-zinc-500" },
+};
 
 const tagColors = [
   "bg-violet-50 text-violet-600",
@@ -43,6 +55,7 @@ export function ListingCard({
   location,
   sourceUrl,
   imageUrls,
+  status = "NEW",
   commentCount,
   tags,
   nearestPinKm,
@@ -181,6 +194,15 @@ export function ListingCard({
           </>
         )}
 
+        {/* Delisted overlay */}
+        {status === "DELISTED" && (
+          <div className="absolute inset-0 bg-zinc-900/40 flex items-center justify-center">
+            <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-xs font-bold text-zinc-600 uppercase tracking-wide">
+              Delisted
+            </span>
+          </div>
+        )}
+
         {/* Price overlay */}
         {price != null && (
           <span className="absolute bottom-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-sm font-bold text-zinc-900 shadow-sm">
@@ -191,9 +213,16 @@ export function ListingCard({
 
       {/* Content */}
       <div className="px-4 py-3.5">
-        <h3 className="font-semibold text-[13px] text-zinc-900 leading-snug line-clamp-1 group-hover:text-violet-600 transition-colors" title={title}>
-          {title}
-        </h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-[13px] text-zinc-900 leading-snug line-clamp-1 group-hover:text-violet-600 transition-colors flex-1 min-w-0" title={title}>
+            {title}
+          </h3>
+          {status && status !== "NEW" && (
+            <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full flex-shrink-0 ${statusConfig[status].color}`}>
+              {statusConfig[status].label}
+            </span>
+          )}
+        </div>
 
         <div className="flex items-center gap-2.5 mt-1.5 text-xs text-zinc-400">
           {size != null && <span>{size} m&sup2;</span>}

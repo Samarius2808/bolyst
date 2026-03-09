@@ -11,6 +11,8 @@ export type SortKey =
   | "newest"
   | "price-asc"
   | "price-desc"
+  | "ppm2-asc"
+  | "ppm2-desc"
   | "size-desc"
   | "distance-asc"
   | `tag:${string}`;
@@ -19,6 +21,8 @@ const sortOptions: { key: SortKey; label: string; icon: string }[] = [
   { key: "newest", label: "Newest first", icon: "⏱" },
   { key: "price-asc", label: "Price: Low → High", icon: "↑" },
   { key: "price-desc", label: "Price: High → Low", icon: "↓" },
+  { key: "ppm2-asc", label: "Price/m²: Low → High", icon: "↑" },
+  { key: "ppm2-desc", label: "Price/m²: High → Low", icon: "↓" },
   { key: "size-desc", label: "Size: Largest", icon: "⊞" },
   { key: "distance-asc", label: "Distance: Nearest", icon: "★" },
 ];

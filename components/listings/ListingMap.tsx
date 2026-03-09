@@ -67,13 +67,37 @@ function FitBounds({
   return null;
 }
 
+const defaultIcon = new L.Icon({
+  iconUrl:
+    "data:image/svg+xml," +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="%237c3aed"/><circle cx="14" cy="14" r="6" fill="white"/></svg>'
+    ),
+  iconSize: [28, 40],
+  iconAnchor: [14, 40],
+  popupAnchor: [0, -40],
+});
+
+const favoriteIcon = new L.Icon({
+  iconUrl:
+    "data:image/svg+xml," +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 26 14 26s14-15.5 14-26C28 6.3 21.7 0 14 0z" fill="%23e11d48"/><circle cx="14" cy="14" r="6" fill="white"/><path d="M14 18s-4-2.5-4-5.5a2.5 2.5 0 015 0 2.5 2.5 0 015 0c0 3-4 5.5-4 5.5z" fill="%23e11d48" transform="translate(-2,-2) scale(0.7)"/></svg>'
+    ),
+  iconSize: [28, 40],
+  iconAnchor: [14, 40],
+  popupAnchor: [0, -40],
+});
+
 export function ListingMap({
   listings,
   pins = [],
+  favoritedIds = new Set(),
   onListingClick,
 }: {
   listings: MapListing[];
   pins?: MapPin[];
+  favoritedIds?: Set<string>;
   onListingClick: (id: string) => void;
 }) {
   const geocoded = listings.filter(
@@ -145,7 +169,7 @@ export function ListingMap({
                 )
               : null;
           return (
-            <Marker key={l.id} position={[l.latitude, l.longitude]}>
+            <Marker key={l.id} position={[l.latitude, l.longitude]} icon={favoritedIds.has(l.id) ? favoriteIcon : defaultIcon}>
               <Popup>
                 <div className="min-w-[180px]">
                   {l.imageUrls.length > 0 && (

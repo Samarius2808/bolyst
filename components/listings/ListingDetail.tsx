@@ -15,6 +15,8 @@ interface Comment {
   user: { id: string; name: string | null; email: string };
 }
 
+type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+
 interface ListingData {
   id: string;
   title: string;
@@ -24,10 +26,20 @@ interface ListingData {
   location: string | null;
   description: string | null;
   imageUrls: string[];
+  status: ListingStatus;
   tags: { tag: Tag }[];
   addedBy: { id: string; name: string | null; email: string } | null;
   _count: { comments: number };
 }
+
+const statusOptions: { value: ListingStatus; label: string; color: string }[] = [
+  { value: "NEW", label: "New", color: "bg-zinc-100 text-zinc-500 border-zinc-200" },
+  { value: "VIEWING", label: "Viewing", color: "bg-blue-50 text-blue-600 border-blue-200" },
+  { value: "APPLIED", label: "Applied", color: "bg-amber-50 text-amber-600 border-amber-200" },
+  { value: "REJECTED", label: "Rejected", color: "bg-red-50 text-red-500 border-red-200" },
+  { value: "ACCEPTED", label: "Accepted", color: "bg-emerald-50 text-emerald-600 border-emerald-200" },
+  { value: "DELISTED", label: "Delisted", color: "bg-zinc-200 text-zinc-500 border-zinc-300" },
+];
 
 const inputClass =
   "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-colors";
@@ -418,6 +430,38 @@ export function ListingDetail({
                 <p className="text-sm font-semibold text-zinc-900 truncate">
                   {listing.location || "—"}
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* Status */}
+          {!editing && (
+            <div className="mb-5">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
+                Status
+              </h3>
+              <div className="flex flex-wrap gap-1.5">
+                {statusOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={async () => {
+                      await fetch(`/api/listings/${listingId}`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: opt.value }),
+                      });
+                      await loadData();
+                      router.refresh();
+                    }}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
+                      listing.status === opt.value
+                        ? opt.color
+                        : "bg-white border-zinc-100 text-zinc-400 hover:border-zinc-200 hover:text-zinc-500"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
             </div>
           )}

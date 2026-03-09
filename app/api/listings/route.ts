@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { boardId, title, sourceUrl, price, size, location, description, imageUrls } = body;
+  const { boardId, title, sourceUrl, price, size, location, description, imageUrls, tagIds } = body;
 
   if (!boardId || !title) {
     return NextResponse.json({ error: "boardId and title are required" }, { status: 400 });
@@ -34,6 +34,9 @@ export async function POST(req: Request) {
       imageUrls: imageUrls || [],
       latitude: coords?.lat ?? null,
       longitude: coords?.lng ?? null,
+      tags: tagIds?.length
+        ? { create: tagIds.map((tagId: string) => ({ tagId })) }
+        : undefined,
     },
   });
 

@@ -1,5 +1,16 @@
 "use client";
 
+type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+
+const statusLabels: Record<ListingStatus, { label: string; color: string }> = {
+  NEW: { label: "New", color: "bg-zinc-100 text-zinc-500" },
+  VIEWING: { label: "Viewing", color: "bg-blue-50 text-blue-600" },
+  APPLIED: { label: "Applied", color: "bg-amber-50 text-amber-600" },
+  REJECTED: { label: "Rejected", color: "bg-red-50 text-red-500" },
+  ACCEPTED: { label: "Accepted", color: "bg-emerald-50 text-emerald-600" },
+  DELISTED: { label: "Delisted", color: "bg-zinc-200 text-zinc-500" },
+};
+
 interface Listing {
   id: string;
   title: string;
@@ -8,6 +19,7 @@ interface Listing {
   size: number | null;
   location: string | null;
   description: string | null;
+  status: ListingStatus;
   tags: { tag: { id: string; name: string } }[];
   addedBy?: { id: string; name: string | null; email: string } | null;
 }
@@ -49,6 +61,18 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
       key: "location",
       label: "Location",
       render: (l) => l.location || dash,
+    },
+    {
+      key: "status",
+      label: "Status",
+      render: (l) => {
+        const s = statusLabels[l.status] || statusLabels.NEW;
+        return (
+          <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${s.color}`}>
+            {s.label}
+          </span>
+        );
+      },
     },
     {
       key: "tags",

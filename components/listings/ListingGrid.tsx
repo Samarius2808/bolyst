@@ -10,6 +10,8 @@ import { PinManager } from "./PinManager";
 import { SortControls, type SortKey } from "./SortControls";
 import { nearestPinDistance } from "@/lib/haversine";
 
+type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+
 interface Listing {
   id: string;
   title: string;
@@ -20,6 +22,7 @@ interface Listing {
   imageUrls: string[];
   latitude: number | null;
   longitude: number | null;
+  status: ListingStatus;
   createdAt: Date | string;
   addedBy: { id: string; name: string | null; email: string } | null;
   tags: { tag: { id: string; name: string } }[];
@@ -96,6 +99,18 @@ export function ListingGrid({
       case "price-desc":
         sorted.sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
         break;
+      case "ppm2-asc": {
+        const ppm2 = (l: Listing) =>
+          l.price != null && l.size ? l.price / l.size : Infinity;
+        sorted.sort((a, b) => ppm2(a) - ppm2(b));
+        break;
+      }
+      case "ppm2-desc": {
+        const ppm2d = (l: Listing) =>
+          l.price != null && l.size ? l.price / l.size : -1;
+        sorted.sort((a, b) => ppm2d(b) - ppm2d(a));
+        break;
+      }
       case "size-desc":
         sorted.sort((a, b) => (b.size ?? -1) - (a.size ?? -1));
         break;
@@ -254,6 +269,7 @@ export function ListingGrid({
                 location={l.location}
                 sourceUrl={l.sourceUrl}
                 imageUrls={l.imageUrls}
+                status={l.status}
                 tags={l.tags}
                 commentCount={l._count.comments}
                 nearestPinKm={distanceMap.get(l.id) ?? null}
@@ -285,6 +301,7 @@ export function ListingGrid({
                 <ListingMapWrapper
                   listings={sortedListings}
                   pins={boardPins}
+                  favoritedIds={favorites}
                   onListingClick={(id) => setSelectedId(id)}
                 />
               </div>
@@ -309,7 +326,7 @@ export function ListingGrid({
       )}
 
       {showAdd && (
-        <AddListingModal boardId={boardId} onClose={() => setShowAdd(false)} />
+        <AddListingModal boardId={boardId} boardTags={boardTags} onClose={() => setShowAdd(false)} />
       )}
 
       {selectedId && (

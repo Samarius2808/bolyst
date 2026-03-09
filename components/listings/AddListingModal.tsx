@@ -3,11 +3,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface BoardTag {
+  id: string;
+  name: string;
+}
+
 export function AddListingModal({
   boardId,
+  boardTags = [],
   onClose,
 }: {
   boardId: string;
+  boardTags?: BoardTag[];
   onClose: () => void;
 }) {
   const [mode, setMode] = useState<"url" | "manual">("url");
@@ -19,6 +26,7 @@ export function AddListingModal({
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [scraping, setScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState("");
@@ -74,6 +82,7 @@ export function AddListingModal({
         location: location || undefined,
         description: description || undefined,
         imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
+        tagIds: selectedTagIds.size > 0 ? Array.from(selectedTagIds) : undefined,
       }),
     });
 
@@ -238,6 +247,38 @@ export function AddListingModal({
                   className={inputClass}
                 />
               </div>
+
+              {boardTags.length > 0 && (
+                <div className="pt-1">
+                  <p className="text-xs font-medium text-zinc-400 mb-2">Tags</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {boardTags.map((tag) => {
+                      const active = selectedTagIds.has(tag.id);
+                      return (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          onClick={() =>
+                            setSelectedTagIds((prev) => {
+                              const next = new Set(prev);
+                              if (next.has(tag.id)) next.delete(tag.id);
+                              else next.add(tag.id);
+                              return next;
+                            })
+                          }
+                          className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-all ${
+                            active
+                              ? "bg-violet-100 border-violet-200 text-violet-700"
+                              : "bg-zinc-50 border-zinc-100 text-zinc-400 hover:border-zinc-200 hover:text-zinc-500"
+                          }`}
+                        >
+                          {tag.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div className="flex justify-end gap-2 mt-5">
                 <button
