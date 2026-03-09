@@ -13,6 +13,12 @@ interface ListingCardProps {
   commentCount: number;
   tags: { tag: { id: string; name: string } }[];
   nearestPinKm?: number | null;
+  addedBy?: { id: string; name: string | null; email: string } | null;
+  isFavorited?: boolean;
+  onToggleFavorite?: () => void;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
   onClick: () => void;
 }
 
@@ -40,6 +46,12 @@ export function ListingCard({
   commentCount,
   tags,
   nearestPinKm,
+  addedBy,
+  isFavorited = false,
+  onToggleFavorite,
+  selectable = false,
+  selected = false,
+  onToggleSelect,
   onClick,
 }: ListingCardProps) {
   const [imgIndex, setImgIndex] = useState(0);
@@ -54,10 +66,26 @@ export function ListingCard({
     setImgIndex((i) => (i + 1) % imageUrls.length);
   }
 
+  function handleFavorite(e: React.MouseEvent) {
+    e.stopPropagation();
+    onToggleFavorite?.();
+  }
+
+  function handleSelect(e: React.MouseEvent) {
+    e.stopPropagation();
+    onToggleSelect?.();
+  }
+
+  const displayName = addedBy?.name || addedBy?.email?.split("@")[0];
+
   return (
     <button
       onClick={onClick}
-      className="group bg-white border border-zinc-100/80 rounded-2xl overflow-hidden hover:shadow-xl hover:border-violet-200/60 hover:-translate-y-1 transition-all duration-200 text-left w-full break-inside-avoid"
+      className={`group bg-white border rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-200 text-left w-full ${
+        selected
+          ? "border-violet-400 ring-2 ring-violet-400/30"
+          : "border-zinc-100/80 hover:border-violet-200/60"
+      }`}
     >
       {/* Image carousel */}
       <div className="relative aspect-[4/3] bg-gradient-to-br from-violet-50 to-zinc-100 overflow-hidden">
@@ -80,6 +108,40 @@ export function ListingCard({
             >
               <path d="M8 32V12a2 2 0 012-2h20a2 2 0 012 2v20a2 2 0 01-2 2H10a2 2 0 01-2-2z" />
               <path d="M14 20l4-4 8 8M24 18a2 2 0 100-4 2 2 0 000 4z" />
+            </svg>
+          </div>
+        )}
+
+        {/* Compare checkbox */}
+        {selectable && (
+          <div
+            role="button"
+            onClick={handleSelect}
+            className={`absolute top-3 left-3 w-6 h-6 rounded-md flex items-center justify-center transition-all ${
+              selected
+                ? "bg-violet-600 text-white"
+                : "bg-white/80 backdrop-blur-sm text-transparent hover:bg-white"
+            }`}
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M3 8.5l3 3 7-7" />
+            </svg>
+          </div>
+        )}
+
+        {/* Favorite heart */}
+        {onToggleFavorite && (
+          <div
+            role="button"
+            onClick={handleFavorite}
+            className={`absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+              isFavorited
+                ? "bg-rose-500 text-white"
+                : "bg-white/80 backdrop-blur-sm text-zinc-400 opacity-0 group-hover:opacity-100 hover:text-rose-500 hover:bg-white"
+            }`}
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill={isFavorited ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
+              <path d="M8 14s-5.5-3.5-5.5-7.5C2.5 4 4.5 2 6.5 2c1.1 0 2.1.5 2.5 1.5C9.4 2.5 10.4 2 11.5 2c2 0 3.5 1.5 3.5 3.5S13.5 10.5 8 14z" />
             </svg>
           </div>
         )}
@@ -129,7 +191,7 @@ export function ListingCard({
 
       {/* Content */}
       <div className="px-4 py-3.5">
-        <h3 className="font-semibold text-[13px] text-zinc-900 leading-snug line-clamp-2 group-hover:text-violet-600 transition-colors">
+        <h3 className="font-semibold text-[13px] text-zinc-900 leading-snug line-clamp-1 group-hover:text-violet-600 transition-colors" title={title}>
           {title}
         </h3>
 
@@ -170,16 +232,23 @@ export function ListingCard({
         )}
 
         <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-zinc-50 text-xs text-zinc-300">
-          {sourceUrl ? (
-            <span className="text-violet-400 inline-flex items-center gap-1">
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
-              </svg>
-              Link
-            </span>
-          ) : (
-            <span>Manual</span>
-          )}
+          <div className="flex items-center gap-2">
+            {sourceUrl ? (
+              <span className="text-violet-400 inline-flex items-center gap-1">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
+                </svg>
+                Link
+              </span>
+            ) : (
+              <span>Manual</span>
+            )}
+            {displayName && (
+              <span className="text-zinc-300 truncate max-w-[80px]" title={addedBy?.name || addedBy?.email || ""}>
+                · {displayName}
+              </span>
+            )}
+          </div>
           {commentCount > 0 && (
             <span className="inline-flex items-center gap-1 text-zinc-400">
               <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">

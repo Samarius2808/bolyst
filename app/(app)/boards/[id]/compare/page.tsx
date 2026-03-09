@@ -6,13 +6,16 @@ import { CompareTable } from "@/components/listings/CompareTable";
 
 export default async function ComparePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ ids?: string }>;
 }) {
   const user = await getOrCreateUser();
   if (!user) redirect("/sign-in");
 
   const { id } = await params;
+  const { ids } = await searchParams;
 
   const membership = await prisma.boardMember.findUnique({
     where: { boardId_userId: { boardId: id, userId: user.id } },
@@ -25,12 +28,18 @@ export default async function ComparePage({
       listings: {
         include: {
           tags: { include: { tag: true } },
+          addedBy: { select: { id: true, name: true, email: true } },
         },
         orderBy: { createdAt: "desc" },
       },
     },
   });
   if (!board) notFound();
+
+  const selectedIds = ids ? ids.split(",").filter(Boolean) : null;
+  const listings = selectedIds
+    ? board.listings.filter((l) => selectedIds.includes(l.id))
+    : board.listings;
 
   return (
     <main className="max-w-full mx-auto px-4 sm:px-8 py-6 sm:py-10">
@@ -41,13 +50,20 @@ export default async function ComparePage({
         >
           <span>&larr;</span> {board.name}
         </Link>
-        <h1 className="text-2xl font-bold tracking-tight">Compare listings</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          Compare listings
+          {selectedIds && (
+            <span className="text-base font-normal text-zinc-400 ml-2">
+              ({listings.length} of {board.listings.length})
+            </span>
+          )}
+        </h1>
       </div>
 
-      {board.listings.length === 0 ? (
+      {listings.length === 0 ? (
         <p className="text-zinc-400">No listings to compare yet.</p>
       ) : (
-        <CompareTable listings={board.listings} />
+        <CompareTable listings={listings} />
       )}
     </main>
   );

@@ -13,9 +13,11 @@ model User {
   name      String?
   createdAt DateTime @default(now())
 
-  boards       Board[]
-  boardMembers BoardMember[]
-  comments     Comment[]
+  boards        Board[]
+  boardMembers  BoardMember[]
+  comments      Comment[]
+  listingsAdded Listing[]  @relation("ListingsAdded")
+  favorites     Favorite[]
 }
 
 model Board {
@@ -52,6 +54,7 @@ enum Role {
 model Listing {
   id          String   @id @default(cuid())
   boardId     String
+  addedById   String?
   title       String
   sourceUrl   String?
   price       Int?
@@ -63,9 +66,11 @@ model Listing {
   longitude   Float?
   createdAt   DateTime @default(now())
 
-  board    Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  tags     ListingTag[]
-  comments Comment[]
+  board     Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  addedBy   User?        @relation("ListingsAdded", fields: [addedById], references: [id], onDelete: SetNull)
+  tags      ListingTag[]
+  comments  Comment[]
+  favorites Favorite[]
 }
 
 model Tag {
@@ -108,6 +113,17 @@ model BoardInvite {
   board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
 
   @@unique([boardId, email])
+}
+
+model Favorite {
+  userId    String
+  listingId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@id([userId, listingId])
 }
 
 model Comment {

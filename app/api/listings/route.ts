@@ -24,6 +24,7 @@ export async function POST(req: Request) {
   const listing = await prisma.listing.create({
     data: {
       boardId,
+      addedById: user.id,
       title: title.trim(),
       sourceUrl: sourceUrl || null,
       price: price ? parseInt(price) : null,

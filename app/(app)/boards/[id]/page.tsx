@@ -25,10 +25,12 @@ export default async function BoardDetailPage({
       listings: {
         include: {
           tags: { include: { tag: true } },
+          addedBy: { select: { id: true, name: true, email: true } },
           _count: { select: { comments: true } },
         },
         orderBy: { createdAt: "desc" },
       },
+      tags: true,
       members: {
         include: {
           user: { select: { id: true, name: true, email: true } },
@@ -41,6 +43,12 @@ export default async function BoardDetailPage({
     },
   });
   if (!board) notFound();
+
+  const favorites = await prisma.favorite.findMany({
+    where: { userId: user.id, listing: { boardId: id } },
+    select: { listingId: true },
+  });
+  const favoritedIds = favorites.map((f) => f.listingId);
 
   const isOwner = board.ownerId === user.id;
 
@@ -56,7 +64,13 @@ export default async function BoardDetailPage({
         }}
         isOwner={isOwner}
       />
-      <ListingGrid boardId={board.id} listings={board.listings} pins={board.pins} />
+      <ListingGrid
+        boardId={board.id}
+        listings={board.listings}
+        pins={board.pins}
+        boardTags={board.tags}
+        favoritedIds={favoritedIds}
+      />
     </main>
   );
 }

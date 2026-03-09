@@ -9,6 +9,7 @@ interface Listing {
   location: string | null;
   description: string | null;
   tags: { tag: { id: string; name: string } }[];
+  addedBy?: { id: string; name: string | null; email: string } | null;
 }
 
 export function CompareTable({ listings }: { listings: Listing[] }) {
@@ -67,6 +68,14 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
         ) : (
           dash
         ),
+    },
+    {
+      key: "addedBy",
+      label: "Added by",
+      render: (l) => {
+        const name = l.addedBy?.name || l.addedBy?.email?.split("@")[0];
+        return name ? <span className="text-zinc-600">{name}</span> : dash;
+      },
     },
     {
       key: "source",

@@ -33,6 +33,7 @@ export async function GET(
     where: { id },
     include: {
       tags: { include: { tag: true } },
+      addedBy: { select: { id: true, name: true, email: true } },
       _count: { select: { comments: true } },
     },
   });

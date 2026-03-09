@@ -25,6 +25,7 @@ interface ListingData {
   description: string | null;
   imageUrls: string[];
   tags: { tag: Tag }[];
+  addedBy: { id: string; name: string | null; email: string } | null;
   _count: { comments: number };
 }
 
@@ -361,19 +362,26 @@ export function ListingDetail({
                   <h2 className="text-xl font-bold tracking-tight text-zinc-900">
                     {listing.title}
                   </h2>
-                  {listing.sourceUrl && (
-                    <a
-                      href={listing.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-violet-500 hover:text-violet-600 transition-colors mt-0.5"
-                    >
-                      View original
-                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
-                      </svg>
-                    </a>
-                  )}
+                  <div className="flex items-center gap-3 mt-1">
+                    {listing.sourceUrl && (
+                      <a
+                        href={listing.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-sm text-violet-500 hover:text-violet-600 transition-colors"
+                      >
+                        View original
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
+                        </svg>
+                      </a>
+                    )}
+                    {listing.addedBy && (
+                      <span className="text-xs text-zinc-400">
+                        Added by {listing.addedBy.name || listing.addedBy.email.split("@")[0]}
+                      </span>
+                    )}
+                  </div>
                 </>
               )}
             </div>
