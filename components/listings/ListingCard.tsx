@@ -300,12 +300,18 @@ export function ListingCard({
         <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-zinc-50 text-xs text-zinc-300">
           <div className="flex items-center gap-2">
             {sourceUrl ? (
-              <span className="text-violet-400 inline-flex items-center gap-1">
+              <a
+                href={sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-violet-400 hover:text-violet-600 inline-flex items-center gap-1 transition-colors"
+              >
                 <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
                 </svg>
                 Link
-              </span>
+              </a>
             ) : (
               <span>Manual</span>
             )}
