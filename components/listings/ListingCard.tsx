@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface ListingCardProps {
   id: string;
   title: string;
@@ -40,16 +42,28 @@ export function ListingCard({
   nearestPinKm,
   onClick,
 }: ListingCardProps) {
+  const [imgIndex, setImgIndex] = useState(0);
+
+  function handlePrev(e: React.MouseEvent) {
+    e.stopPropagation();
+    setImgIndex((i) => (i - 1 + imageUrls.length) % imageUrls.length);
+  }
+
+  function handleNext(e: React.MouseEvent) {
+    e.stopPropagation();
+    setImgIndex((i) => (i + 1) % imageUrls.length);
+  }
+
   return (
     <button
       onClick={onClick}
       className="group bg-white border border-zinc-100/80 rounded-2xl overflow-hidden hover:shadow-xl hover:border-violet-200/60 hover:-translate-y-1 transition-all duration-200 text-left w-full break-inside-avoid"
     >
-      {/* Image */}
+      {/* Image carousel */}
       <div className="relative aspect-[4/3] bg-gradient-to-br from-violet-50 to-zinc-100 overflow-hidden">
         {imageUrls.length > 0 ? (
           <img
-            src={imageUrls[0]}
+            src={imageUrls[imgIndex]}
             alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -69,6 +83,42 @@ export function ListingCard({
             </svg>
           </div>
         )}
+
+        {/* Carousel arrows */}
+        {imageUrls.length > 1 && (
+          <>
+            <div
+              role="button"
+              onClick={handlePrev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-sm"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M10 4l-4 4 4 4" />
+              </svg>
+            </div>
+            <div
+              role="button"
+              onClick={handleNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-sm"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 4l4 4-4 4" />
+              </svg>
+            </div>
+            {/* Dots */}
+            <div className="absolute bottom-3 right-3 flex gap-1">
+              {imageUrls.map((_, i) => (
+                <span
+                  key={i}
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                    i === imgIndex ? "bg-white" : "bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
         {/* Price overlay */}
         {price != null && (
           <span className="absolute bottom-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-sm font-bold text-zinc-900 shadow-sm">

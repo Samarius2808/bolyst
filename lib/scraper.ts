@@ -130,21 +130,62 @@ function extractDescription(html: string): string | null {
 
 function extractImages(html: string, baseUrl: string): string[] {
   const images: string[] = [];
+  const seen = new Set<string>();
 
-  // OG image first
-  const ogImage = getMeta(html, "og:image");
-  if (ogImage) images.push(resolveUrl(ogImage, baseUrl));
-
-  // Additional OG images
-  const ogPattern =
-    /<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']*)["']/gi;
-  let match;
-  while ((match = ogPattern.exec(html)) !== null) {
-    const resolved = resolveUrl(match[1], baseUrl);
-    if (!images.includes(resolved)) images.push(resolved);
+  function add(src: string) {
+    const resolved = resolveUrl(src, baseUrl);
+    if (!seen.has(resolved)) {
+      seen.add(resolved);
+      images.push(resolved);
+    }
   }
 
-  // Limit to first 5
+  // 1. OG images (all of them)
+  const ogPattern =
+    /<meta[^>]*(?:property=["']og:image["'][^>]*content=["']([^"']*)["']|content=["']([^"']*)["'][^>]*property=["']og:image["'])/gi;
+  let match;
+  while ((match = ogPattern.exec(html)) !== null) {
+    const src = match[1] || match[2];
+    if (src) add(src);
+  }
+
+  // 2. JSON-LD structured data images
+  const jsonLdPattern = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  while ((match = jsonLdPattern.exec(html)) !== null) {
+    try {
+      const data = JSON.parse(match[1]);
+      const ldImages = data.image || data.photo || data.photos;
+      if (typeof ldImages === "string") add(ldImages);
+      if (Array.isArray(ldImages)) {
+        for (const img of ldImages) {
+          if (typeof img === "string") add(img);
+          else if (img?.url) add(img.url);
+          else if (img?.contentUrl) add(img.contentUrl);
+        }
+      }
+    } catch {
+      // invalid JSON-LD, skip
+    }
+  }
+
+  // 3. Large <img> tags (likely listing photos, skip icons/logos)
+  const imgPattern = /<img[^>]*src=["']([^"']+)["'][^>]*>/gi;
+  while ((match = imgPattern.exec(html)) !== null && images.length < 10) {
+    const src = match[1];
+    // Skip tiny images, icons, tracking pixels, SVGs, data URIs
+    if (
+      /\.(svg|gif|ico)(\?|$)/i.test(src) ||
+      src.startsWith("data:") ||
+      /logo|icon|avatar|badge|button|sprite|pixel|track|1x1/i.test(src) ||
+      /width=["']?\d{1,2}['" ]/i.test(match[0]) ||
+      /height=["']?\d{1,2}['" ]/i.test(match[0])
+    ) {
+      continue;
+    }
+    add(src);
+  }
+
+  // Limit to 5 images
   return images.slice(0, 5);
 }
 
