@@ -6,10 +6,10 @@ export default function SignUpPage() {
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2.5 mb-3">
           <span className="w-9 h-9 bg-violet-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md shadow-violet-600/20">
-            S
+            B
           </span>
           <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900">
-            SVEEN
+            Bolyst
           </h1>
         </div>
         <div className="w-8 h-1 bg-violet-500 rounded-full mx-auto mb-3" />

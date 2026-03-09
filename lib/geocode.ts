@@ -6,7 +6,7 @@ export async function geocodeLocation(
       `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`,
       {
         headers: {
-          "User-Agent": "SVEEN/1.0 (https://sveen.app)",
+          "User-Agent": "Bolyst/1.0 (https://bolyst.app)",
         },
         signal: AbortSignal.timeout(5000),
       }

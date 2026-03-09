@@ -12,7 +12,7 @@ export async function scrapeListing(url: string): Promise<ScrapedListing> {
   const res = await fetch(url, {
     headers: {
       "User-Agent":
-        "Mozilla/5.0 (compatible; SVEEN/1.0; +https://sveen.app)",
+        "Mozilla/5.0 (compatible; Bolyst/1.0; +https://bolyst.app)",
       Accept: "text/html",
     },
     signal: AbortSignal.timeout(10000),
