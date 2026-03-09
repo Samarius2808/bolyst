@@ -131,8 +131,10 @@ function extractDescription(html: string): string | null {
 function normalizeImageUrl(url: string): string {
   try {
     const u = new URL(url);
-    // Strip query params and hash for dedup comparison
-    return u.origin + u.pathname;
+    // Extract just the filename (last path segment) for dedup —
+    // catches CDNs serving same image at different sizes/paths
+    const filename = u.pathname.split("/").pop() || u.pathname;
+    return u.hostname + "/" + filename;
   } catch {
     return url;
   }
@@ -220,6 +222,18 @@ function extractImages(html: string, baseUrl: string): string[] {
         add(best);
       }
     }
+  }
+
+  // 4. Inline image URLs in JS/JSON (catches galleries loaded via JavaScript)
+  const inlineUrlPattern = /"(https?:\/\/[^"]+\.(?:jpg|jpeg|png|webp))"/gi;
+  while ((match = inlineUrlPattern.exec(html)) !== null && images.length < 20) {
+    const src = match[1];
+    if (
+      /logo|icon|avatar|badge|button|sprite|pixel|track|placeholder|favicon/i.test(src)
+    ) {
+      continue;
+    }
+    add(src);
   }
 
   // Limit to 5 images
