@@ -4,6 +4,8 @@ import Link from "next/link";
 import { HeroVideo } from "@/components/landing/HeroVideo";
 import { FeatureCard } from "@/components/landing/FeatureCard";
 
+const CDN = "https://pdxuzstqqrliidgsfblc.supabase.co/storage/v1/object/public/assets";
+
 export default async function Home() {
   const { userId } = await auth();
   if (userId) redirect("/boards");
@@ -70,8 +72,8 @@ export default async function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="rounded-2xl border border-sage-200/60 shadow-2xl shadow-sage-900/5 overflow-hidden bg-white">
             <HeroVideo
-              src="/videos/hero.mp4"
-              poster="/images/hero-screenshot.png"
+              src={`${CDN}/videos/hero.mp4`}
+              poster={`${CDN}/images/hero-screenshot.png`}
             />
           </div>
         </div>
@@ -95,8 +97,8 @@ export default async function Home() {
             <FeatureCard
               title="Share with your people"
               description="Invite roommates or your partner by email. Everyone can add listings, comment, tag, and favorite. All in one place."
-              videoSrc="/videos/feature-share.mp4"
-              videoPoster="/images/feature-share.png"
+              videoSrc={`${CDN}/videos/feature-share.mp4`}
+              videoPoster={`${CDN}/images/feature-share.png`}
               icon={
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-sage-600">
                   <circle cx="18" cy="5" r="3" />
@@ -109,8 +111,8 @@ export default async function Home() {
             <FeatureCard
               title="Map view"
               description="See every listing on a map with pins for work, uni, or anywhere that matters. Distance calculated automatically."
-              videoSrc="/videos/feature-map.mp4"
-              videoPoster="/images/feature-map.png"
+              videoSrc={`${CDN}/videos/feature-map.mp4`}
+              videoPoster={`${CDN}/images/feature-map.png`}
               icon={
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-sage-600">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
@@ -121,8 +123,8 @@ export default async function Home() {
             <FeatureCard
               title="Compare side by side"
               description="Select any listings and compare price, size, price per m², location, and tags in a clean table. Sort by any column."
-              videoSrc="/videos/feature-compare.mp4"
-              videoPoster="/images/feature-compare.png"
+              videoSrc={`${CDN}/videos/feature-compare.mp4`}
+              videoPoster={`${CDN}/images/feature-compare.png`}
               icon={
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-sage-600">
                   <rect x="2" y="4" width="7" height="16" rx="1.5" />
