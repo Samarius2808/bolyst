@@ -15,7 +15,7 @@ function getInitial(name: string | null, email: string): string {
 }
 
 const avatarColors = [
-  "bg-violet-100 text-violet-600",
+  "bg-sage-100 text-sage-600",
   "bg-blue-100 text-blue-600",
   "bg-emerald-100 text-emerald-600",
   "bg-amber-100 text-amber-600",
@@ -32,11 +32,11 @@ export function BoardCard({
   return (
     <Link
       href={`/boards/${id}`}
-      className="group block bg-white border border-zinc-100/80 rounded-2xl overflow-hidden hover:shadow-xl hover:border-violet-200/60 hover:-translate-y-0.5 transition-all duration-200"
+      className="group block bg-white border border-zinc-100/80 rounded-2xl overflow-hidden hover:shadow-xl hover:border-sage-200/60 hover:-translate-y-0.5 transition-all duration-200"
     >
-      <div className="h-1 bg-gradient-to-r from-violet-500 to-violet-400" />
+      <div className="h-1 bg-gradient-to-r from-sage-500 to-sage-400" />
       <div className="p-5 pt-4">
-        <h3 className="font-semibold text-[15px] text-zinc-900 truncate group-hover:text-violet-600 transition-colors leading-snug">
+        <h3 className="font-semibold text-[15px] text-zinc-900 truncate group-hover:text-sage-600 transition-colors leading-snug">
           {name}
         </h3>
 

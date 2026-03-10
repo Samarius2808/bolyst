@@ -81,7 +81,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className={`inline ml-1 transition-transform ${active ? "text-violet-500" : "text-zinc-300"} ${
+        className={`inline ml-1 transition-transform ${active ? "text-sage-500" : "text-zinc-300"} ${
           active && sortDir === "desc" ? "rotate-180" : ""
         }`}
       >
@@ -151,7 +151,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
             {l.tags.map((t) => (
               <span
                 key={t.tag.id}
-                className="px-2 py-0.5 text-xs font-medium rounded-full bg-violet-50 text-violet-600"
+                className="px-2 py-0.5 text-xs font-medium rounded-full bg-sage-50 text-sage-600"
               >
                 {t.tag.name}
               </span>
@@ -178,7 +178,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
             href={l.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-violet-500 hover:text-violet-600 transition-colors"
+            className="text-sage-500 hover:text-sage-600 transition-colors"
           >
             View &rarr;
           </a>

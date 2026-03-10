@@ -61,7 +61,7 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Berlin Apartments Q2"
           autoFocus
-          className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+          className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
         />
         <p className="text-[11px] text-zinc-300 mt-2">Press Enter to create</p>
         <div className="flex justify-end gap-2 mt-4">
@@ -75,7 +75,7 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
           <button
             type="submit"
             disabled={loading || !name.trim()}
-            className="px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-violet-600/20"
+            className="px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
           >
             {loading ? "Creating…" : "Create board"}
           </button>

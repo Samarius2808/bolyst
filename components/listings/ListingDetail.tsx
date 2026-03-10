@@ -42,10 +42,10 @@ const statusOptions: { value: ListingStatus; label: string; color: string }[] = 
 ];
 
 const inputClass =
-  "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-colors";
+  "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-colors";
 
 const avatarColors = [
-  "bg-violet-100 text-violet-600",
+  "bg-sage-100 text-sage-600",
   "bg-blue-100 text-blue-600",
   "bg-emerald-100 text-emerald-600",
   "bg-amber-100 text-amber-600",
@@ -280,7 +280,7 @@ export function ListingDetail({
                     onClick={() => setHeroImage(i)}
                     className={`w-16 h-16 rounded-lg object-cover flex-shrink-0 overflow-hidden ring-2 transition-all ${
                       i === heroImage
-                        ? "ring-violet-400"
+                        ? "ring-sage-400"
                         : "ring-transparent hover:ring-zinc-300"
                     }`}
                   >
@@ -374,7 +374,7 @@ export function ListingDetail({
                       <button
                         type="submit"
                         disabled={saving || !editForm.title.trim()}
-                        className="px-4 py-2 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-violet-600/20"
+                        className="px-4 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                       >
                         {saving ? "Saving…" : "Save"}
                       </button>
@@ -399,7 +399,7 @@ export function ListingDetail({
                         href={listing.sourceUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-violet-500 hover:text-violet-600 transition-colors"
+                        className="inline-flex items-center gap-1 text-sm text-sage-500 hover:text-sage-600 transition-colors"
                       >
                         View original
                         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -419,7 +419,7 @@ export function ListingDetail({
             {!editing && (
               <button
                 onClick={startEditing}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-400 hover:text-violet-600 border border-zinc-200 rounded-lg hover:border-violet-200 transition-all"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-400 hover:text-sage-600 border border-zinc-200 rounded-lg hover:border-sage-200 transition-all"
               >
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M11.5 2.5l2 2L5 13H3v-2l8.5-8.5z" />
@@ -505,7 +505,7 @@ export function ListingDetail({
                     onClick={() => handleToggleTag(tag)}
                     className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-150 ${
                       active
-                        ? "bg-violet-100 border-violet-200 text-violet-700"
+                        ? "bg-sage-100 border-sage-200 text-sage-700"
                         : "bg-zinc-50 border-zinc-100 text-zinc-400 hover:border-zinc-200 hover:text-zinc-500"
                     }`}
                   >
@@ -525,12 +525,12 @@ export function ListingDetail({
                 value={newTagName}
                 onChange={(e) => setNewTagName(e.target.value)}
                 placeholder="New tag…"
-                className="border border-zinc-200 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                className="border border-zinc-200 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
               />
               <button
                 type="submit"
                 disabled={!newTagName.trim()}
-                className="text-xs font-medium text-violet-600 hover:text-violet-700 disabled:opacity-40 transition-colors"
+                className="text-xs font-medium text-sage-600 hover:text-sage-700 disabled:opacity-40 transition-colors"
               >
                 Add
               </button>
@@ -581,12 +581,12 @@ export function ListingDetail({
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Add a comment…"
-                className="w-full bg-zinc-50 border-0 rounded-2xl px-4 py-3 pr-12 text-sm text-zinc-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-violet-500 transition-colors"
+                className="w-full bg-zinc-50 border-0 rounded-2xl px-4 py-3 pr-12 text-sm text-zinc-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-sage-500 transition-colors"
               />
               <button
                 type="submit"
                 disabled={posting || !newComment.trim()}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-violet-600 hover:bg-violet-50 disabled:opacity-30 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-sage-600 hover:bg-sage-50 disabled:opacity-30 transition-colors"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M2.5 2L14 8l-11.5 6V9.5L9 8 2.5 6.5V2z" />

@@ -26,7 +26,7 @@ export async function sendBoardInviteEmail({
         <p style="color: #71717a; font-size: 14px; line-height: 1.6; margin-bottom: 32px;">
           Bolyst helps you find apartments together. Sign up to view the board, add listings, and decide where to live.
         </p>
-        <a href="${signUpUrl}" style="display: inline-block; background: #7c3aed; color: white; text-decoration: none; padding: 12px 28px; border-radius: 12px; font-size: 14px; font-weight: 600;">
+        <a href="${signUpUrl}" style="display: inline-block; background: #55704a; color: white; text-decoration: none; padding: 12px 28px; border-radius: 12px; font-size: 14px; font-weight: 600;">
           Sign up &amp; view board
         </a>
         <p style="color: #a1a1aa; font-size: 12px; margin-top: 32px;">

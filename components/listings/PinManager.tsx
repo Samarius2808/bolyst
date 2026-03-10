@@ -72,10 +72,10 @@ export function PinManager({
         className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-semibold text-zinc-600 hover:bg-zinc-50 transition-colors"
       >
         <span className="flex items-center gap-1.5">
-          <span className="text-violet-500">★</span>
+          <span className="text-sage-500">★</span>
           Reference points
           {pins.length > 0 && (
-            <span className="bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded-full text-[10px] font-bold">
+            <span className="bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full text-[10px] font-bold">
               {pins.length}
             </span>
           )}
@@ -102,7 +102,7 @@ export function PinManager({
               className="flex items-center justify-between py-1.5 group"
             >
               <span className="text-xs text-zinc-700 flex items-center gap-1.5">
-                <span className="text-violet-500 text-[10px]">★</span>
+                <span className="text-sage-500 text-[10px]">★</span>
                 {p.name}
               </span>
               <button
@@ -123,14 +123,14 @@ export function PinManager({
               placeholder="Name (e.g. Work, Uni)"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-300 focus:border-violet-300"
+              className="w-full px-3 py-1.5 text-xs border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-sage-300 focus:border-sage-300"
             />
             <input
               type="text"
               placeholder="Address or location"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-300 focus:border-violet-300"
+              className="w-full px-3 py-1.5 text-xs border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-sage-300 focus:border-sage-300"
             />
             {error && (
               <p className="text-[11px] text-red-500">{error}</p>
@@ -138,7 +138,7 @@ export function PinManager({
             <button
               type="submit"
               disabled={loading || !name.trim() || !address.trim()}
-              className="w-full py-1.5 text-xs font-semibold bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-1.5 text-xs font-semibold bg-sage-600 text-white rounded-lg hover:bg-sage-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "Adding..." : "Add pin"}
             </button>

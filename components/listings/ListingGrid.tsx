@@ -233,7 +233,7 @@ export function ListingGrid({
                 }}
                 className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
                   compareMode
-                    ? "bg-violet-50 border-violet-200 text-violet-600"
+                    ? "bg-sage-50 border-sage-200 text-sage-600"
                     : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
                 }`}
               >
@@ -248,7 +248,7 @@ export function ListingGrid({
         </div>
         <button
           onClick={() => setShowAdd(true)}
-          className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-violet-600/20"
+          className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
         >
           + Add listing
         </button>
@@ -257,7 +257,7 @@ export function ListingGrid({
       {listings.length === 0 ? (
         <div className="text-center py-24 bg-white border border-zinc-100/80 rounded-2xl">
           <svg
-            className="mx-auto mb-5 text-violet-200"
+            className="mx-auto mb-5 text-sage-200"
             width="48"
             height="48"
             viewBox="0 0 48 48"
@@ -276,7 +276,7 @@ export function ListingGrid({
           </p>
           <button
             onClick={() => setShowAdd(true)}
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-violet-600/20"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
           >
             + Add listing
           </button>
@@ -350,13 +350,13 @@ export function ListingGrid({
 
       {/* Compare floating bar */}
       {compareMode && compareSet.size >= 2 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-violet-600 text-white px-6 py-3 rounded-2xl shadow-xl shadow-violet-600/30 flex items-center gap-4">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-sage-600 text-white px-6 py-3 rounded-2xl shadow-xl shadow-sage-600/30 flex items-center gap-4">
           <span className="text-sm font-medium">
             {compareSet.size} selected
           </span>
           <button
             onClick={openCompare}
-            className="px-4 py-1.5 bg-white text-violet-700 text-sm font-semibold rounded-xl hover:bg-violet-50 transition-colors"
+            className="px-4 py-1.5 bg-white text-sage-700 text-sm font-semibold rounded-xl hover:bg-sage-50 transition-colors"
           >
             Compare →
           </button>

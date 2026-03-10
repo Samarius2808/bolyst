@@ -94,7 +94,7 @@ export function AddListingModal({
   }
 
   const inputClass =
-    "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-colors";
+    "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-colors";
 
   return (
     <div
@@ -175,7 +175,7 @@ export function AddListingModal({
               <button
                 type="submit"
                 disabled={scraping || !url.trim()}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-violet-600/20"
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
               >
                 {scraping && (
                   <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
@@ -268,7 +268,7 @@ export function AddListingModal({
                           }
                           className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-all ${
                             active
-                              ? "bg-violet-100 border-violet-200 text-violet-700"
+                              ? "bg-sage-100 border-sage-200 text-sage-700"
                               : "bg-zinc-50 border-zinc-100 text-zinc-400 hover:border-zinc-200 hover:text-zinc-500"
                           }`}
                         >
@@ -291,7 +291,7 @@ export function AddListingModal({
                 <button
                   type="submit"
                   disabled={loading || !title.trim()}
-                  className="px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-violet-600/20"
+                  className="px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                 >
                   {loading ? "Adding…" : "Add listing"}
                 </button>

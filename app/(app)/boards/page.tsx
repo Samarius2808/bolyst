@@ -30,7 +30,7 @@ export default async function BoardsPage() {
       <header className="flex items-center justify-between mb-10">
         <div>
           <div className="inline-flex items-center gap-2.5">
-            <span className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-violet-600/20">
+            <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
               B
             </span>
             <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">

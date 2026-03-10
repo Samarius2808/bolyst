@@ -13,7 +13,7 @@ interface Member {
 }
 
 const avatarColors = [
-  "bg-violet-100 text-violet-600",
+  "bg-sage-100 text-sage-600",
   "bg-blue-100 text-blue-600",
   "bg-emerald-100 text-emerald-600",
   "bg-amber-100 text-amber-600",
@@ -45,7 +45,7 @@ export function BoardHeader({
         <div>
           <Link
             href="/boards"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-violet-600 transition-colors mb-1.5"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-sage-600 transition-colors mb-1.5"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <path d="M10 3L5 8l5 5" />
@@ -87,7 +87,7 @@ export function BoardHeader({
           {board.listingCount >= 2 && (
             <Link
               href={`/boards/${board.id}/compare`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 text-zinc-700 rounded-xl hover:bg-zinc-50 hover:border-violet-200 hover:text-violet-600 transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 text-zinc-700 rounded-xl hover:bg-zinc-50 hover:border-sage-200 hover:text-sage-600 transition-all"
             >
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="1" y="2" width="5" height="12" rx="1" />
@@ -98,7 +98,7 @@ export function BoardHeader({
           )}
           <button
             onClick={() => setShowSettings(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 text-zinc-700 rounded-xl hover:bg-zinc-50 hover:border-violet-200 hover:text-violet-600 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 text-zinc-700 rounded-xl hover:bg-zinc-50 hover:border-sage-200 hover:text-sage-600 transition-all"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
               <circle cx="8" cy="8" r="2.5" />

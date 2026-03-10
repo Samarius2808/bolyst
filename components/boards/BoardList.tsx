@@ -26,7 +26,7 @@ export function BoardList({ boards }: { boards: Board[] }) {
         )}
         <button
           onClick={() => setShowCreate(true)}
-          className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-violet-600/20"
+          className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
         >
           + New board
         </button>
@@ -35,7 +35,7 @@ export function BoardList({ boards }: { boards: Board[] }) {
       {boards.length === 0 ? (
         <div className="text-center py-24 bg-white border border-zinc-100/80 rounded-2xl">
           <svg
-            className="mx-auto mb-5 text-violet-200"
+            className="mx-auto mb-5 text-sage-200"
             width="56"
             height="56"
             viewBox="0 0 56 56"
@@ -55,7 +55,7 @@ export function BoardList({ boards }: { boards: Board[] }) {
           </p>
           <button
             onClick={() => setShowCreate(true)}
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-violet-600 text-white rounded-xl hover:bg-violet-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-violet-600/20"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
           >
             + Create board
           </button>

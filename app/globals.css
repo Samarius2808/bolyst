@@ -10,6 +10,19 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Sage — earthy green primary palette */
+  --color-sage-50: #f4f7f2;
+  --color-sage-100: #e4ebe0;
+  --color-sage-200: #c9d7c2;
+  --color-sage-300: #a7bd9c;
+  --color-sage-400: #85a176;
+  --color-sage-500: #6b8a5e;
+  --color-sage-600: #55704a;
+  --color-sage-700: #43583b;
+  --color-sage-800: #374832;
+  --color-sage-900: #2e3b2a;
+  --color-sage-950: #161f14;
 }
 
 body {
@@ -19,7 +32,7 @@ body {
 }
 
 ::selection {
-  background-color: #ede9fe;
+  background-color: #e4ebe0;
   color: #18181b;
 }
 

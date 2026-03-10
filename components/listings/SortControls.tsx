@@ -228,7 +228,7 @@ export function SortControls({
         }}
         className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
           isActive
-            ? "bg-violet-50 border-violet-200 text-violet-600"
+            ? "bg-sage-50 border-sage-200 text-sage-600"
             : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
         }`}
       >
@@ -265,7 +265,7 @@ export function SortControls({
                   onClick={() => select(opt.key)}
                   className={`w-full text-left px-3.5 py-2 text-xs flex items-center gap-2.5 transition-colors ${
                     value === opt.key
-                      ? "bg-violet-50 text-violet-600 font-medium"
+                      ? "bg-sage-50 text-sage-600 font-medium"
                       : "text-zinc-600 hover:bg-zinc-50"
                   }`}
                 >
@@ -283,7 +283,7 @@ export function SortControls({
                   onClick={() => setExpandedGroup(isExpanded ? null : group.label)}
                   className={`w-full text-left px-3.5 py-2 text-xs flex items-center gap-2.5 transition-colors ${
                     groupActive
-                      ? "bg-violet-50 text-violet-600 font-medium"
+                      ? "bg-sage-50 text-sage-600 font-medium"
                       : "text-zinc-600 hover:bg-zinc-50"
                   }`}
                 >
@@ -301,7 +301,7 @@ export function SortControls({
                         onClick={() => select(opt.key)}
                         className={`w-full text-left pl-10 pr-3.5 py-1.5 text-xs flex items-center gap-2 transition-colors ${
                           value === opt.key
-                            ? "text-violet-600 font-medium"
+                            ? "text-sage-600 font-medium"
                             : "text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100/50"
                         }`}
                       >

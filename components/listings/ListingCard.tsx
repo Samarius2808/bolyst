@@ -36,7 +36,7 @@ const statusConfig: Record<ListingStatus, { label: string; color: string }> = {
 };
 
 const tagColors = [
-  "bg-violet-50 text-violet-600",
+  "bg-sage-50 text-sage-600",
   "bg-blue-50 text-blue-600",
   "bg-emerald-50 text-emerald-600",
   "bg-amber-50 text-amber-700",
@@ -48,7 +48,7 @@ const heartColors = [
   { bg: "bg-blue-400", text: "text-white" },
   { bg: "bg-emerald-400", text: "text-white" },
   { bg: "bg-amber-400", text: "text-white" },
-  { bg: "bg-violet-400", text: "text-white" },
+  { bg: "bg-sage-400", text: "text-white" },
 ];
 
 function hashHeartColor(name: string) {
@@ -112,12 +112,12 @@ export function ListingCard({
       onClick={onClick}
       className={`group bg-white border rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-200 text-left w-full ${
         selected
-          ? "border-violet-400 ring-2 ring-violet-400/30"
-          : "border-zinc-100/80 hover:border-violet-200/60"
+          ? "border-sage-400 ring-2 ring-sage-400/30"
+          : "border-zinc-100/80 hover:border-sage-200/60"
       }`}
     >
       {/* Image carousel */}
-      <div className="relative aspect-[4/3] bg-gradient-to-br from-violet-50 to-zinc-100 overflow-hidden">
+      <div className="relative aspect-[4/3] bg-gradient-to-br from-sage-50 to-zinc-100 overflow-hidden">
         {imageUrls.length > 0 ? (
           <img
             src={imageUrls[imgIndex]}
@@ -133,7 +133,7 @@ export function ListingCard({
               fill="none"
               stroke="currentColor"
               strokeWidth="1.2"
-              className="text-violet-200"
+              className="text-sage-200"
             >
               <path d="M8 32V12a2 2 0 012-2h20a2 2 0 012 2v20a2 2 0 01-2 2H10a2 2 0 01-2-2z" />
               <path d="M14 20l4-4 8 8M24 18a2 2 0 100-4 2 2 0 000 4z" />
@@ -148,7 +148,7 @@ export function ListingCard({
             onClick={handleSelect}
             className={`absolute top-3 left-3 w-6 h-6 rounded-md flex items-center justify-center transition-all ${
               selected
-                ? "bg-violet-600 text-white"
+                ? "bg-sage-600 text-white"
                 : "bg-white/80 backdrop-blur-sm text-transparent hover:bg-white"
             }`}
           >
@@ -230,7 +230,7 @@ export function ListingCard({
       {/* Content */}
       <div className="px-4 py-3.5">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-[13px] text-zinc-900 leading-snug line-clamp-1 group-hover:text-violet-600 transition-colors flex-1 min-w-0" title={title}>
+          <h3 className="font-semibold text-[13px] text-zinc-900 leading-snug line-clamp-1 group-hover:text-sage-600 transition-colors flex-1 min-w-0" title={title}>
             {title}
           </h3>
           {status && status !== "NEW" && (
@@ -251,7 +251,7 @@ export function ListingCard({
             </span>
           )}
           {nearestPinKm != null && (
-            <span className="flex items-center gap-1 text-violet-500 font-medium">
+            <span className="flex items-center gap-1 text-sage-500 font-medium">
               <span className="text-[10px]">★</span>
               {nearestPinKm < 1 ? `${Math.round(nearestPinKm * 1000)}m` : `${nearestPinKm} km`}
             </span>
@@ -305,7 +305,7 @@ export function ListingCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="text-violet-400 hover:text-violet-600 inline-flex items-center gap-1 transition-colors"
+                className="text-sage-400 hover:text-sage-600 inline-flex items-center gap-1 transition-colors"
               >
                 <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />

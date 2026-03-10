@@ -59,14 +59,14 @@ function FitBounds({
   return null;
 }
 
-// Violet drop pin for regular listings
+// Sage drop pin for regular listings
 const defaultIcon = L.divIcon({
   className: "",
   iconSize: [30, 40],
   iconAnchor: [15, 40],
   popupAnchor: [0, -40],
   html: `<div style="position:relative;width:30px;height:40px;">
-    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#7c3aed;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;">
+    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#55704a;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;">
       <div style="width:10px;height:10px;border-radius:50%;background:white;position:absolute;top:8px;left:8px;"></div>
     </div>
   </div>`,
@@ -99,12 +99,12 @@ const delistedIcon = L.divIcon({
 
 // Member colors for color-coded pins
 const memberColors = [
-  "#7c3aed", // violet
+  "#55704a", // sage
   "#2563eb", // blue
   "#059669", // emerald
   "#d97706", // amber
   "#e11d48", // rose
-  "#7c3aed", // violet (repeat)
+  "#6b8a5e", // sage-500
   "#0891b2", // cyan
   "#c026d3", // fuchsia
 ];
@@ -273,13 +273,13 @@ export function ListingMap({
                     <p className="text-xs text-zinc-400 mt-0.5">{l.location}</p>
                   )}
                   {dist != null && (
-                    <p className="text-xs text-violet-500 font-medium mt-1">
+                    <p className="text-xs text-sage-500 font-medium mt-1">
                       ★ {dist < 1 ? `${Math.round(dist * 1000)}m` : `${dist.toFixed(1)} km`} from nearest pin
                     </p>
                   )}
                   <button
                     onClick={() => onListingClick(l.id)}
-                    className="mt-2 text-xs font-medium text-violet-600 hover:text-violet-700"
+                    className="mt-2 text-xs font-medium text-sage-600 hover:text-sage-700"
                   >
                     View details &rarr;
                   </button>
