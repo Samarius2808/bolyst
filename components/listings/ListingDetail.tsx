@@ -73,13 +73,32 @@ function timeAgo(dateStr: string): string {
 export function ListingDetail({
   listingId,
   boardId,
+  initialData,
   onClose,
 }: {
   listingId: string;
   boardId: string;
+  initialData?: Partial<ListingData> | null;
   onClose: () => void;
 }) {
-  const [listing, setListing] = useState<ListingData | null>(null);
+  const [listing, setListing] = useState<ListingData | null>(
+    initialData
+      ? {
+          id: listingId,
+          title: initialData.title || "",
+          sourceUrl: initialData.sourceUrl ?? null,
+          price: initialData.price ?? null,
+          size: initialData.size ?? null,
+          location: initialData.location ?? null,
+          description: initialData.description ?? null,
+          imageUrls: initialData.imageUrls || [],
+          status: initialData.status || "NEW",
+          tags: initialData.tags || [],
+          addedBy: initialData.addedBy ?? null,
+          _count: initialData._count || { comments: 0 },
+        }
+      : null
+  );
   const [comments, setComments] = useState<Comment[]>([]);
   const [boardTags, setBoardTags] = useState<Tag[]>([]);
   const [newComment, setNewComment] = useState("");

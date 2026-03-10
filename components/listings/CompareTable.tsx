@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useMemo } from "react";
+
 type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
 
 const statusLabels: Record<ListingStatus, { label: string; color: string }> = {
@@ -9,6 +11,10 @@ const statusLabels: Record<ListingStatus, { label: string; color: string }> = {
   REJECTED: { label: "Rejected", color: "bg-red-50 text-red-500" },
   ACCEPTED: { label: "Accepted", color: "bg-emerald-50 text-emerald-600" },
   DELISTED: { label: "Delisted", color: "bg-zinc-200 text-zinc-500" },
+};
+
+const statusOrder: Record<string, number> = {
+  NEW: 0, VIEWING: 1, APPLIED: 2, ACCEPTED: 3, REJECTED: 4, DELISTED: 5,
 };
 
 interface Listing {
@@ -24,17 +30,76 @@ interface Listing {
   addedBy?: { id: string; name: string | null; email: string } | null;
 }
 
+type SortField = "price" | "size" | "pricePerM2" | "status" | null;
+type SortDir = "asc" | "desc";
+
 export function CompareTable({ listings }: { listings: Listing[] }) {
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
   const dash = <span className="text-zinc-200">&mdash;</span>;
+
+  function toggleSort(field: SortField) {
+    if (sortField === field) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortDir("asc");
+    }
+  }
+
+  const sorted = useMemo(() => {
+    if (!sortField) return listings;
+    const arr = [...listings];
+    const dir = sortDir === "asc" ? 1 : -1;
+    arr.sort((a, b) => {
+      switch (sortField) {
+        case "price":
+          return ((a.price ?? Infinity) - (b.price ?? Infinity)) * dir;
+        case "size":
+          return ((a.size ?? -1) - (b.size ?? -1)) * dir;
+        case "pricePerM2": {
+          const aPpm2 = a.price != null && a.size ? a.price / a.size : Infinity;
+          const bPpm2 = b.price != null && b.size ? b.price / b.size : Infinity;
+          return (aPpm2 - bPpm2) * dir;
+        }
+        case "status":
+          return ((statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99)) * dir;
+        default:
+          return 0;
+      }
+    });
+    return arr;
+  }, [listings, sortField, sortDir]);
+
+  function SortIcon({ field }: { field: SortField }) {
+    const active = sortField === field;
+    return (
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        className={`inline ml-1 transition-transform ${active ? "text-violet-500" : "text-zinc-300"} ${
+          active && sortDir === "desc" ? "rotate-180" : ""
+        }`}
+      >
+        <path d="M4 10l4-4 4 4" />
+      </svg>
+    );
+  }
 
   const fields: {
     key: string;
     label: string;
+    sortable?: SortField;
     render: (l: Listing) => React.ReactNode;
   }[] = [
     {
       key: "price",
       label: "Price",
+      sortable: "price",
       render: (l) =>
         l.price != null ? (
           <span className="font-semibold text-zinc-900">
@@ -47,11 +112,13 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
     {
       key: "size",
       label: "Size",
+      sortable: "size",
       render: (l) => (l.size != null ? `${l.size} m²` : dash),
     },
     {
       key: "pricePerM2",
       label: "Price/m²",
+      sortable: "pricePerM2",
       render: (l) =>
         l.price != null && l.size
           ? `€${Math.round(l.price / l.size).toLocaleString()}`
@@ -65,6 +132,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
     {
       key: "status",
       label: "Status",
+      sortable: "status",
       render: (l) => {
         const s = statusLabels[l.status] || statusLabels.NEW;
         return (
@@ -128,7 +196,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
             <th className="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wider text-zinc-400 sticky left-0 bg-white min-w-[100px]">
               Field
             </th>
-            {listings.map((l) => (
+            {sorted.map((l) => (
               <th
                 key={l.id}
                 className="text-left py-4 px-5 font-semibold text-zinc-900 min-w-[200px]"
@@ -146,10 +214,16 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
                 i % 2 === 0 ? "bg-zinc-50/50" : ""
               }`}
             >
-              <td className="py-3.5 px-5 text-xs font-semibold uppercase tracking-wider text-zinc-400 sticky left-0 bg-inherit">
+              <td
+                className={`py-3.5 px-5 text-xs font-semibold uppercase tracking-wider text-zinc-400 sticky left-0 bg-inherit ${
+                  field.sortable ? "cursor-pointer hover:text-zinc-600 select-none" : ""
+                }`}
+                onClick={field.sortable ? () => toggleSort(field.sortable!) : undefined}
+              >
                 {field.label}
+                {field.sortable && <SortIcon field={field.sortable} />}
               </td>
-              {listings.map((l) => (
+              {sorted.map((l) => (
                 <td key={l.id} className="py-3.5 px-5 text-zinc-600">
                   {field.render(l)}
                 </td>

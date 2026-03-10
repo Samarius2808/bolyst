@@ -47,6 +47,12 @@ interface MemberFavorite {
   email: string;
 }
 
+interface BoardMember {
+  id: string;
+  name: string | null;
+  email: string;
+}
+
 export function ListingGrid({
   boardId,
   listings,
@@ -55,6 +61,7 @@ export function ListingGrid({
   favoritedIds = [],
   memberFavorites = {},
   currentUserId,
+  members = [],
 }: {
   boardId: string;
   listings: Listing[];
@@ -63,6 +70,7 @@ export function ListingGrid({
   favoritedIds?: string[];
   memberFavorites?: Record<string, MemberFavorite[]>;
   currentUserId?: string;
+  members?: BoardMember[];
 }) {
   const router = useRouter();
   const [showAdd, setShowAdd] = useState(false);
@@ -121,6 +129,9 @@ export function ListingGrid({
         sorted.sort((a, b) => ppm2d(b) - ppm2d(a));
         break;
       }
+      case "size-asc":
+        sorted.sort((a, b) => (a.size ?? Infinity) - (b.size ?? Infinity));
+        break;
       case "size-desc":
         sorted.sort((a, b) => (b.size ?? -1) - (a.size ?? -1));
         break;
@@ -129,8 +140,22 @@ export function ListingGrid({
           (a, b) => (distanceMap.get(a.id) ?? Infinity) - (distanceMap.get(b.id) ?? Infinity)
         );
         break;
+      case "status": {
+        const statusOrder: Record<string, number> = {
+          NEW: 0, VIEWING: 1, APPLIED: 2, ACCEPTED: 3, REJECTED: 4, DELISTED: 5,
+        };
+        sorted.sort((a, b) => (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99));
+        break;
+      }
       default:
-        if (sortKey.startsWith("tag:")) {
+        if (sortKey.startsWith("addedby:")) {
+          const userId = sortKey.slice(8);
+          sorted.sort((a, b) => {
+            const aMatch = a.addedBy?.id === userId ? 0 : 1;
+            const bMatch = b.addedBy?.id === userId ? 0 : 1;
+            return aMatch - bMatch;
+          });
+        } else if (sortKey.startsWith("tag:")) {
           const tagId = sortKey.slice(4);
           sorted.sort((a, b) => {
             const aHas = a.tags.some((t) => t.tag.id === tagId) ? 0 : 1;
@@ -186,6 +211,7 @@ export function ListingGrid({
                 onChange={setSortKey}
                 hasPins={boardPins.length > 0}
                 boardTags={boardTags}
+                members={members}
               />
               <button
                 onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
@@ -313,6 +339,7 @@ export function ListingGrid({
                   listings={sortedListings}
                   pins={boardPins}
                   favoritedIds={favorites}
+                  members={members}
                   onListingClick={(id) => setSelectedId(id)}
                 />
               </div>
@@ -344,6 +371,7 @@ export function ListingGrid({
         <ListingDetail
           listingId={selectedId}
           boardId={boardId}
+          initialData={listings.find((l) => l.id === selectedId) || null}
           onClose={() => setSelectedId(null)}
         />
       )}

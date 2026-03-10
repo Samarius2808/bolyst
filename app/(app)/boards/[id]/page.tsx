@@ -87,6 +87,7 @@ export default async function BoardDetailPage({
         favoritedIds={favoritedIds}
         memberFavorites={memberFavoritesMap}
         currentUserId={user.id}
+        members={board.members.map((m) => m.user)}
       />
     </main>
   );
