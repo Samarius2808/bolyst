@@ -17,10 +17,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Bolyst",
   description: "Collaborative apartment search",
-  icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-  },
 };
 
 export default function RootLayout({
