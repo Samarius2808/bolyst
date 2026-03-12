@@ -75,6 +75,7 @@ export function ListingGrid({
   const router = useRouter();
   const [showAdd, setShowAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [boardPins, setBoardPins] = useState<BoardPin[]>(pins);
   const [sortKey, setSortKey] = useState<SortKey>("newest");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
@@ -86,19 +87,25 @@ export function ListingGrid({
     (l) => l.latitude != null && l.longitude != null
   );
 
-  // Compute distances once
+  // Compute distances — to selected pin if distance:{id} sort, otherwise nearest
   const distanceMap = useMemo(() => {
     const map = new Map<string, number | null>();
+    let activePins = boardPins;
+    if (sortKey.startsWith("distance:")) {
+      const pinId = sortKey.slice(9);
+      const specific = boardPins.find((p) => p.id === pinId);
+      if (specific) activePins = [specific];
+    }
     for (const l of listings) {
       map.set(
         l.id,
         l.latitude != null && l.longitude != null
-          ? nearestPinDistance(l.latitude, l.longitude, boardPins)
+          ? nearestPinDistance(l.latitude, l.longitude, activePins)
           : null
       );
     }
     return map;
-  }, [listings, boardPins]);
+  }, [listings, boardPins, sortKey]);
 
   // Filter + sort
   const sortedListings = useMemo(() => {
@@ -148,7 +155,11 @@ export function ListingGrid({
         break;
       }
       default:
-        if (sortKey.startsWith("addedby:")) {
+        if (sortKey.startsWith("distance:")) {
+          sorted.sort(
+            (a, b) => (distanceMap.get(a.id) ?? Infinity) - (distanceMap.get(b.id) ?? Infinity)
+          );
+        } else if (sortKey.startsWith("addedby:")) {
           const userId = sortKey.slice(8);
           sorted.sort((a, b) => {
             const aMatch = a.addedBy?.id === userId ? 0 : 1;
@@ -212,6 +223,7 @@ export function ListingGrid({
                 hasPins={boardPins.length > 0}
                 boardTags={boardTags}
                 members={members}
+                pins={boardPins}
               />
               <button
                 onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
@@ -317,6 +329,8 @@ export function ListingGrid({
                 selected={compareSet.has(l.id)}
                 onToggleSelect={() => toggleCompare(l.id)}
                 onClick={() => setSelectedId(l.id)}
+                onHover={() => setHoveredId(l.id)}
+                onHoverEnd={() => setHoveredId(null)}
               />
             ))}
             {sortedListings.length === 0 && showFavoritesOnly && (
@@ -340,6 +354,7 @@ export function ListingGrid({
                   pins={boardPins}
                   favoritedIds={favorites}
                   members={members}
+                  hoveredId={hoveredId}
                   onListingClick={(id) => setSelectedId(id)}
                 />
               </div>

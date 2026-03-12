@@ -24,6 +24,8 @@ interface ListingCardProps {
   selected?: boolean;
   onToggleSelect?: () => void;
   onClick: () => void;
+  onHover?: () => void;
+  onHoverEnd?: () => void;
 }
 
 const statusConfig: Record<ListingStatus, { label: string; color: string }> = {
@@ -82,6 +84,8 @@ export function ListingCard({
   selected = false,
   onToggleSelect,
   onClick,
+  onHover,
+  onHoverEnd,
 }: ListingCardProps) {
   const [imgIndex, setImgIndex] = useState(0);
 
@@ -110,6 +114,8 @@ export function ListingCard({
   return (
     <button
       onClick={onClick}
+      onMouseEnter={onHover}
+      onMouseLeave={onHoverEnd}
       className={`group bg-white border rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-200 text-left w-full ${
         selected
           ? "border-sage-400 ring-2 ring-sage-400/30"

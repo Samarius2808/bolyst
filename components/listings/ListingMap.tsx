@@ -164,17 +164,32 @@ interface MapMember {
   email: string;
 }
 
+// Highlighted (hovered) icon — larger with white ring
+const hoveredIcon = L.divIcon({
+  className: "",
+  iconSize: [36, 48],
+  iconAnchor: [18, 48],
+  popupAnchor: [0, -48],
+  html: `<div style="position:relative;width:36px;height:48px;filter:drop-shadow(0 4px 8px rgba(85,112,74,0.5));">
+    <div style="width:36px;height:36px;border-radius:50% 50% 50% 0;background:#55704a;border:3px solid white;box-shadow:0 0 0 3px #55704a44;transform:rotate(-45deg);position:absolute;top:0;left:0;">
+      <div style="width:12px;height:12px;border-radius:50%;background:white;position:absolute;top:9px;left:9px;"></div>
+    </div>
+  </div>`,
+});
+
 export function ListingMap({
   listings,
   pins = [],
   favoritedIds = new Set(),
   members = [],
+  hoveredId = null,
   onListingClick,
 }: {
   listings: MapListing[];
   pins?: MapPin[];
   favoritedIds?: Set<string>;
   members?: MapMember[];
+  hoveredId?: string | null;
   onListingClick: (id: string) => void;
 }) {
   // Build member → color map
@@ -251,7 +266,7 @@ export function ListingMap({
                 )
               : null;
           return (
-            <Marker key={l.id} position={[l.latitude, l.longitude]} icon={getListingIcon(l, favoritedIds, memberColorMap)}>
+            <Marker key={l.id} position={[l.latitude, l.longitude]} icon={hoveredId === l.id ? hoveredIcon : getListingIcon(l, favoritedIds, memberColorMap)}>
               <Popup>
                 <div className="min-w-[180px]">
                   {l.imageUrls.length > 0 && (

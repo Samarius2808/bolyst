@@ -13,6 +13,11 @@ interface BoardMember {
   email: string;
 }
 
+interface BoardPin {
+  id: string;
+  name: string;
+}
+
 export type SortKey =
   | "newest"
   | "price-asc"
@@ -24,7 +29,8 @@ export type SortKey =
   | "distance-asc"
   | "status"
   | `addedby:${string}`
-  | `tag:${string}`;
+  | `tag:${string}`
+  | `distance:${string}`;
 
 interface SortGroup {
   label: string;
@@ -33,7 +39,7 @@ interface SortGroup {
   hidden?: boolean;
 }
 
-function getLabelForKey(key: SortKey, boardTags: BoardTag[], members: BoardMember[]): string {
+function getLabelForKey(key: SortKey, boardTags: BoardTag[], members: BoardMember[], pins: BoardPin[]): string {
   if (key === "newest") return "Newest";
   if (key === "price-asc") return "Price: Low → High";
   if (key === "price-desc") return "Price: High → Low";
@@ -51,6 +57,11 @@ function getLabelForKey(key: SortKey, boardTags: BoardTag[], members: BoardMembe
   if (key.startsWith("tag:")) {
     const tag = boardTags.find((t) => t.id === key.slice(4));
     return tag ? `Tag: ${tag.name}` : "Tag";
+  }
+  if (key.startsWith("distance:")) {
+    const pinId = key.slice(9);
+    const pin = pins.find((p) => p.id === pinId);
+    return pin ? `Near: ${pin.name}` : "Distance";
   }
   return "Sort";
 }
@@ -110,12 +121,14 @@ export function SortControls({
   hasPins,
   boardTags,
   members = [],
+  pins = [],
 }: {
   value: SortKey;
   onChange: (key: SortKey) => void;
   hasPins: boolean;
   boardTags: BoardTag[];
   members?: BoardMember[];
+  pins?: BoardPin[];
 }) {
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
@@ -132,7 +145,7 @@ export function SortControls({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  const activeLabel = getLabelForKey(value, boardTags, members);
+  const activeLabel = getLabelForKey(value, boardTags, members, pins);
   const isActive = value !== "newest";
 
   function select(key: SortKey) {
@@ -174,7 +187,10 @@ export function SortControls({
     {
       label: "Distance",
       icon: icons.pin,
-      options: [{ key: "distance-asc", label: "Nearest first" }],
+      options: [
+        { key: "distance-asc", label: "Nearest (any pin)" },
+        ...pins.map((p) => ({ key: `distance:${p.id}` as SortKey, label: p.name })),
+      ],
       hidden: !hasPins,
     },
     {
