@@ -2,7 +2,8 @@
   "landing": {
     "nav": {
       "signIn": "Anmelden",
-      "getStarted": "Loslegen"
+      "getStarted": "Loslegen",
+      "goToBoards": "Zu den Boards"
     },
     "hero": {
       "subtitle": "Gemeinsame Wohnungssuche",

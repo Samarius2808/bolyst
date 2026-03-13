@@ -8,9 +8,12 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const CDN = "https://pdxuzstqqrliidgsfblc.supabase.co/storage/v1/object/public/assets";
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const params = await searchParams;
   const { userId } = await auth();
-  if (userId) redirect("/boards");
+  if (userId && !("browse" in params)) redirect("/boards");
+
+  const isLoggedIn = !!userId;
 
   const t = await getTranslations("landing");
   const tStatus = await getTranslations("statusLabels");
@@ -31,18 +34,29 @@ export default async function Home() {
           </a>
           <div className="flex items-center gap-3">
             <LanguageSwitcher locale={locale} variant="landing" />
-            <Link
-              href="/sign-in"
-              className="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
-            >
-              {t("nav.signIn")}
-            </Link>
-            <Link
-              href="/sign-up"
-              className="px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
-            >
-              {t("nav.getStarted")}
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/boards"
+                className="px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
+              >
+                {t("nav.goToBoards")}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  className="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
+                >
+                  {t("nav.signIn")}
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
+                >
+                  {t("nav.getStarted")}
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>

@@ -2,7 +2,8 @@
   "landing": {
     "nav": {
       "signIn": "Sign in",
-      "getStarted": "Get started"
+      "getStarted": "Get started",
+      "goToBoards": "Go to boards"
     },
     "hero": {
       "subtitle": "Collaborative apartment search",
