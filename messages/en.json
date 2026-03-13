@@ -80,6 +80,8 @@
       "features": "Features",
       "company": "Company",
       "contact": "Contact",
+      "impressum": "Impressum",
+      "privacy": "Privacy",
       "tagline": "Find your place,",
       "taglineAccent": "together"
     }
@@ -278,5 +280,51 @@
   "metadata": {
     "title": "Bolyst",
     "description": "Collaborative apartment search"
+  },
+  "impressum": {
+    "title": "Impressum (Legal Notice)",
+    "infoTitle": "Information according to \u00a7 5 DDG",
+    "infoBody": "Sam Wallmeier\nRingofenstra\u00dfe 87\n63773 Goldbach\nGermany",
+    "contactTitle": "Contact",
+    "contactBody": "Email: hello@bolyst.eu\nPhone: +49 152 32165473",
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerBody": "The contents of this website have been created with the utmost care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content. As a service provider, we are responsible for our own content on these pages under general law. However, we are not obligated to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.",
+    "linksTitle": "Liability for links",
+    "linksBody": "Our website contains links to external third-party websites over whose content we have no influence. We therefore cannot accept any liability for this external content. The respective provider or operator of the linked pages is always responsible for the content of the linked pages."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: March 2026",
+    "responsibleTitle": "1. Data controller",
+    "responsibleBody": "Sam Wallmeier\nRingofenstra\u00dfe 87\n63773 Goldbach\nGermany\nEmail: hello@bolyst.eu",
+    "dataCollectedTitle": "2. Data we collect",
+    "dataCollectedIntro": "We collect and process the following data when you use Bolyst:",
+    "dataAccount": "Account data: name, email address (provided via Clerk authentication)",
+    "dataUsage": "Usage data: anonymized page views and interactions (via Vercel Analytics)",
+    "dataContent": "Content data: listings, comments, tags, and board content you create",
+    "purposeTitle": "3. Purpose of processing",
+    "purposeService": "Providing and operating the Bolyst service (Art. 6(1)(b) GDPR \u2014 contract performance)",
+    "purposeAuth": "User authentication and account management via Clerk (Art. 6(1)(b) GDPR)",
+    "purposeEmail": "Sending transactional emails such as board invitations via Brevo (Art. 6(1)(b) GDPR)",
+    "purposeAnalytics": "Anonymized usage analytics via Vercel Analytics (Art. 6(1)(f) GDPR \u2014 legitimate interest)",
+    "thirdPartyTitle": "4. Third-party processors",
+    "thirdClerk": "Authentication and user management (USA, with EU Standard Contractual Clauses)",
+    "thirdSupabase": "Database hosting and file storage (EU \u2014 Frankfurt, eu-central-1)",
+    "thirdVercel": "Website hosting and anonymized analytics (global CDN, company based in USA with EU SCCs)",
+    "thirdBrevo": "Transactional email delivery (EU \u2014 France)",
+    "cookiesTitle": "5. Cookies",
+    "cookiesBody": "Bolyst uses only essential cookies required for the service to function: authentication session cookies (Clerk) and a language preference cookie (NEXT_LOCALE). We do not use any advertising or tracking cookies. No cookie consent banner is required as these are strictly necessary cookies exempt under Art. 5(3) of the ePrivacy Directive.",
+    "rightsTitle": "6. Your rights under GDPR",
+    "rightsIntro": "You have the following rights regarding your personal data:",
+    "rightsAccess": "Right of access (Art. 15 GDPR)",
+    "rightsCorrection": "Right to rectification (Art. 16 GDPR)",
+    "rightsDeletion": "Right to erasure (Art. 17 GDPR)",
+    "rightsPortability": "Right to data portability (Art. 20 GDPR)",
+    "rightsObjection": "Right to object to processing (Art. 21 GDPR)",
+    "rightsContact": "To exercise any of these rights, email us at hello@bolyst.eu.",
+    "retentionTitle": "7. Data retention",
+    "retentionBody": "We retain your data for as long as your account is active. When you delete your account, all personal data and content you created will be deleted within 30 days. Anonymized analytics data is not linked to your identity and may be retained indefinitely.",
+    "authorityTitle": "8. Supervisory authority",
+    "authorityBody": "You have the right to lodge a complaint with a data protection supervisory authority. The competent authority depends on your state of residence. A list of authorities can be found at: https://www.bfdi.bund.de"
   }
 }

@@ -327,9 +327,19 @@ export default async function Home() {
               </h4>
               <ul className="space-y-2.5">
                 <li>
-                  <a href="mailto:hello@bolyst.com" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
+                  <a href="mailto:hello@bolyst.eu" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
                     {t("footer.contact")}
                   </a>
+                </li>
+                <li>
+                  <Link href="/impressum" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
+                    {t("footer.impressum")}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
+                    {t("footer.privacy")}
+                  </Link>
                 </li>
               </ul>
             </div>

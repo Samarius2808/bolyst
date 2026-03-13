@@ -80,6 +80,8 @@
       "features": "Funktionen",
       "company": "Unternehmen",
       "contact": "Kontakt",
+      "impressum": "Impressum",
+      "privacy": "Datenschutz",
       "tagline": "Findet euer Zuhause,",
       "taglineAccent": "gemeinsam"
     }
@@ -278,5 +280,51 @@
   "metadata": {
     "title": "Bolyst",
     "description": "Gemeinsame Wohnungssuche"
+  },
+  "impressum": {
+    "title": "Impressum",
+    "infoTitle": "Angaben gem\u00e4\u00df \u00a7 5 DDG",
+    "infoBody": "Sam Wallmeier\nRingofenstra\u00dfe 87\n63773 Goldbach\nDeutschland",
+    "contactTitle": "Kontakt",
+    "contactBody": "E-Mail: hello@bolyst.eu\nTelefon: +49 152 32165473",
+    "disclaimerTitle": "Haftungsausschluss",
+    "disclaimerBody": "Die Inhalte dieser Website wurden mit gr\u00f6\u00dfter Sorgfalt erstellt. F\u00fcr die Richtigkeit, Vollst\u00e4ndigkeit und Aktualit\u00e4t der Inhalte k\u00f6nnen wir jedoch keine Gew\u00e4hr \u00fcbernehmen. Als Diensteanbieter sind wir f\u00fcr eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Wir sind jedoch nicht verpflichtet, \u00fcbermittelte oder gespeicherte fremde Informationen zu \u00fcberwachen oder nach Umst\u00e4nden zu forschen, die auf eine rechtswidrige T\u00e4tigkeit hinweisen.",
+    "linksTitle": "Haftung f\u00fcr Links",
+    "linksBody": "Unsere Website enth\u00e4lt Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb k\u00f6nnen wir f\u00fcr diese fremden Inhalte auch keine Gew\u00e4hr \u00fcbernehmen. F\u00fcr die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich."
+  },
+  "privacy": {
+    "title": "Datenschutzerkl\u00e4rung",
+    "lastUpdated": "Zuletzt aktualisiert: M\u00e4rz 2026",
+    "responsibleTitle": "1. Verantwortlicher",
+    "responsibleBody": "Sam Wallmeier\nRingofenstra\u00dfe 87\n63773 Goldbach\nDeutschland\nE-Mail: hello@bolyst.eu",
+    "dataCollectedTitle": "2. Erhobene Daten",
+    "dataCollectedIntro": "Wir erheben und verarbeiten folgende Daten bei der Nutzung von Bolyst:",
+    "dataAccount": "Kontodaten: Name, E-Mail-Adresse (\u00fcber Clerk-Authentifizierung bereitgestellt)",
+    "dataUsage": "Nutzungsdaten: anonymisierte Seitenaufrufe und Interaktionen (via Vercel Analytics)",
+    "dataContent": "Inhaltsdaten: Inserate, Kommentare, Tags und Board-Inhalte, die Sie erstellen",
+    "purposeTitle": "3. Zweck der Verarbeitung",
+    "purposeService": "Bereitstellung und Betrieb des Bolyst-Dienstes (Art. 6 Abs. 1 lit. b DSGVO \u2014 Vertragserf\u00fcllung)",
+    "purposeAuth": "Benutzerauthentifizierung und Kontoverwaltung \u00fcber Clerk (Art. 6 Abs. 1 lit. b DSGVO)",
+    "purposeEmail": "Versand transaktionaler E-Mails wie Board-Einladungen \u00fcber Brevo (Art. 6 Abs. 1 lit. b DSGVO)",
+    "purposeAnalytics": "Anonymisierte Nutzungsanalyse \u00fcber Vercel Analytics (Art. 6 Abs. 1 lit. f DSGVO \u2014 berechtigtes Interesse)",
+    "thirdPartyTitle": "4. Drittanbieter / Auftragsverarbeiter",
+    "thirdClerk": "Authentifizierung und Benutzerverwaltung (USA, mit EU-Standardvertragsklauseln)",
+    "thirdSupabase": "Datenbank-Hosting und Dateispeicherung (EU \u2014 Frankfurt, eu-central-1)",
+    "thirdVercel": "Website-Hosting und anonymisierte Analytik (globales CDN, Unternehmen in USA mit EU-SCCs)",
+    "thirdBrevo": "Transaktionaler E-Mail-Versand (EU \u2014 Frankreich)",
+    "cookiesTitle": "5. Cookies",
+    "cookiesBody": "Bolyst verwendet ausschlie\u00dflich essenzielle Cookies, die f\u00fcr den Betrieb des Dienstes erforderlich sind: Authentifizierungs-Session-Cookies (Clerk) und ein Spracheinstellungs-Cookie (NEXT_LOCALE). Wir verwenden keine Werbe- oder Tracking-Cookies. Ein Cookie-Banner ist nicht erforderlich, da es sich um technisch notwendige Cookies handelt, die gem\u00e4\u00df Art. 5 Abs. 3 der ePrivacy-Richtlinie ausgenommen sind.",
+    "rightsTitle": "6. Ihre Rechte nach DSGVO",
+    "rightsIntro": "Sie haben folgende Rechte bez\u00fcglich Ihrer personenbezogenen Daten:",
+    "rightsAccess": "Auskunftsrecht (Art. 15 DSGVO)",
+    "rightsCorrection": "Recht auf Berichtigung (Art. 16 DSGVO)",
+    "rightsDeletion": "Recht auf L\u00f6schung (Art. 17 DSGVO)",
+    "rightsPortability": "Recht auf Daten\u00fcbertragbarkeit (Art. 20 DSGVO)",
+    "rightsObjection": "Widerspruchsrecht (Art. 21 DSGVO)",
+    "rightsContact": "Zur Aus\u00fcbung dieser Rechte kontaktieren Sie uns unter hello@bolyst.eu.",
+    "retentionTitle": "7. Speicherdauer",
+    "retentionBody": "Wir speichern Ihre Daten, solange Ihr Konto aktiv ist. Wenn Sie Ihr Konto l\u00f6schen, werden alle personenbezogenen Daten und von Ihnen erstellten Inhalte innerhalb von 30 Tagen gel\u00f6scht. Anonymisierte Analysedaten sind nicht mit Ihrer Identit\u00e4t verkn\u00fcpft und k\u00f6nnen unbegrenzt gespeichert werden.",
+    "authorityTitle": "8. Aufsichtsbeh\u00f6rde",
+    "authorityBody": "Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbeh\u00f6rde zu beschweren. Die zust\u00e4ndige Beh\u00f6rde richtet sich nach Ihrem Wohnsitz. Eine Liste der Beh\u00f6rden finden Sie unter: https://www.bfdi.bund.de"
   }
 }
