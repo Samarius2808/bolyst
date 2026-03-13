@@ -1,0 +1,282 @@
+{
+  "landing": {
+    "nav": {
+      "signIn": "Anmelden",
+      "getStarted": "Loslegen"
+    },
+    "hero": {
+      "subtitle": "Gemeinsame Wohnungssuche",
+      "titleLine1": "Findet euer Zuhause,",
+      "titleLine2": "gemeinsam.",
+      "description": "Keine verlorenen Wohnungslinks mehr in Gruppenchats. Mit Bolyst habt ihr und eure Mitbewohner ein gemeinsames Board zum Speichern, Vergleichen und Entscheiden.",
+      "cta": "Board erstellen \u2013 kostenlos"
+    },
+    "features": {
+      "heading": "Alles was ihr braucht, um",
+      "headingAccent": "gemeinsam",
+      "subheading": "zu entscheiden. Keine verstreuten Links, verlorenen Screenshots oder \"Welche war das nochmal?\"-Momente.",
+      "share": {
+        "title": "Mit deinen Leuten teilen",
+        "description": "Lade Mitbewohner oder Partner per E-Mail ein. Jeder kann Inserate hinzuf\u00fcgen, kommentieren, taggen und favorisieren. Alles an einem Ort."
+      },
+      "map": {
+        "title": "Kartenansicht",
+        "description": "Sieh alle Inserate auf einer Karte mit Pins f\u00fcr Arbeit, Uni oder andere wichtige Orte. Entfernung wird automatisch berechnet."
+      },
+      "compare": {
+        "title": "Seite an Seite vergleichen",
+        "description": "W\u00e4hle Inserate aus und vergleiche Preis, Gr\u00f6\u00dfe, Preis pro m\u00b2, Lage und Tags in einer \u00fcbersichtlichen Tabelle. Sortiere nach jeder Spalte."
+      }
+    },
+    "howItWorks": {
+      "heading": "In unter einer Minute startklar",
+      "step1": {
+        "title": "Board erstellen",
+        "description": "Gib ihm einen Namen wie \"Berlin Q2\" oder \"Hamburg Sommer\" und lade deine Mitsuchenden ein."
+      },
+      "step2": {
+        "title": "Link einf\u00fcgen",
+        "description": "F\u00fcge eine Inserats-URL ein und Bolyst extrahiert automatisch Titel, Preis, Bilder und Standort."
+      },
+      "step3": {
+        "title": "Vergleichen & entscheiden",
+        "description": "Tagge, kommentiere, favorisiere und vergleiche Inserate, bis ihr die richtige findet.",
+        "accent": "Gemeinsam."
+      }
+    },
+    "details": {
+      "pasteUrl": {
+        "title": "Beliebige Inserats-URL einf\u00fcgen",
+        "description": "Funktioniert mit jeder Immobilienseite. Immobilienscout, Finn.no, Hemnet, Funda \u2013 egal. Wir extrahieren was wir k\u00f6nnen, den Rest f\u00fcllt ihr aus.",
+        "check": "Titel, Preis, Bilder und Standort automatisch extrahiert"
+      },
+      "referencePoints": {
+        "title": "Referenzpunkte auf der Karte",
+        "description": "Markiere deinen Arbeitsplatz, Uni, Fitnessstudio oder Lieblingscaf\u00e9. Jedes Inserat zeigt die Entfernung zum n\u00e4chsten Pin.",
+        "check": "Entfernung zum n\u00e4chsten Pin auf jeder Karte"
+      },
+      "trackProgress": {
+        "title": "Fortschritt verfolgen",
+        "description": "Verschiebe Inserate durch Phasen: Neu, Besichtigung, Beworben, Zugesagt oder Abgelehnt. Sieh auf einen Blick, wo jede Wohnung steht."
+      },
+      "tagsFavorites": {
+        "title": "Tags & Favoriten",
+        "description": "Erstelle eigene Tags pro Board wie \"Balkon\", \"Haustierfreundlich\" oder \"Nahe U-Bahn\" und filtere oder sortiere danach. Markiere deine Favoriten und sieh, wer was geliked hat.",
+        "exampleTags": ["Balkon", "Haustierfreundlich", "Nahe U-Bahn"]
+      }
+    },
+    "cta": {
+      "titleLine1": "Euer n\u00e4chstes Zuhause ist da drau\u00dfen.",
+      "titleLine2": "Findet es,",
+      "titleAccent": "gemeinsam.",
+      "description": "Kostenlos nutzbar. Erstellt ein Board in Sekunden. Ladet ein, mit wem ihr sucht.",
+      "button": "Kostenlos loslegen"
+    },
+    "footer": {
+      "description": "Der gemeinsame Arbeitsbereich f\u00fcr die Wohnungssuche. Inserate speichern, Optionen vergleichen und",
+      "descriptionAccent": "gemeinsam",
+      "product": "Produkt",
+      "getStarted": "Loslegen",
+      "features": "Funktionen",
+      "company": "Unternehmen",
+      "contact": "Kontakt",
+      "tagline": "Findet euer Zuhause,",
+      "taglineAccent": "gemeinsam"
+    }
+  },
+  "auth": {
+    "tagline": "Findet euer Zuhause, gemeinsam."
+  },
+  "boards": {
+    "subtitle": "Deine Wohnungssuche-Boards",
+    "count": "{count} Board",
+    "countPlural": "{count} Boards",
+    "newBoard": "+ Neues Board",
+    "emptyTitle": "Erstelle dein erstes Board",
+    "emptyDescription": "Ein Board ist ein gemeinsamer Ort zum Speichern und Vergleichen von Wohnungen mit deinen Leuten.",
+    "createBoard": "+ Board erstellen",
+    "listingCount": "{count} Inserat",
+    "listingCountPlural": "{count} Inserate",
+    "memberCount": "{count} Mitglied",
+    "memberCountPlural": "{count} Mitglieder"
+  },
+  "boardHeader": {
+    "boards": "Boards",
+    "compare": "Vergleichen",
+    "settings": "Einstellungen"
+  },
+  "boardSettings": {
+    "title": "Board-Einstellungen",
+    "boardName": "Board-Name",
+    "saving": "Speichern\u2026",
+    "rename": "Umbenennen",
+    "members": "Mitglieder",
+    "owner": "Eigent\u00fcmer",
+    "member": "Mitglied",
+    "remove": "Entfernen",
+    "removeMember": "Dieses Mitglied entfernen?",
+    "pending": "Ausstehend",
+    "invitePlaceholder": "Per E-Mail einladen\u2026",
+    "invite": "Einladen",
+    "inviteError": "Einladung fehlgeschlagen",
+    "dangerZone": "Gefahrenzone",
+    "deleteBoard": "Dieses Board l\u00f6schen",
+    "deleteConfirm": "Dieses Board und alle Inserate l\u00f6schen? Dies kann nicht r\u00fcckg\u00e4ngig gemacht werden."
+  },
+  "createBoard": {
+    "title": "Board erstellen",
+    "subtitle": "Ein gemeinsamer Ort zum Speichern und Vergleichen von Wohnungen.",
+    "placeholder": "z.B. Berlin Wohnungen Q2",
+    "invitePeople": "Leute einladen",
+    "inviteDescription": "F\u00fcge E-Mails von Mitsuchenden hinzu (optional)",
+    "emailPlaceholder": "mitbewohner@email.com",
+    "add": "Hinzuf\u00fcgen",
+    "inviteLater": "Du kannst sp\u00e4ter noch mehr Leute \u00fcber die Einstellungen hinzuf\u00fcgen",
+    "cancel": "Abbrechen",
+    "creating": "Wird erstellt\u2026",
+    "createBoard": "Board erstellen"
+  },
+  "listings": {
+    "addListing": "+ Inserat hinzuf\u00fcgen",
+    "noListingsTitle": "Noch keine Inserate",
+    "noListingsDescription": "F\u00fcge eine URL ein oder gib Details manuell ein, um deine erste Wohnung zu speichern.",
+    "favorites": "Favoriten",
+    "compare": "Vergleichen",
+    "selected": "{count} ausgew\u00e4hlt",
+    "compareArrow": "Vergleichen \u2192",
+    "noFavorites": "Noch keine Favoriten. Klicke auf das Herz, um ein Inserat zu speichern.",
+    "favoriteCount": "{count} Favorit",
+    "favoriteCountPlural": "{count} Favoriten"
+  },
+  "listingCard": {
+    "status": {
+      "NEW": "Neu",
+      "VIEWING": "Besichtigung",
+      "APPLIED": "Beworben",
+      "REJECTED": "Abgelehnt",
+      "ACCEPTED": "Zugesagt",
+      "DELISTED": "Entfernt"
+    },
+    "link": "Link",
+    "manual": "Manuell",
+    "likedThis": "{name} mag das"
+  },
+  "addListing": {
+    "title": "Inserat hinzuf\u00fcgen",
+    "pasteUrl": "URL einf\u00fcgen",
+    "manualEntry": "Manuell eingeben",
+    "urlHint": "F\u00fcge eine Inserats-URL ein, um Details automatisch auszuf\u00fcllen.",
+    "urlPlaceholder": "https://...",
+    "cancel": "Abbrechen",
+    "extracting": "Wird extrahiert\u2026",
+    "extract": "Extrahieren",
+    "dataExtracted": "Daten aus URL extrahiert",
+    "titlePlaceholder": "Titel *",
+    "urlOptionalPlaceholder": "URL (optional)",
+    "pricePlaceholder": "Preis (\u20ac/Monat)",
+    "sizePlaceholder": "Gr\u00f6\u00dfe (m\u00b2)",
+    "locationPlaceholder": "Standort",
+    "descriptionPlaceholder": "Notizen oder Beschreibung",
+    "tags": "Tags",
+    "adding": "Wird hinzugef\u00fcgt\u2026",
+    "addListing": "Inserat hinzuf\u00fcgen"
+  },
+  "listingDetail": {
+    "viewOriginal": "Original ansehen",
+    "addedBy": "Hinzugef\u00fcgt von {name}",
+    "edit": "Bearbeiten",
+    "titlePlaceholder": "Titel *",
+    "urlPlaceholder": "URL",
+    "pricePlaceholder": "Preis (\u20ac/Monat)",
+    "sizePlaceholder": "Gr\u00f6\u00dfe (m\u00b2)",
+    "locationPlaceholder": "Standort",
+    "descriptionPlaceholder": "Notizen oder Beschreibung",
+    "saving": "Speichern\u2026",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "price": "Preis",
+    "size": "Gr\u00f6\u00dfe",
+    "location": "Standort",
+    "status": "Status",
+    "tags": "Tags",
+    "newTagPlaceholder": "Neuer Tag\u2026",
+    "add": "Hinzuf\u00fcgen",
+    "comments": "Kommentare",
+    "noComments": "Noch keine Kommentare.",
+    "addComment": "Kommentar hinzuf\u00fcgen\u2026",
+    "deleteListing": "Inserat l\u00f6schen",
+    "deleteConfirm": "Dieses Inserat l\u00f6schen?"
+  },
+  "compareTable": {
+    "title": "Inserate vergleichen",
+    "ofTotal": "({count} von {total})",
+    "noListings": "Noch keine Inserate zum Vergleichen.",
+    "field": "Feld",
+    "price": "Preis",
+    "size": "Gr\u00f6\u00dfe",
+    "pricePerM2": "Preis/m\u00b2",
+    "location": "Standort",
+    "status": "Status",
+    "tags": "Tags",
+    "addedBy": "Hinzugef\u00fcgt von",
+    "link": "Link",
+    "view": "Ansehen \u2192"
+  },
+  "sortControls": {
+    "newest": "Neueste",
+    "newestFirst": "Neueste zuerst",
+    "price": "Preis",
+    "priceLowHigh": "Niedrig \u2192 Hoch",
+    "priceHighLow": "Hoch \u2192 Niedrig",
+    "pricePerM2": "Preis/m\u00b2",
+    "size": "Gr\u00f6\u00dfe",
+    "largestFirst": "Gr\u00f6\u00dfte zuerst",
+    "smallestFirst": "Kleinste zuerst",
+    "distance": "Entfernung",
+    "nearestAnyPin": "N\u00e4chster (beliebiger Pin)",
+    "status": "Status",
+    "byWorkflowStage": "Nach Bearbeitungsphase",
+    "addedBy": "Hinzugef\u00fcgt von",
+    "hasTag": "Hat Tag",
+    "sort": "Sortieren",
+    "byPrefix": "Von: {name}",
+    "tagPrefix": "Tag: {name}",
+    "nearPrefix": "N\u00e4he: {name}"
+  },
+  "pinManager": {
+    "referencePoints": "Referenzpunkte",
+    "namePlaceholder": "Name (z.B. Arbeit, Uni)",
+    "addressPlaceholder": "Adresse oder Standort",
+    "adding": "Wird hinzugef\u00fcgt...",
+    "addPin": "Pin hinzuf\u00fcgen",
+    "failedToAdd": "Pin konnte nicht hinzugef\u00fcgt werden"
+  },
+  "statusLabels": {
+    "New": "Neu",
+    "Viewing": "Besichtigung",
+    "Applied": "Beworben",
+    "Accepted": "Zugesagt",
+    "Rejected": "Abgelehnt"
+  },
+  "time": {
+    "justNow": "gerade eben",
+    "minutesAgo": "vor {count} Min.",
+    "hoursAgo": "vor {count} Std.",
+    "daysAgo": "vor {count} T."
+  },
+  "language": {
+    "en": "EN",
+    "de": "DE"
+  },
+  "map": {
+    "noListings": "Keine Inserate mit Standort auf der Karte.",
+    "referencePoint": "Referenzpunkt",
+    "fromNearestPin": "{distance} zum n\u00e4chsten Pin",
+    "viewDetails": "Details ansehen \u2192",
+    "showingCount": "{shown} von {total} Inseraten auf der Karte. {missing} ohne Standortdaten."
+  },
+  "metadata": {
+    "title": "Bolyst",
+    "description": "Gemeinsame Wohnungssuche"
+  }
+}

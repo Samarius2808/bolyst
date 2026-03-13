@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
 
@@ -28,13 +29,13 @@ interface ListingCardProps {
   onHoverEnd?: () => void;
 }
 
-const statusConfig: Record<ListingStatus, { label: string; color: string }> = {
-  NEW: { label: "New", color: "bg-zinc-100 text-zinc-500" },
-  VIEWING: { label: "Viewing", color: "bg-blue-50 text-blue-600" },
-  APPLIED: { label: "Applied", color: "bg-amber-50 text-amber-600" },
-  REJECTED: { label: "Rejected", color: "bg-red-50 text-red-500" },
-  ACCEPTED: { label: "Accepted", color: "bg-emerald-50 text-emerald-600" },
-  DELISTED: { label: "Delisted", color: "bg-zinc-200 text-zinc-500" },
+const statusColors: Record<ListingStatus, string> = {
+  NEW: "bg-zinc-100 text-zinc-500",
+  VIEWING: "bg-blue-50 text-blue-600",
+  APPLIED: "bg-amber-50 text-amber-600",
+  REJECTED: "bg-red-50 text-red-500",
+  ACCEPTED: "bg-emerald-50 text-emerald-600",
+  DELISTED: "bg-zinc-200 text-zinc-500",
 };
 
 const tagColors = [
@@ -88,6 +89,7 @@ export function ListingCard({
   onHoverEnd,
 }: ListingCardProps) {
   const [imgIndex, setImgIndex] = useState(0);
+  const t = useTranslations("listingCard");
 
   function handlePrev(e: React.MouseEvent) {
     e.stopPropagation();
@@ -220,7 +222,7 @@ export function ListingCard({
         {status === "DELISTED" && (
           <div className="absolute inset-0 bg-zinc-900/40 flex items-center justify-center">
             <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-xs font-bold text-zinc-600 uppercase tracking-wide">
-              Delisted
+              {t("status.DELISTED")}
             </span>
           </div>
         )}
@@ -240,8 +242,8 @@ export function ListingCard({
             {title}
           </h3>
           {status && status !== "NEW" && (
-            <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full flex-shrink-0 ${statusConfig[status].color}`}>
-              {statusConfig[status].label}
+            <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full flex-shrink-0 ${statusColors[status]}`}>
+              {t(`status.${status}`)}
             </span>
           )}
         </div>
@@ -290,7 +292,7 @@ export function ListingCard({
               return (
                 <span
                   key={u.id}
-                  title={`${name} liked this`}
+                  title={t("likedThis", { name })}
                   className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium ${color.bg} ${color.text}`}
                 >
                   <svg width="8" height="8" viewBox="0 0 16 16" fill="currentColor">
@@ -316,10 +318,10 @@ export function ListingCard({
                 <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
                 </svg>
-                Link
+                {t("link")}
               </a>
             ) : (
-              <span>Manual</span>
+              <span>{t("manual")}</span>
             )}
             {displayName && (
               <span className="text-zinc-300 truncate max-w-[80px]" title={addedBy?.name || addedBy?.email || ""}>

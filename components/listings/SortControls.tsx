@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface BoardTag {
   id: string;
@@ -39,34 +40,6 @@ interface SortGroup {
   hidden?: boolean;
 }
 
-function getLabelForKey(key: SortKey, boardTags: BoardTag[], members: BoardMember[], pins: BoardPin[]): string {
-  if (key === "newest") return "Newest";
-  if (key === "price-asc") return "Price: Low → High";
-  if (key === "price-desc") return "Price: High → Low";
-  if (key === "ppm2-asc") return "Price/m²: Low → High";
-  if (key === "ppm2-desc") return "Price/m²: High → Low";
-  if (key === "size-asc") return "Size: Smallest";
-  if (key === "size-desc") return "Size: Largest";
-  if (key === "distance-asc") return "Distance: Nearest";
-  if (key === "status") return "Status";
-  if (key.startsWith("addedby:")) {
-    const userId = key.slice(8);
-    const m = members.find((u) => u.id === userId);
-    return m ? `By: ${m.name || m.email.split("@")[0]}` : "Added by";
-  }
-  if (key.startsWith("tag:")) {
-    const tag = boardTags.find((t) => t.id === key.slice(4));
-    return tag ? `Tag: ${tag.name}` : "Tag";
-  }
-  if (key.startsWith("distance:")) {
-    const pinId = key.slice(9);
-    const pin = pins.find((p) => p.id === pinId);
-    return pin ? `Near: ${pin.name}` : "Distance";
-  }
-  return "Sort";
-}
-
-// Simple SVG icons as components
 const icons = {
   clock: (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -133,6 +106,7 @@ export function SortControls({
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const t = useTranslations("sortControls");
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -145,7 +119,34 @@ export function SortControls({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  const activeLabel = getLabelForKey(value, boardTags, members, pins);
+  function getLabelForKey(key: SortKey): string {
+    if (key === "newest") return t("newest");
+    if (key === "price-asc") return `${t("price")}: ${t("priceLowHigh")}`;
+    if (key === "price-desc") return `${t("price")}: ${t("priceHighLow")}`;
+    if (key === "ppm2-asc") return `${t("pricePerM2")}: ${t("priceLowHigh")}`;
+    if (key === "ppm2-desc") return `${t("pricePerM2")}: ${t("priceHighLow")}`;
+    if (key === "size-asc") return `${t("size")}: ${t("smallestFirst")}`;
+    if (key === "size-desc") return `${t("size")}: ${t("largestFirst")}`;
+    if (key === "distance-asc") return `${t("distance")}: ${t("nearestAnyPin")}`;
+    if (key === "status") return t("status");
+    if (key.startsWith("addedby:")) {
+      const userId = key.slice(8);
+      const m = members.find((u) => u.id === userId);
+      return m ? t("byPrefix", { name: m.name || m.email.split("@")[0] }) : t("addedBy");
+    }
+    if (key.startsWith("tag:")) {
+      const tag = boardTags.find((tg) => tg.id === key.slice(4));
+      return tag ? t("tagPrefix", { name: tag.name }) : "Tag";
+    }
+    if (key.startsWith("distance:")) {
+      const pinId = key.slice(9);
+      const pin = pins.find((p) => p.id === pinId);
+      return pin ? t("nearPrefix", { name: pin.name }) : t("distance");
+    }
+    return t("sort");
+  }
+
+  const activeLabel = getLabelForKey(value);
   const isActive = value !== "newest";
 
   function select(key: SortKey) {
@@ -156,55 +157,54 @@ export function SortControls({
 
   const groups: SortGroup[] = [
     {
-      label: "Newest",
+      label: t("newest"),
       icon: icons.clock,
-      options: [{ key: "newest", label: "Newest first" }],
+      options: [{ key: "newest", label: t("newestFirst") }],
     },
     {
-      label: "Price",
+      label: t("price"),
       icon: icons.price,
       options: [
-        { key: "price-asc", label: "Low → High" },
-        { key: "price-desc", label: "High → Low" },
+        { key: "price-asc", label: t("priceLowHigh") },
+        { key: "price-desc", label: t("priceHighLow") },
       ],
     },
     {
-      label: "Price/m²",
+      label: t("pricePerM2"),
       icon: icons.price,
       options: [
-        { key: "ppm2-asc", label: "Low → High" },
-        { key: "ppm2-desc", label: "High → Low" },
+        { key: "ppm2-asc", label: t("priceLowHigh") },
+        { key: "ppm2-desc", label: t("priceHighLow") },
       ],
     },
     {
-      label: "Size",
+      label: t("size"),
       icon: icons.ruler,
       options: [
-        { key: "size-desc", label: "Largest first" },
-        { key: "size-asc", label: "Smallest first" },
+        { key: "size-desc", label: t("largestFirst") },
+        { key: "size-asc", label: t("smallestFirst") },
       ],
     },
     {
-      label: "Distance",
+      label: t("distance"),
       icon: icons.pin,
       options: [
-        { key: "distance-asc", label: "Nearest (any pin)" },
+        { key: "distance-asc", label: t("nearestAnyPin") },
         ...pins.map((p) => ({ key: `distance:${p.id}` as SortKey, label: p.name })),
       ],
       hidden: !hasPins,
     },
     {
-      label: "Status",
+      label: t("status"),
       icon: icons.status,
-      options: [{ key: "status", label: "By workflow stage" }],
+      options: [{ key: "status", label: t("byWorkflowStage") }],
     },
   ];
 
-  // Dynamic groups
   const memberGroup: SortGroup | null =
     members.length > 1
       ? {
-          label: "Added by",
+          label: t("addedBy"),
           icon: icons.person,
           options: members.map((m) => ({
             key: `addedby:${m.id}` as SortKey,
@@ -216,11 +216,11 @@ export function SortControls({
   const tagGroup: SortGroup | null =
     boardTags.length > 0
       ? {
-          label: "Has tag",
+          label: t("hasTag"),
           icon: icons.tag,
-          options: boardTags.map((t) => ({
-            key: `tag:${t.id}` as SortKey,
-            label: t.name,
+          options: boardTags.map((tg) => ({
+            key: `tag:${tg.id}` as SortKey,
+            label: tg.name,
           })),
         }
       : null;
@@ -273,7 +273,6 @@ export function SortControls({
             const hasSub = group.options.length > 1;
 
             if (!hasSub) {
-              // Single option — direct click
               const opt = group.options[0];
               return (
                 <button
@@ -292,7 +291,6 @@ export function SortControls({
               );
             }
 
-            // Multi-option group — expandable
             return (
               <div key={group.label}>
                 <button

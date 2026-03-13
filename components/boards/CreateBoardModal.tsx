@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export function CreateBoardModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState("");
@@ -9,6 +10,7 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
   const [emailInput, setEmailInput] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations("createBoard");
 
   function addEmail() {
     const trimmed = emailInput.trim().toLowerCase();
@@ -35,7 +37,6 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
 
     setLoading(true);
 
-    // Create the board
     const res = await fetch("/api/boards", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -45,7 +46,6 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
     if (res.ok) {
       const board = await res.json();
 
-      // Send invites in parallel
       if (emails.length > 0) {
         await Promise.allSettled(
           emails.map((email) =>
@@ -77,10 +77,10 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
         <div className="flex items-start justify-between mb-4">
           <div>
             <h2 className="text-lg font-semibold text-zinc-900">
-              Create a board
+              {t("title")}
             </h2>
             <p className="text-sm text-zinc-400 mt-0.5">
-              A shared space for saving and comparing apartments.
+              {t("subtitle")}
             </p>
           </div>
           <button
@@ -97,7 +97,7 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Berlin Apartments Q2"
+          placeholder={t("placeholder")}
           autoFocus
           className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
         />
@@ -105,10 +105,10 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
         {/* Invite collaborators */}
         <div className="mt-4">
           <label className="text-sm font-medium text-zinc-700">
-            Invite people
+            {t("invitePeople")}
           </label>
           <p className="text-xs text-zinc-400 mt-0.5 mb-2">
-            Add emails of people you&apos;re searching with (optional)
+            {t("inviteDescription")}
           </p>
           <div className="flex gap-2">
             <input
@@ -117,7 +117,7 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
               onChange={(e) => setEmailInput(e.target.value)}
               onKeyDown={handleEmailKeyDown}
               onBlur={addEmail}
-              placeholder="roommate@email.com"
+              placeholder={t("emailPlaceholder")}
               className="flex-1 border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
             />
             <button
@@ -125,11 +125,11 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
               onClick={addEmail}
               className="px-3 py-2.5 text-sm font-medium text-sage-600 hover:bg-sage-50 rounded-xl transition-colors"
             >
-              Add
+              {t("add")}
             </button>
           </div>
           <p className="text-xs text-zinc-400 mt-1.5">
-            You can still add more people later through the settings
+            {t("inviteLater")}
           </p>
           {emails.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
@@ -160,14 +160,14 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
             onClick={onClose}
             className="px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             type="submit"
             disabled={loading || !name.trim()}
             className="px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
           >
-            {loading ? "Creating…" : "Create board"}
+            {loading ? t("creating") : t("createBoard")}
           </button>
         </div>
       </form>

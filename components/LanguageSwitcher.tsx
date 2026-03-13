@@ -1,0 +1,55 @@
+"use client";
+
+import { useTransition } from "react";
+
+function setLocaleCookie(locale: string) {
+  document.cookie = `NEXT_LOCALE=${locale};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
+}
+
+export function LanguageSwitcher({
+  locale,
+  variant = "default",
+}: {
+  locale: string;
+  variant?: "default" | "landing";
+}) {
+  const [, startTransition] = useTransition();
+
+  function switchTo(newLocale: string) {
+    if (newLocale === locale) return;
+    setLocaleCookie(newLocale);
+    startTransition(() => {
+      window.location.reload();
+    });
+  }
+
+  const base =
+    variant === "landing"
+      ? "text-xs font-medium transition-colors"
+      : "text-xs font-medium transition-colors";
+
+  return (
+    <div className="inline-flex items-center gap-0.5 bg-zinc-100 rounded-lg p-0.5">
+      <button
+        onClick={() => switchTo("en")}
+        className={`px-2 py-1 rounded-md ${base} ${
+          locale === "en"
+            ? "bg-white text-zinc-900 shadow-sm"
+            : "text-zinc-400 hover:text-zinc-600"
+        }`}
+      >
+        EN
+      </button>
+      <button
+        onClick={() => switchTo("de")}
+        className={`px-2 py-1 rounded-md ${base} ${
+          locale === "de"
+            ? "bg-white text-zinc-900 shadow-sm"
+            : "text-zinc-400 hover:text-zinc-600"
+        }`}
+      >
+        DE
+      </button>
+    </div>
+  );
+}

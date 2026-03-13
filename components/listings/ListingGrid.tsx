@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ListingCard } from "./ListingCard";
 import { AddListingModal } from "./AddListingModal";
 import { ListingDetail } from "./ListingDetail";
@@ -73,6 +74,8 @@ export function ListingGrid({
   members?: BoardMember[];
 }) {
   const router = useRouter();
+  const t = useTranslations("listings");
+  const tb = useTranslations("boards");
   const [showAdd, setShowAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -87,7 +90,6 @@ export function ListingGrid({
     (l) => l.latitude != null && l.longitude != null
   );
 
-  // Compute distances — to selected pin if distance:{id} sort, otherwise nearest
   const distanceMap = useMemo(() => {
     const map = new Map<string, number | null>();
     let activePins = boardPins;
@@ -107,7 +109,6 @@ export function ListingGrid({
     return map;
   }, [listings, boardPins, sortKey]);
 
-  // Filter + sort
   const sortedListings = useMemo(() => {
     let filtered = showFavoritesOnly
       ? listings.filter((l) => favorites.has(l.id))
@@ -179,7 +180,6 @@ export function ListingGrid({
   }, [listings, sortKey, showFavoritesOnly, favorites, distanceMap]);
 
   async function toggleFavorite(listingId: string) {
-    // Optimistic update
     setFavorites((prev) => {
       const next = new Set(prev);
       if (next.has(listingId)) next.delete(listingId);
@@ -211,8 +211,12 @@ export function ListingGrid({
           {listings.length > 0 && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 text-zinc-500 rounded-full text-xs font-medium">
               {showFavoritesOnly
-                ? `${sortedListings.length} favorite${sortedListings.length !== 1 ? "s" : ""}`
-                : `${listings.length} listing${listings.length !== 1 ? "s" : ""}`}
+                ? (sortedListings.length !== 1
+                    ? t("favoriteCountPlural", { count: sortedListings.length })
+                    : t("favoriteCount", { count: sortedListings.length }))
+                : (listings.length !== 1
+                    ? tb("listingCountPlural", { count: listings.length })
+                    : tb("listingCount", { count: listings.length }))}
             </span>
           )}
           {listings.length > 0 && (
@@ -236,7 +240,7 @@ export function ListingGrid({
                 <svg width="12" height="12" viewBox="0 0 16 16" fill={showFavoritesOnly ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
                   <path d="M8 14s-5.5-3.5-5.5-7.5C2.5 4 4.5 2 6.5 2c1.1 0 2.1.5 2.5 1.5C9.4 2.5 10.4 2 11.5 2c2 0 3.5 1.5 3.5 3.5S13.5 10.5 8 14z" />
                 </svg>
-                Favorites
+                {t("favorites")}
               </button>
               <button
                 onClick={() => {
@@ -253,7 +257,7 @@ export function ListingGrid({
                   <rect x="1" y="3" width="5" height="10" rx="1" />
                   <rect x="10" y="3" width="5" height="10" rx="1" />
                 </svg>
-                Compare
+                {t("compare")}
               </button>
             </>
           )}
@@ -262,7 +266,7 @@ export function ListingGrid({
           onClick={() => setShowAdd(true)}
           className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
         >
-          + Add listing
+          {t("addListing")}
         </button>
       </div>
 
@@ -281,16 +285,16 @@ export function ListingGrid({
             <path d="M14 22l6-6 10 10M30 20a3 3 0 100-6 3 3 0 000 6z" />
           </svg>
           <h3 className="text-lg font-semibold text-zinc-700 mb-2">
-            No listings yet
+            {t("noListingsTitle")}
           </h3>
           <p className="text-sm text-zinc-400 mb-6 max-w-xs mx-auto">
-            Paste a URL or add details manually to save your first apartment.
+            {t("noListingsDescription")}
           </p>
           <button
             onClick={() => setShowAdd(true)}
             className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
           >
-            + Add listing
+            {t("addListing")}
           </button>
         </div>
       ) : (
@@ -299,7 +303,6 @@ export function ListingGrid({
             hasGeocodedListings ? "flex gap-6 items-start" : ""
           }
         >
-          {/* Listing cards */}
           <div
             className={
               hasGeocodedListings
@@ -335,12 +338,11 @@ export function ListingGrid({
             ))}
             {sortedListings.length === 0 && showFavoritesOnly && (
               <div className="text-center py-12 col-span-full">
-                <p className="text-sm text-zinc-400">No favorites yet. Click the heart on a listing to save it.</p>
+                <p className="text-sm text-zinc-400">{t("noFavorites")}</p>
               </div>
             )}
           </div>
 
-          {/* Sticky map on the right (desktop only) */}
           {hasGeocodedListings && (
             <div className="hidden lg:block w-[480px] flex-shrink-0 sticky top-6 space-y-3">
               <PinManager
@@ -367,13 +369,13 @@ export function ListingGrid({
       {compareMode && compareSet.size >= 2 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-sage-600 text-white px-6 py-3 rounded-2xl shadow-xl shadow-sage-600/30 flex items-center gap-4">
           <span className="text-sm font-medium">
-            {compareSet.size} selected
+            {t("selected", { count: compareSet.size })}
           </span>
           <button
             onClick={openCompare}
             className="px-4 py-1.5 bg-white text-sage-700 text-sm font-semibold rounded-xl hover:bg-sage-50 transition-colors"
           >
-            Compare →
+            {t("compareArrow")}
           </button>
         </div>
       )}

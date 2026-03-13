@@ -3,11 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { BoardList } from "@/components/boards/BoardList";
 import { UserButton } from "@clerk/nextjs";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function BoardsPage() {
   const user = await getOrCreateUser();
   if (!user) redirect("/sign-in");
+
+  const t = await getTranslations("boards");
+  const locale = await getLocale();
 
   const boards = await prisma.board.findMany({
     where: {
@@ -39,10 +44,13 @@ export default async function BoardsPage() {
             </h1>
           </Link>
           <p className="text-base text-zinc-500 mt-1">
-            Your apartment search boards
+            {t("subtitle")}
           </p>
         </div>
-        <UserButton />
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher locale={locale} />
+          <UserButton />
+        </div>
       </header>
       <BoardList boards={boards} />
     </main>

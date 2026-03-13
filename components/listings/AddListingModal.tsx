@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface BoardTag {
   id: string;
@@ -32,6 +33,7 @@ export function AddListingModal({
   const [scrapeError, setScrapeError] = useState("");
   const [scraped, setScraped] = useState(false);
   const router = useRouter();
+  const t = useTranslations("addListing");
 
   async function handleScrape(e: React.FormEvent) {
     e.preventDefault();
@@ -107,7 +109,7 @@ export function AddListingModal({
       >
         <div className="flex items-start justify-between mb-4">
           <h2 className="text-lg font-semibold text-zinc-900">
-            Add a listing
+            {t("title")}
           </h2>
           <button
             onClick={onClose}
@@ -130,7 +132,7 @@ export function AddListingModal({
                 : "text-zinc-400 hover:text-zinc-600"
             }`}
           >
-            Paste URL
+            {t("pasteUrl")}
           </button>
           <button
             type="button"
@@ -141,14 +143,14 @@ export function AddListingModal({
                 : "text-zinc-400 hover:text-zinc-600"
             }`}
           >
-            Manual entry
+            {t("manualEntry")}
           </button>
         </div>
 
         {mode === "url" ? (
           <form onSubmit={handleScrape}>
             <p className="text-sm text-zinc-400 mb-3">
-              Paste a listing URL to auto-fill details.
+              {t("urlHint")}
             </p>
             <input
               type="url"
@@ -157,7 +159,7 @@ export function AddListingModal({
                 setUrl(e.target.value);
                 setScrapeError("");
               }}
-              placeholder="https://..."
+              placeholder={t("urlPlaceholder")}
               autoFocus
               className={inputClass}
             />
@@ -170,7 +172,7 @@ export function AddListingModal({
                 onClick={onClose}
                 className="px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
               >
-                Cancel
+                {t("cancel")}
               </button>
               <button
                 type="submit"
@@ -183,7 +185,7 @@ export function AddListingModal({
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
                 )}
-                {scraping ? "Extracting…" : "Extract"}
+                {scraping ? t("extracting") : t("extract")}
               </button>
             </div>
           </form>
@@ -194,7 +196,7 @@ export function AddListingModal({
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M3 8.5l3 3 7-7" />
                 </svg>
-                Data extracted from URL
+                {t("dataExtracted")}
               </p>
             )}
 
@@ -204,7 +206,7 @@ export function AddListingModal({
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Title *"
+                  placeholder={t("titlePlaceholder")}
                   autoFocus
                   className={inputClass}
                 />
@@ -212,7 +214,7 @@ export function AddListingModal({
                   type="url"
                   value={sourceUrl}
                   onChange={(e) => setSourceUrl(e.target.value)}
-                  placeholder="URL (optional)"
+                  placeholder={t("urlOptionalPlaceholder")}
                   className={inputClass}
                 />
                 <div className="grid grid-cols-2 gap-3">
@@ -220,14 +222,14 @@ export function AddListingModal({
                     type="number"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    placeholder="Price (€/month)"
+                    placeholder={t("pricePlaceholder")}
                     className={inputClass}
                   />
                   <input
                     type="number"
                     value={size}
                     onChange={(e) => setSize(e.target.value)}
-                    placeholder="Size (m²)"
+                    placeholder={t("sizePlaceholder")}
                     step="0.1"
                     className={inputClass}
                   />
@@ -236,13 +238,13 @@ export function AddListingModal({
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Location"
+                  placeholder={t("locationPlaceholder")}
                   className={inputClass}
                 />
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Notes or description"
+                  placeholder={t("descriptionPlaceholder")}
                   rows={3}
                   className={inputClass}
                 />
@@ -250,7 +252,7 @@ export function AddListingModal({
 
               {boardTags.length > 0 && (
                 <div className="pt-1">
-                  <p className="text-xs font-medium text-zinc-400 mb-2">Tags</p>
+                  <p className="text-xs font-medium text-zinc-400 mb-2">{t("tags")}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {boardTags.map((tag) => {
                       const active = selectedTagIds.has(tag.id);
@@ -286,14 +288,14 @@ export function AddListingModal({
                   onClick={onClose}
                   className="px-4 py-2.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   type="submit"
                   disabled={loading || !title.trim()}
                   className="px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                 >
-                  {loading ? "Adding…" : "Add listing"}
+                  {loading ? t("adding") : t("addListing")}
                 </button>
               </div>
             </form>

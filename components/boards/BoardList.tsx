@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { BoardCard } from "./BoardCard";
 import { CreateBoardModal } from "./CreateBoardModal";
 
@@ -13,13 +14,16 @@ interface Board {
 
 export function BoardList({ boards }: { boards: Board[] }) {
   const [showCreate, setShowCreate] = useState(false);
+  const t = useTranslations("boards");
 
   return (
     <>
       <div className="flex items-center justify-between mb-6">
         {boards.length > 0 ? (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 text-zinc-500 rounded-full text-xs font-medium">
-            {boards.length} board{boards.length !== 1 ? "s" : ""}
+            {boards.length !== 1
+              ? t("countPlural", { count: boards.length })
+              : t("count", { count: boards.length })}
           </span>
         ) : (
           <span />
@@ -28,7 +32,7 @@ export function BoardList({ boards }: { boards: Board[] }) {
           onClick={() => setShowCreate(true)}
           className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
         >
-          + New board
+          {t("newBoard")}
         </button>
       </div>
 
@@ -47,17 +51,16 @@ export function BoardList({ boards }: { boards: Board[] }) {
             <path d="M20 28h16M28 20v16" />
           </svg>
           <h3 className="text-lg font-semibold text-zinc-700 mb-2">
-            Create your first board
+            {t("emptyTitle")}
           </h3>
           <p className="text-sm text-zinc-400 mb-6 max-w-xs mx-auto">
-            A board is a shared space for saving and comparing apartments with
-            your people.
+            {t("emptyDescription")}
           </p>
           <button
             onClick={() => setShowCreate(true)}
             className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
           >
-            + Create board
+            {t("createBoard")}
           </button>
         </div>
       ) : (

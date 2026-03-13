@@ -1,7 +1,10 @@
 import { SignUp } from "@clerk/nextjs";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  const t = await getTranslations("auth");
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-sage-50/40 via-white to-white">
       <div className="mb-8 text-center">
@@ -15,7 +18,7 @@ export default function SignUpPage() {
         </Link>
         <div className="w-8 h-1 bg-sage-500 rounded-full mx-auto mb-3" />
         <p className="text-base text-zinc-500">
-          Find your place, together.
+          {t("tagline")}
         </p>
       </div>
       <SignUp />

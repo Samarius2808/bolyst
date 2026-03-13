@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { CompareTable } from "@/components/listings/CompareTable";
+import { getTranslations } from "next-intl/server";
 
 export default async function ComparePage({
   params,
@@ -16,6 +17,7 @@ export default async function ComparePage({
 
   const { id } = await params;
   const { ids } = await searchParams;
+  const t = await getTranslations("compareTable");
 
   const membership = await prisma.boardMember.findUnique({
     where: { boardId_userId: { boardId: id, userId: user.id } },
@@ -51,7 +53,7 @@ export default async function ComparePage({
           <span>&larr;</span> {board.name}
         </Link>
         <h1 className="text-2xl font-bold tracking-tight">
-          Compare listings
+          {t("title")}
           {selectedIds && (
             <span className="text-base font-normal text-zinc-400 ml-2">
               ({listings.length} of {board.listings.length})
@@ -61,7 +63,7 @@ export default async function ComparePage({
       </div>
 
       {listings.length === 0 ? (
-        <p className="text-zinc-400">No listings to compare yet.</p>
+        <p className="text-zinc-400">{t("noListings")}</p>
       ) : (
         <CompareTable listings={listings} />
       )}

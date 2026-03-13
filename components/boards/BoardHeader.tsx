@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
 import { BoardSettings } from "./BoardSettings";
 
 interface Member {
@@ -38,6 +39,8 @@ export function BoardHeader({
   isOwner: boolean;
 }) {
   const [showSettings, setShowSettings] = useState(false);
+  const t = useTranslations("boardHeader");
+  const tb = useTranslations("boards");
 
   return (
     <>
@@ -50,14 +53,16 @@ export function BoardHeader({
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <path d="M10 3L5 8l5 5" />
             </svg>
-            Boards
+            {t("boards")}
           </Link>
           <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">
             {board.name}
           </h1>
           <div className="flex items-center gap-2.5 mt-1.5">
             <span className="px-2.5 py-0.5 bg-zinc-100 rounded-full text-xs text-zinc-500">
-              {board.listingCount} listing{board.listingCount !== 1 ? "s" : ""}
+              {board.listingCount !== 1
+                ? tb("listingCountPlural", { count: board.listingCount })
+                : tb("listingCount", { count: board.listingCount })}
             </span>
             <span className="w-1 h-1 rounded-full bg-zinc-300" />
             <div className="flex items-center gap-1.5">
@@ -78,7 +83,9 @@ export function BoardHeader({
                 )}
               </div>
               <span className="text-xs text-zinc-400">
-                {board.members.length} member{board.members.length !== 1 ? "s" : ""}
+                {board.members.length !== 1
+                  ? tb("memberCountPlural", { count: board.members.length })
+                  : tb("memberCount", { count: board.members.length })}
               </span>
             </div>
           </div>
@@ -93,7 +100,7 @@ export function BoardHeader({
                 <rect x="1" y="2" width="5" height="12" rx="1" />
                 <rect x="10" y="2" width="5" height="12" rx="1" />
               </svg>
-              Compare
+              {t("compare")}
             </Link>
           )}
           <button
@@ -104,7 +111,7 @@ export function BoardHeader({
               <circle cx="8" cy="8" r="2.5" />
               <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4" />
             </svg>
-            Settings
+            {t("settings")}
           </button>
           <UserButton />
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface Pin {
   id: string;
@@ -23,6 +24,7 @@ export function PinManager({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const t = useTranslations("pinManager");
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -38,7 +40,7 @@ export function PinManager({
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to add pin");
+        setError(data.error || t("failedToAdd"));
         return;
       }
       const pin = await res.json();
@@ -46,7 +48,7 @@ export function PinManager({
       setName("");
       setAddress("");
     } catch {
-      setError("Failed to add pin");
+      setError(t("failedToAdd"));
     } finally {
       setLoading(false);
     }
@@ -73,7 +75,7 @@ export function PinManager({
       >
         <span className="flex items-center gap-1.5">
           <span className="text-sage-500">★</span>
-          Reference points
+          {t("referencePoints")}
           {pins.length > 0 && (
             <span className="bg-sage-100 text-sage-600 px-1.5 py-0.5 rounded-full text-[10px] font-bold">
               {pins.length}
@@ -95,7 +97,6 @@ export function PinManager({
 
       {expanded && (
         <div className="px-4 pb-3 space-y-2.5 border-t border-zinc-50">
-          {/* Existing pins */}
           {pins.map((p) => (
             <div
               key={p.id}
@@ -116,18 +117,17 @@ export function PinManager({
             </div>
           ))}
 
-          {/* Add form */}
           <form onSubmit={handleAdd} className="space-y-2 pt-1">
             <input
               type="text"
-              placeholder="Name (e.g. Work, Uni)"
+              placeholder={t("namePlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-1.5 text-xs border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-sage-300 focus:border-sage-300"
             />
             <input
               type="text"
-              placeholder="Address or location"
+              placeholder={t("addressPlaceholder")}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               className="w-full px-3 py-1.5 text-xs border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-sage-300 focus:border-sage-300"
@@ -140,7 +140,7 @@ export function PinManager({
               disabled={loading || !name.trim() || !address.trim()}
               className="w-full py-1.5 text-xs font-semibold bg-sage-600 text-white rounded-lg hover:bg-sage-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? "Adding..." : "Add pin"}
+              {loading ? t("adding") : t("addPin")}
             </button>
           </form>
         </div>

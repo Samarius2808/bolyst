@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
 
-const statusLabels: Record<ListingStatus, { label: string; color: string }> = {
-  NEW: { label: "New", color: "bg-zinc-100 text-zinc-500" },
-  VIEWING: { label: "Viewing", color: "bg-blue-50 text-blue-600" },
-  APPLIED: { label: "Applied", color: "bg-amber-50 text-amber-600" },
-  REJECTED: { label: "Rejected", color: "bg-red-50 text-red-500" },
-  ACCEPTED: { label: "Accepted", color: "bg-emerald-50 text-emerald-600" },
-  DELISTED: { label: "Delisted", color: "bg-zinc-200 text-zinc-500" },
+const statusColors: Record<ListingStatus, string> = {
+  NEW: "bg-zinc-100 text-zinc-500",
+  VIEWING: "bg-blue-50 text-blue-600",
+  APPLIED: "bg-amber-50 text-amber-600",
+  REJECTED: "bg-red-50 text-red-500",
+  ACCEPTED: "bg-emerald-50 text-emerald-600",
+  DELISTED: "bg-zinc-200 text-zinc-500",
 };
 
 const statusOrder: Record<string, number> = {
@@ -36,6 +37,8 @@ type SortDir = "asc" | "desc";
 export function CompareTable({ listings }: { listings: Listing[] }) {
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const t = useTranslations("compareTable");
+  const ts = useTranslations("listingCard.status");
   const dash = <span className="text-zinc-200">&mdash;</span>;
 
   function toggleSort(field: SortField) {
@@ -106,7 +109,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
   }[] = [
     {
       key: "price",
-      label: "Price",
+      label: t("price"),
       sortable: "price",
       render: (l) =>
         l.price != null ? (
@@ -119,13 +122,13 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
     },
     {
       key: "size",
-      label: "Size",
+      label: t("size"),
       sortable: "size",
       render: (l) => (l.size != null ? `${l.size} m²` : dash),
     },
     {
       key: "pricePerM2",
-      label: "Price/m²",
+      label: t("pricePerM2"),
       sortable: "pricePerM2",
       render: (l) =>
         l.price != null && l.size
@@ -134,25 +137,25 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
     },
     {
       key: "location",
-      label: "Location",
+      label: t("location"),
       render: (l) => l.location || dash,
     },
     {
       key: "status",
-      label: "Status",
+      label: t("status"),
       sortable: "status",
       render: (l) => {
-        const s = statusLabels[l.status] || statusLabels.NEW;
+        const color = statusColors[l.status] || statusColors.NEW;
         return (
-          <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${s.color}`}>
-            {s.label}
+          <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${color}`}>
+            {ts(l.status)}
           </span>
         );
       },
     },
     {
       key: "tags",
-      label: "Tags",
+      label: t("tags"),
       render: (l) =>
         l.tags.length > 0 ? (
           <div className="flex flex-wrap gap-1">
@@ -171,7 +174,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
     },
     {
       key: "addedBy",
-      label: "Added by",
+      label: t("addedBy"),
       render: (l) => {
         const name = l.addedBy?.name || l.addedBy?.email?.split("@")[0];
         return name ? <span className="text-zinc-600">{name}</span> : dash;
@@ -179,7 +182,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
     },
     {
       key: "source",
-      label: "Link",
+      label: t("link"),
       render: (l) =>
         l.sourceUrl ? (
           <a
@@ -188,7 +191,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
             rel="noopener noreferrer"
             className="text-sage-500 hover:text-sage-600 transition-colors"
           >
-            View &rarr;
+            {t("view")}
           </a>
         ) : (
           dash
@@ -202,7 +205,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
         <thead>
           <tr className="border-b border-zinc-100">
             <th className="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wider text-zinc-400 sticky left-0 bg-white min-w-[100px]">
-              Field
+              {t("field")}
             </th>
             {sorted.map((l) => (
               <th

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useTranslations } from "next-intl";
 
 type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
 
@@ -192,6 +193,8 @@ export function ListingMap({
   hoveredId?: string | null;
   onListingClick: (id: string) => void;
 }) {
+  const t = useTranslations("map");
+
   // Build member → color map
   const memberColorMap = new Map<string, string>();
   members.forEach((m, i) => {
@@ -206,7 +209,7 @@ export function ListingMap({
     return (
       <div className="flex items-center justify-center h-[500px] bg-white border border-zinc-100 rounded-2xl">
         <p className="text-zinc-400 text-sm">
-          No listings with locations to show on the map.
+          {t("noListings")}
         </p>
       </div>
     );
@@ -241,7 +244,7 @@ export function ListingMap({
                 <p className="font-semibold text-sm text-teal-700 flex items-center gap-1">
                   <span>★</span> {p.name}
                 </p>
-                <p className="text-xs text-zinc-400 mt-0.5">Reference point</p>
+                <p className="text-xs text-zinc-400 mt-0.5">{t("referencePoint")}</p>
               </div>
             </Popup>
           </Marker>
@@ -265,6 +268,9 @@ export function ListingMap({
                   })
                 )
               : null;
+          const distStr = dist != null
+            ? dist < 1 ? `${Math.round(dist * 1000)}m` : `${dist.toFixed(1)} km`
+            : null;
           return (
             <Marker key={l.id} position={[l.latitude, l.longitude]} icon={hoveredId === l.id ? hoveredIcon : getListingIcon(l, favoritedIds, memberColorMap)}>
               <Popup>
@@ -287,16 +293,16 @@ export function ListingMap({
                   {l.location && (
                     <p className="text-xs text-zinc-400 mt-0.5">{l.location}</p>
                   )}
-                  {dist != null && (
+                  {distStr != null && (
                     <p className="text-xs text-sage-500 font-medium mt-1">
-                      ★ {dist < 1 ? `${Math.round(dist * 1000)}m` : `${dist.toFixed(1)} km`} from nearest pin
+                      ★ {t("fromNearestPin", { distance: distStr })}
                     </p>
                   )}
                   <button
                     onClick={() => onListingClick(l.id)}
                     className="mt-2 text-xs font-medium text-sage-600 hover:text-sage-700"
                   >
-                    View details &rarr;
+                    {t("viewDetails")}
                   </button>
                 </div>
               </Popup>
@@ -306,8 +312,11 @@ export function ListingMap({
       </MapContainer>
       {geocoded.length < listings.length && (
         <p className="text-xs text-zinc-400 px-4 py-2">
-          Showing {geocoded.length} of {listings.length} listings on map.{" "}
-          {listings.length - geocoded.length} missing location data.
+          {t("showingCount", {
+            shown: geocoded.length,
+            total: listings.length,
+            missing: listings.length - geocoded.length,
+          })}
         </p>
       )}
     </div>

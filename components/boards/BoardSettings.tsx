@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface Member {
   id: string;
@@ -47,6 +48,7 @@ export function BoardSettings({
   const [memberList, setMemberList] = useState(members);
   const [pendingInvites, setPendingInvites] = useState(initialPendingInvites);
   const router = useRouter();
+  const t = useTranslations("boardSettings");
 
   async function handleRename(e: React.FormEvent) {
     e.preventDefault();
@@ -84,13 +86,13 @@ export function BoardSettings({
       router.refresh();
     } else {
       const data = await res.json();
-      setError(data.error || "Failed to invite");
+      setError(data.error || t("inviteError"));
     }
     setInviting(false);
   }
 
   async function handleRemove(userId: string) {
-    if (!confirm("Remove this member?")) return;
+    if (!confirm(t("removeMember"))) return;
     const res = await fetch(`/api/boards/${boardId}/members`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -103,7 +105,7 @@ export function BoardSettings({
   }
 
   async function handleDelete() {
-    if (!confirm("Delete this board and all its listings? This cannot be undone."))
+    if (!confirm(t("deleteConfirm")))
       return;
     await fetch(`/api/boards/${boardId}`, { method: "DELETE" });
     router.push("/boards");
@@ -124,7 +126,7 @@ export function BoardSettings({
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-zinc-900">
-              Board settings
+              {t("title")}
             </h2>
             <button
               onClick={onClose}
@@ -140,7 +142,7 @@ export function BoardSettings({
           {isOwner && (
             <form onSubmit={handleRename} className="mb-6">
               <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                Board name
+                {t("boardName")}
               </label>
               <div className="flex gap-2">
                 <input
@@ -154,7 +156,7 @@ export function BoardSettings({
                   disabled={saving || !name.trim() || name.trim() === boardName}
                   className="px-4 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                 >
-                  {saving ? "Saving…" : "Rename"}
+                  {saving ? t("saving") : t("rename")}
                 </button>
               </div>
             </form>
@@ -163,7 +165,7 @@ export function BoardSettings({
           {/* Members */}
           <div className="border-t border-zinc-100 pt-5 mb-6">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">
-              Members ({memberList.length})
+              {t("members")} ({memberList.length})
             </h3>
             <div className="space-y-2 mb-3">
               {memberList.map((m) => {
@@ -199,14 +201,14 @@ export function BoardSettings({
                             : "bg-zinc-100 text-zinc-500"
                         }`}
                       >
-                        {m.role === "OWNER" ? "Owner" : "Member"}
+                        {m.role === "OWNER" ? t("owner") : t("member")}
                       </span>
                       {isOwner && m.role !== "OWNER" && (
                         <button
                           onClick={() => handleRemove(m.userId)}
                           className="text-xs text-red-400 hover:text-red-600 transition-colors"
                         >
-                          Remove
+                          {t("remove")}
                         </button>
                       )}
                     </div>
@@ -230,7 +232,7 @@ export function BoardSettings({
                       </p>
                     </div>
                     <span className="text-[11px] font-medium text-amber-500 ml-3 shrink-0 px-2 py-0.5 bg-amber-100 rounded-full">
-                      Pending
+                      {t("pending")}
                     </span>
                   </div>
                 ))}
@@ -248,7 +250,7 @@ export function BoardSettings({
                       setEmail(e.target.value);
                       setError("");
                     }}
-                    placeholder="Invite by email…"
+                    placeholder={t("invitePlaceholder")}
                     className={inputClass}
                   />
                   <button
@@ -256,7 +258,7 @@ export function BoardSettings({
                     disabled={inviting || !email.trim()}
                     className="px-4 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                   >
-                    {inviting ? "…" : "Invite"}
+                    {inviting ? "…" : t("invite")}
                   </button>
                 </form>
                 {error && (
@@ -270,13 +272,13 @@ export function BoardSettings({
           {isOwner && (
             <div className="bg-red-50 border border-red-100 rounded-xl p-4">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-red-400 mb-2">
-                Danger zone
+                {t("dangerZone")}
               </h3>
               <button
                 onClick={handleDelete}
                 className="text-sm font-medium text-red-500 hover:text-red-700 transition-colors"
               >
-                Delete this board
+                {t("deleteBoard")}
               </button>
             </div>
           )}

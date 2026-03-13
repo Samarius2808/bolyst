@@ -1,0 +1,282 @@
+{
+  "landing": {
+    "nav": {
+      "signIn": "Sign in",
+      "getStarted": "Get started"
+    },
+    "hero": {
+      "subtitle": "Collaborative apartment search",
+      "titleLine1": "Find your place,",
+      "titleLine2": "together.",
+      "description": "Stop losing apartment links in group chats. Bolyst gives you and your roommates a shared board to save, compare, and decide on your next home.",
+      "cta": "Start your board, it's free"
+    },
+    "features": {
+      "heading": "Everything you need to decide,",
+      "headingAccent": "together",
+      "subheading": "No more scattered links, lost screenshots, or \"which one was that again?\" moments.",
+      "share": {
+        "title": "Share with your people",
+        "description": "Invite roommates or your partner by email. Everyone can add listings, comment, tag, and favorite. All in one place."
+      },
+      "map": {
+        "title": "Map view",
+        "description": "See every listing on a map with pins for work, uni, or anywhere that matters. Distance calculated automatically."
+      },
+      "compare": {
+        "title": "Compare side by side",
+        "description": "Select any listings and compare price, size, price per m\u00b2, location, and tags in a clean table. Sort by any column."
+      }
+    },
+    "howItWorks": {
+      "heading": "Up and running in under a minute",
+      "step1": {
+        "title": "Create a board",
+        "description": "Give it a name like \"Berlin Q2\" or \"Stockholm summer\" and invite your co-searchers."
+      },
+      "step2": {
+        "title": "Paste a link",
+        "description": "Drop in a listing URL and Bolyst extracts the title, price, images, and location automatically."
+      },
+      "step3": {
+        "title": "Compare & decide",
+        "description": "Tag, comment, favorite, and compare listings until you find the one.",
+        "accent": "Together."
+      }
+    },
+    "details": {
+      "pasteUrl": {
+        "title": "Paste any listing URL",
+        "description": "Works with any apartment site. Finn.no, Immobilienscout, Hemnet, Funda, you name it. We extract what we can and you fill in the rest.",
+        "check": "Title, price, images, and location auto-extracted"
+      },
+      "referencePoints": {
+        "title": "Reference points on the map",
+        "description": "Pin your work, university, gym, or favorite coffee shop. Every listing shows the distance to your closest pin.",
+        "check": "Distance to nearest pin on every card"
+      },
+      "trackProgress": {
+        "title": "Track your progress",
+        "description": "Move listings through stages: New, Viewing, Applied, Accepted, or Rejected. Know exactly where each apartment stands at a glance."
+      },
+      "tagsFavorites": {
+        "title": "Tags & favorites",
+        "description": "Create custom tags per board like \"balcony\", \"pet-friendly\", or \"close to metro\" and filter or sort by them. Heart your favorites and see who else liked what.",
+        "exampleTags": ["Balcony", "Pet-friendly", "Near metro"]
+      }
+    },
+    "cta": {
+      "titleLine1": "Your next home is out there.",
+      "titleLine2": "Find it,",
+      "titleAccent": "together.",
+      "description": "Free to use. Create a board in seconds. Invite whoever you're searching with.",
+      "button": "Get started for free"
+    },
+    "footer": {
+      "description": "The shared workspace for apartment hunting. Save listings, compare options, and decide,",
+      "descriptionAccent": "together",
+      "product": "Product",
+      "getStarted": "Get started",
+      "features": "Features",
+      "company": "Company",
+      "contact": "Contact",
+      "tagline": "Find your place,",
+      "taglineAccent": "together"
+    }
+  },
+  "auth": {
+    "tagline": "Find your place, together."
+  },
+  "boards": {
+    "subtitle": "Your apartment search boards",
+    "count": "{count} board",
+    "countPlural": "{count} boards",
+    "newBoard": "+ New board",
+    "emptyTitle": "Create your first board",
+    "emptyDescription": "A board is a shared space for saving and comparing apartments with your people.",
+    "createBoard": "+ Create board",
+    "listingCount": "{count} listing",
+    "listingCountPlural": "{count} listings",
+    "memberCount": "{count} member",
+    "memberCountPlural": "{count} members"
+  },
+  "boardHeader": {
+    "boards": "Boards",
+    "compare": "Compare",
+    "settings": "Settings"
+  },
+  "boardSettings": {
+    "title": "Board settings",
+    "boardName": "Board name",
+    "saving": "Saving\u2026",
+    "rename": "Rename",
+    "members": "Members",
+    "owner": "Owner",
+    "member": "Member",
+    "remove": "Remove",
+    "removeMember": "Remove this member?",
+    "pending": "Pending",
+    "invitePlaceholder": "Invite by email\u2026",
+    "invite": "Invite",
+    "inviteError": "Failed to invite",
+    "dangerZone": "Danger zone",
+    "deleteBoard": "Delete this board",
+    "deleteConfirm": "Delete this board and all its listings? This cannot be undone."
+  },
+  "createBoard": {
+    "title": "Create a board",
+    "subtitle": "A shared space for saving and comparing apartments.",
+    "placeholder": "e.g. Berlin Apartments Q2",
+    "invitePeople": "Invite people",
+    "inviteDescription": "Add emails of people you're searching with (optional)",
+    "emailPlaceholder": "roommate@email.com",
+    "add": "Add",
+    "inviteLater": "You can still add more people later through the settings",
+    "cancel": "Cancel",
+    "creating": "Creating\u2026",
+    "createBoard": "Create board"
+  },
+  "listings": {
+    "addListing": "+ Add listing",
+    "noListingsTitle": "No listings yet",
+    "noListingsDescription": "Paste a URL or add details manually to save your first apartment.",
+    "favorites": "Favorites",
+    "compare": "Compare",
+    "selected": "{count} selected",
+    "compareArrow": "Compare \u2192",
+    "noFavorites": "No favorites yet. Click the heart on a listing to save it.",
+    "favoriteCount": "{count} favorite",
+    "favoriteCountPlural": "{count} favorites"
+  },
+  "listingCard": {
+    "status": {
+      "NEW": "New",
+      "VIEWING": "Viewing",
+      "APPLIED": "Applied",
+      "REJECTED": "Rejected",
+      "ACCEPTED": "Accepted",
+      "DELISTED": "Delisted"
+    },
+    "link": "Link",
+    "manual": "Manual",
+    "likedThis": "{name} liked this"
+  },
+  "addListing": {
+    "title": "Add a listing",
+    "pasteUrl": "Paste URL",
+    "manualEntry": "Manual entry",
+    "urlHint": "Paste a listing URL to auto-fill details.",
+    "urlPlaceholder": "https://...",
+    "cancel": "Cancel",
+    "extracting": "Extracting\u2026",
+    "extract": "Extract",
+    "dataExtracted": "Data extracted from URL",
+    "titlePlaceholder": "Title *",
+    "urlOptionalPlaceholder": "URL (optional)",
+    "pricePlaceholder": "Price (\u20ac/month)",
+    "sizePlaceholder": "Size (m\u00b2)",
+    "locationPlaceholder": "Location",
+    "descriptionPlaceholder": "Notes or description",
+    "tags": "Tags",
+    "adding": "Adding\u2026",
+    "addListing": "Add listing"
+  },
+  "listingDetail": {
+    "viewOriginal": "View original",
+    "addedBy": "Added by {name}",
+    "edit": "Edit",
+    "titlePlaceholder": "Title *",
+    "urlPlaceholder": "URL",
+    "pricePlaceholder": "Price (\u20ac/month)",
+    "sizePlaceholder": "Size (m\u00b2)",
+    "locationPlaceholder": "Location",
+    "descriptionPlaceholder": "Notes or description",
+    "saving": "Saving\u2026",
+    "save": "Save",
+    "cancel": "Cancel",
+    "price": "Price",
+    "size": "Size",
+    "location": "Location",
+    "status": "Status",
+    "tags": "Tags",
+    "newTagPlaceholder": "New tag\u2026",
+    "add": "Add",
+    "comments": "Comments",
+    "noComments": "No comments yet.",
+    "addComment": "Add a comment\u2026",
+    "deleteListing": "Delete listing",
+    "deleteConfirm": "Delete this listing?"
+  },
+  "compareTable": {
+    "title": "Compare listings",
+    "ofTotal": "({count} of {total})",
+    "noListings": "No listings to compare yet.",
+    "field": "Field",
+    "price": "Price",
+    "size": "Size",
+    "pricePerM2": "Price/m\u00b2",
+    "location": "Location",
+    "status": "Status",
+    "tags": "Tags",
+    "addedBy": "Added by",
+    "link": "Link",
+    "view": "View \u2192"
+  },
+  "sortControls": {
+    "newest": "Newest",
+    "newestFirst": "Newest first",
+    "price": "Price",
+    "priceLowHigh": "Low \u2192 High",
+    "priceHighLow": "High \u2192 Low",
+    "pricePerM2": "Price/m\u00b2",
+    "size": "Size",
+    "largestFirst": "Largest first",
+    "smallestFirst": "Smallest first",
+    "distance": "Distance",
+    "nearestAnyPin": "Nearest (any pin)",
+    "status": "Status",
+    "byWorkflowStage": "By workflow stage",
+    "addedBy": "Added by",
+    "hasTag": "Has tag",
+    "sort": "Sort",
+    "byPrefix": "By: {name}",
+    "tagPrefix": "Tag: {name}",
+    "nearPrefix": "Near: {name}"
+  },
+  "pinManager": {
+    "referencePoints": "Reference points",
+    "namePlaceholder": "Name (e.g. Work, Uni)",
+    "addressPlaceholder": "Address or location",
+    "adding": "Adding...",
+    "addPin": "Add pin",
+    "failedToAdd": "Failed to add pin"
+  },
+  "statusLabels": {
+    "New": "New",
+    "Viewing": "Viewing",
+    "Applied": "Applied",
+    "Accepted": "Accepted",
+    "Rejected": "Rejected"
+  },
+  "time": {
+    "justNow": "just now",
+    "minutesAgo": "{count}m ago",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago"
+  },
+  "language": {
+    "en": "EN",
+    "de": "DE"
+  },
+  "map": {
+    "noListings": "No listings with locations to show on the map.",
+    "referencePoint": "Reference point",
+    "fromNearestPin": "{distance} from nearest pin",
+    "viewDetails": "View details \u2192",
+    "showingCount": "Showing {shown} of {total} listings on map. {missing} missing location data."
+  },
+  "metadata": {
+    "title": "Bolyst",
+    "description": "Collaborative apartment search"
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface Tag {
   id: string;
@@ -32,14 +33,14 @@ interface ListingData {
   _count: { comments: number };
 }
 
-const statusOptions: { value: ListingStatus; label: string; color: string }[] = [
-  { value: "NEW", label: "New", color: "bg-zinc-100 text-zinc-500 border-zinc-200" },
-  { value: "VIEWING", label: "Viewing", color: "bg-blue-50 text-blue-600 border-blue-200" },
-  { value: "APPLIED", label: "Applied", color: "bg-amber-50 text-amber-600 border-amber-200" },
-  { value: "REJECTED", label: "Rejected", color: "bg-red-50 text-red-500 border-red-200" },
-  { value: "ACCEPTED", label: "Accepted", color: "bg-emerald-50 text-emerald-600 border-emerald-200" },
-  { value: "DELISTED", label: "Delisted", color: "bg-zinc-200 text-zinc-500 border-zinc-300" },
-];
+const statusColorMap: Record<ListingStatus, string> = {
+  NEW: "bg-zinc-100 text-zinc-500 border-zinc-200",
+  VIEWING: "bg-blue-50 text-blue-600 border-blue-200",
+  APPLIED: "bg-amber-50 text-amber-600 border-amber-200",
+  REJECTED: "bg-red-50 text-red-500 border-red-200",
+  ACCEPTED: "bg-emerald-50 text-emerald-600 border-emerald-200",
+  DELISTED: "bg-zinc-200 text-zinc-500 border-zinc-300",
+};
 
 const inputClass =
   "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-colors";
@@ -56,18 +57,6 @@ function getAvatarColor(name: string): string {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   return avatarColors[Math.abs(hash) % avatarColors.length];
-}
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(dateStr).toLocaleDateString();
 }
 
 export function ListingDetail({
@@ -116,6 +105,21 @@ export function ListingDetail({
   });
   const [saving, setSaving] = useState(false);
   const router = useRouter();
+  const t = useTranslations("listingDetail");
+  const ts = useTranslations("listingCard.status");
+  const tt = useTranslations("time");
+
+  function timeAgo(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return tt("justNow");
+    if (mins < 60) return tt("minutesAgo", { count: mins });
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return tt("hoursAgo", { count: hours });
+    const days = Math.floor(hours / 24);
+    if (days < 7) return tt("daysAgo", { count: days });
+    return new Date(dateStr).toLocaleDateString();
+  }
 
   const loadData = useCallback(async () => {
     const [listingRes, commentsRes, tagsRes] = await Promise.all([
@@ -221,11 +225,13 @@ export function ListingDetail({
   }
 
   async function handleDelete() {
-    if (!confirm("Delete this listing?")) return;
+    if (!confirm(t("deleteConfirm"))) return;
     await fetch(`/api/listings/${listingId}`, { method: "DELETE" });
     router.refresh();
     onClose();
   }
+
+  const statusValues: ListingStatus[] = ["NEW", "VIEWING", "APPLIED", "REJECTED", "ACCEPTED", "DELISTED"];
 
   if (!listing) {
     return (
@@ -254,7 +260,6 @@ export function ListingDetail({
         onClick={(e) => e.stopPropagation()}
         className="bg-white rounded-2xl shadow-2xl shadow-black/10 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll"
       >
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors shadow-sm"
@@ -264,7 +269,6 @@ export function ListingDetail({
           </svg>
         </button>
 
-        {/* Image gallery */}
         {!editing && listing.imageUrls?.length > 0 && (
           <div className="p-4 pb-0">
             <img
@@ -297,7 +301,6 @@ export function ListingDetail({
         )}
 
         <div className="p-6">
-          {/* Header */}
           <div className="flex items-start justify-between mb-5">
             <div className="flex-1 mr-4">
               {editing ? (
@@ -309,7 +312,7 @@ export function ListingDetail({
                       onChange={(e) =>
                         setEditForm((f) => ({ ...f, title: e.target.value }))
                       }
-                      placeholder="Title *"
+                      placeholder={t("titlePlaceholder")}
                       className={inputClass}
                       autoFocus
                     />
@@ -322,7 +325,7 @@ export function ListingDetail({
                           sourceUrl: e.target.value,
                         }))
                       }
-                      placeholder="URL"
+                      placeholder={t("urlPlaceholder")}
                       className={inputClass}
                     />
                     <div className="grid grid-cols-2 gap-3">
@@ -332,7 +335,7 @@ export function ListingDetail({
                         onChange={(e) =>
                           setEditForm((f) => ({ ...f, price: e.target.value }))
                         }
-                        placeholder="Price (€/month)"
+                        placeholder={t("pricePlaceholder")}
                         className={inputClass}
                       />
                       <input
@@ -341,7 +344,7 @@ export function ListingDetail({
                         onChange={(e) =>
                           setEditForm((f) => ({ ...f, size: e.target.value }))
                         }
-                        placeholder="Size (m²)"
+                        placeholder={t("sizePlaceholder")}
                         step="0.1"
                         className={inputClass}
                       />
@@ -355,7 +358,7 @@ export function ListingDetail({
                           location: e.target.value,
                         }))
                       }
-                      placeholder="Location"
+                      placeholder={t("locationPlaceholder")}
                       className={inputClass}
                     />
                     <textarea
@@ -366,7 +369,7 @@ export function ListingDetail({
                           description: e.target.value,
                         }))
                       }
-                      placeholder="Notes or description"
+                      placeholder={t("descriptionPlaceholder")}
                       rows={3}
                       className={inputClass}
                     />
@@ -376,14 +379,14 @@ export function ListingDetail({
                         disabled={saving || !editForm.title.trim()}
                         className="px-4 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                       >
-                        {saving ? "Saving…" : "Save"}
+                        {saving ? t("saving") : t("save")}
                       </button>
                       <button
                         type="button"
                         onClick={() => setEditing(false)}
                         className="px-4 py-2 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
                       >
-                        Cancel
+                        {t("cancel")}
                       </button>
                     </div>
                   </div>
@@ -401,7 +404,7 @@ export function ListingDetail({
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-sm text-sage-500 hover:text-sage-600 transition-colors"
                       >
-                        View original
+                        {t("viewOriginal")}
                         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                           <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
                         </svg>
@@ -409,7 +412,7 @@ export function ListingDetail({
                     )}
                     {listing.addedBy && (
                       <span className="text-xs text-zinc-400">
-                        Added by {listing.addedBy.name || listing.addedBy.email.split("@")[0]}
+                        {t("addedBy", { name: listing.addedBy.name || listing.addedBy.email.split("@")[0] })}
                       </span>
                     )}
                   </div>
@@ -424,28 +427,27 @@ export function ListingDetail({
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M11.5 2.5l2 2L5 13H3v-2l8.5-8.5z" />
                 </svg>
-                Edit
+                {t("edit")}
               </button>
             )}
           </div>
 
-          {/* Stat cards */}
           {!editing && (listing.price != null || listing.size != null || listing.location) && (
             <div className="grid grid-cols-3 gap-3 mb-5">
               <div className="bg-zinc-50 rounded-xl px-4 py-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">Price</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("price")}</p>
                 <p className="text-lg font-bold text-zinc-900">
                   {listing.price != null ? `€${listing.price.toLocaleString()}` : "—"}
                 </p>
               </div>
               <div className="bg-zinc-50 rounded-xl px-4 py-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">Size</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("size")}</p>
                 <p className="text-lg font-bold text-zinc-900">
                   {listing.size != null ? `${listing.size} m²` : "—"}
                 </p>
               </div>
               <div className="bg-zinc-50 rounded-xl px-4 py-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">Location</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("location")}</p>
                 <p className="text-sm font-semibold text-zinc-900 truncate">
                   {listing.location || "—"}
                 </p>
@@ -453,32 +455,31 @@ export function ListingDetail({
             </div>
           )}
 
-          {/* Status */}
           {!editing && (
             <div className="mb-5">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
-                Status
+                {t("status")}
               </h3>
               <div className="flex flex-wrap gap-1.5">
-                {statusOptions.map((opt) => (
+                {statusValues.map((val) => (
                   <button
-                    key={opt.value}
+                    key={val}
                     onClick={async () => {
                       await fetch(`/api/listings/${listingId}`, {
                         method: "PATCH",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ status: opt.value }),
+                        body: JSON.stringify({ status: val }),
                       });
                       await loadData();
                       router.refresh();
                     }}
                     className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
-                      listing.status === opt.value
-                        ? opt.color
+                      listing.status === val
+                        ? statusColorMap[val]
                         : "bg-white border-zinc-100 text-zinc-400 hover:border-zinc-200 hover:text-zinc-500"
                     }`}
                   >
-                    {opt.label}
+                    {ts(val)}
                   </button>
                 ))}
               </div>
@@ -491,10 +492,9 @@ export function ListingDetail({
             </p>
           )}
 
-          {/* Tags */}
           <div className="mb-6">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
-              Tags
+              {t("tags")}
             </h3>
             <div className="flex flex-wrap gap-2">
               {boardTags.map((tag) => {
@@ -524,7 +524,7 @@ export function ListingDetail({
                 type="text"
                 value={newTagName}
                 onChange={(e) => setNewTagName(e.target.value)}
-                placeholder="New tag…"
+                placeholder={t("newTagPlaceholder")}
                 className="border border-zinc-200 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
               />
               <button
@@ -532,15 +532,14 @@ export function ListingDetail({
                 disabled={!newTagName.trim()}
                 className="text-xs font-medium text-sage-600 hover:text-sage-700 disabled:opacity-40 transition-colors"
               >
-                Add
+                {t("add")}
               </button>
             </form>
           </div>
 
-          {/* Comments */}
           <div className="border-t border-zinc-100 pt-5">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">
-              Comments ({comments.length})
+              {t("comments")} ({comments.length})
             </h3>
 
             <div className="space-y-3 mb-4">
@@ -571,7 +570,7 @@ export function ListingDetail({
                 );
               })}
               {comments.length === 0 && (
-                <p className="text-xs text-zinc-300">No comments yet.</p>
+                <p className="text-xs text-zinc-300">{t("noComments")}</p>
               )}
             </div>
 
@@ -580,7 +579,7 @@ export function ListingDetail({
                 type="text"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Add a comment…"
+                placeholder={t("addComment")}
                 className="w-full bg-zinc-50 border-0 rounded-2xl px-4 py-3 pr-12 text-sm text-zinc-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-sage-500 transition-colors"
               />
               <button
@@ -595,13 +594,12 @@ export function ListingDetail({
             </form>
           </div>
 
-          {/* Delete */}
           <div className="border-t border-zinc-100 mt-6 pt-4">
             <button
               onClick={handleDelete}
               className="text-xs text-red-400 hover:text-red-600 transition-colors"
             >
-              Delete listing
+              {t("deleteListing")}
             </button>
           </div>
         </div>

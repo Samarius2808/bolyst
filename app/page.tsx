@@ -1,14 +1,20 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { HeroVideo } from "@/components/landing/HeroVideo";
 import { FeatureCard } from "@/components/landing/FeatureCard";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const CDN = "https://pdxuzstqqrliidgsfblc.supabase.co/storage/v1/object/public/assets";
 
 export default async function Home() {
   const { userId } = await auth();
   if (userId) redirect("/boards");
+
+  const t = await getTranslations("landing");
+  const tStatus = await getTranslations("statusLabels");
+  const locale = await getLocale();
 
   return (
     <div className="min-h-screen bg-[#faf9f7]">
@@ -24,17 +30,18 @@ export default async function Home() {
             </span>
           </a>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher locale={locale} variant="landing" />
             <Link
               href="/sign-in"
               className="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
             >
-              Sign in
+              {t("nav.signIn")}
             </Link>
             <Link
               href="/sign-up"
               className="px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
             >
-              Get started
+              {t("nav.getStarted")}
             </Link>
           </div>
         </div>
@@ -44,24 +51,22 @@ export default async function Home() {
       <section className="min-h-screen flex items-center justify-center px-6">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-sm font-medium text-sage-600 mb-8">
-            Collaborative apartment search
+            {t("hero.subtitle")}
           </p>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 leading-[1.08]">
-            Find your place,
+            {t("hero.titleLine1")}
             <br />
-            <span className="text-sage-600">together.</span>
+            <span className="text-sage-600">{t("hero.titleLine2")}</span>
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-zinc-500 max-w-2xl mx-auto leading-relaxed">
-            Stop losing apartment links in group chats. Bolyst gives you and your
-            roommates a shared board to save, compare, and decide on your next
-            home.
+            {t("hero.description")}
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
             <Link
               href="/sign-up"
               className="px-8 py-3.5 text-sm font-semibold bg-sage-600 text-white rounded-2xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-lg shadow-sage-600/25"
             >
-              Start your board, it&apos;s free
+              {t("hero.cta")}
             </Link>
           </div>
         </div>
@@ -84,19 +89,18 @@ export default async function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
-              Everything you need to decide,{" "}
-              <span className="text-sage-600">together</span>
+              {t("features.heading")}{" "}
+              <span className="text-sage-600">{t("features.headingAccent")}</span>
             </h2>
             <p className="mt-4 text-base text-zinc-500 max-w-xl mx-auto">
-              No more scattered links, lost screenshots, or &quot;which one was
-              that again?&quot; moments.
+              {t("features.subheading")}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <FeatureCard
-              title="Share with your people"
-              description="Invite roommates or your partner by email. Everyone can add listings, comment, tag, and favorite. All in one place."
+              title={t("features.share.title")}
+              description={t("features.share.description")}
               videoSrc={`${CDN}/videos/feature-share.mp4`}
               videoPoster={`${CDN}/images/feature-share.png`}
               icon={
@@ -109,8 +113,8 @@ export default async function Home() {
               }
             />
             <FeatureCard
-              title="Map view"
-              description="See every listing on a map with pins for work, uni, or anywhere that matters. Distance calculated automatically."
+              title={t("features.map.title")}
+              description={t("features.map.description")}
               videoSrc={`${CDN}/videos/feature-map.mp4`}
               videoPoster={`${CDN}/images/feature-map.png`}
               icon={
@@ -121,8 +125,8 @@ export default async function Home() {
               }
             />
             <FeatureCard
-              title="Compare side by side"
-              description="Select any listings and compare price, size, price per m², location, and tags in a clean table. Sort by any column."
+              title={t("features.compare.title")}
+              description={t("features.compare.description")}
               videoSrc={`${CDN}/videos/feature-compare.mp4`}
               videoPoster={`${CDN}/images/feature-compare.png`}
               icon={
@@ -141,7 +145,7 @@ export default async function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
-              Up and running in under a minute
+              {t("howItWorks.heading")}
             </h2>
           </div>
 
@@ -151,11 +155,10 @@ export default async function Home() {
                 1
               </div>
               <h3 className="text-[15px] font-bold text-zinc-900 mb-2">
-                Create a board
+                {t("howItWorks.step1.title")}
               </h3>
               <p className="text-sm text-zinc-500 leading-relaxed">
-                Give it a name like &quot;Berlin Q2&quot; or &quot;Stockholm
-                summer&quot; and invite your co-searchers.
+                {t("howItWorks.step1.description")}
               </p>
             </div>
             <div className="text-center">
@@ -163,11 +166,10 @@ export default async function Home() {
                 2
               </div>
               <h3 className="text-[15px] font-bold text-zinc-900 mb-2">
-                Paste a link
+                {t("howItWorks.step2.title")}
               </h3>
               <p className="text-sm text-zinc-500 leading-relaxed">
-                Drop in a listing URL and Bolyst extracts the title, price,
-                images, and location automatically.
+                {t("howItWorks.step2.description")}
               </p>
             </div>
             <div className="text-center">
@@ -175,11 +177,11 @@ export default async function Home() {
                 3
               </div>
               <h3 className="text-[15px] font-bold text-zinc-900 mb-2">
-                Compare & decide
+                {t("howItWorks.step3.title")}
               </h3>
               <p className="text-sm text-zinc-500 leading-relaxed">
-                Tag, comment, favorite, and compare listings until you find
-                the one. <span className="text-sage-600 font-semibold">Together.</span>
+                {t("howItWorks.step3.description")}{" "}
+                <span className="text-sage-600 font-semibold">{t("howItWorks.step3.accent")}</span>
               </p>
             </div>
           </div>
@@ -192,69 +194,62 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white rounded-2xl border border-zinc-100 p-8">
               <h3 className="text-lg font-bold text-zinc-900 mb-3">
-                Paste any listing URL
+                {t("details.pasteUrl.title")}
               </h3>
               <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-                Works with any apartment site. Finn.no, Immobilienscout, Hemnet,
-                Funda, you name it. We extract what we can and you fill in
-                the rest.
+                {t("details.pasteUrl.description")}
               </p>
               <div className="flex items-center gap-2 text-xs text-sage-600 font-medium">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M3 8.5l3 3 7-7" />
                 </svg>
-                Title, price, images, and location auto-extracted
+                {t("details.pasteUrl.check")}
               </div>
             </div>
             <div className="bg-white rounded-2xl border border-zinc-100 p-8">
               <h3 className="text-lg font-bold text-zinc-900 mb-3">
-                Reference points on the map
+                {t("details.referencePoints.title")}
               </h3>
               <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-                Pin your work, university, gym, or favorite coffee shop. Every
-                listing shows the distance to your closest pin.
+                {t("details.referencePoints.description")}
               </p>
               <div className="flex items-center gap-2 text-xs text-sage-600 font-medium">
                 <span className="text-base">★</span>
-                Distance to nearest pin on every card
+                {t("details.referencePoints.check")}
               </div>
             </div>
             <div className="bg-white rounded-2xl border border-zinc-100 p-8">
               <h3 className="text-lg font-bold text-zinc-900 mb-3">
-                Track your progress
+                {t("details.trackProgress.title")}
               </h3>
               <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-                Move listings through stages: New, Viewing, Applied, Accepted, or
-                Rejected. Know exactly where each apartment stands at a glance.
+                {t("details.trackProgress.description")}
               </p>
               <div className="flex flex-wrap gap-2">
-                {["New", "Viewing", "Applied", "Accepted"].map((s) => (
+                {(["New", "Viewing", "Applied", "Accepted"] as const).map((s) => (
                   <span
                     key={s}
                     className="px-2.5 py-1 text-xs font-medium rounded-full bg-sage-50 text-sage-700 border border-sage-200"
                   >
-                    {s}
+                    {tStatus(s)}
                   </span>
                 ))}
               </div>
             </div>
             <div className="bg-white rounded-2xl border border-zinc-100 p-8">
               <h3 className="text-lg font-bold text-zinc-900 mb-3">
-                Tags & favorites
+                {t("details.tagsFavorites.title")}
               </h3>
               <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-                Create custom tags per board like &quot;balcony&quot;,
-                &quot;pet-friendly&quot;, or &quot;close to metro&quot; and
-                filter or sort by them. Heart your favorites and see who else
-                liked what.
+                {t("details.tagsFavorites.description")}
               </p>
               <div className="flex flex-wrap gap-2">
-                {["Balcony", "Pet-friendly", "Near metro"].map((t) => (
+                {(t.raw("details.tagsFavorites.exampleTags") as string[]).map((tag: string) => (
                   <span
-                    key={t}
+                    key={tag}
                     className="px-2.5 py-1 text-xs font-medium rounded-full bg-sage-50 text-sage-700 border border-sage-200"
                   >
-                    {t}
+                    {tag}
                   </span>
                 ))}
               </div>
@@ -267,21 +262,20 @@ export default async function Home() {
       <section className="py-24 px-6 bg-sage-50/50">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
-            Your next home is out there.
+            {t("cta.titleLine1")}
             <br />
-            Find it,{" "}
-            <span className="text-sage-600">together.</span>
+            {t("cta.titleLine2")}{" "}
+            <span className="text-sage-600">{t("cta.titleAccent")}</span>
           </h2>
           <p className="mt-5 text-base text-zinc-500">
-            Free to use. Create a board in seconds. Invite whoever you&apos;re
-            searching with.
+            {t("cta.description")}
           </p>
           <div className="mt-8">
             <Link
               href="/sign-up"
               className="inline-flex px-8 py-3.5 text-sm font-semibold bg-sage-600 text-white rounded-2xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-lg shadow-sage-600/25"
             >
-              Get started for free
+              {t("cta.button")}
             </Link>
           </div>
         </div>
@@ -302,26 +296,25 @@ export default async function Home() {
                 </span>
               </a>
               <p className="text-sm text-zinc-500 leading-relaxed">
-                The shared workspace for apartment hunting.
-                Save listings, compare options, and decide,{" "}
-                <span className="text-sage-600 font-medium">together</span>.
+                {t("footer.description")}{" "}
+                <span className="text-sage-600 font-medium">{t("footer.descriptionAccent")}</span>.
               </p>
             </div>
 
             {/* Product */}
             <div>
               <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">
-                Product
+                {t("footer.product")}
               </h4>
               <ul className="space-y-2.5">
                 <li>
                   <Link href="/sign-up" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
-                    Get started
+                    {t("footer.getStarted")}
                   </Link>
                 </li>
                 <li>
                   <a href="#features" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
-                    Features
+                    {t("footer.features")}
                   </a>
                 </li>
               </ul>
@@ -330,12 +323,12 @@ export default async function Home() {
             {/* Company */}
             <div>
               <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">
-                Company
+                {t("footer.company")}
               </h4>
               <ul className="space-y-2.5">
                 <li>
                   <a href="mailto:hello@bolyst.com" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
-                    Contact
+                    {t("footer.contact")}
                   </a>
                 </li>
               </ul>
@@ -347,7 +340,7 @@ export default async function Home() {
               &copy; {new Date().getFullYear()} Bolyst
             </p>
             <p className="text-xs text-zinc-400">
-              Find your place, <span className="text-sage-500">together</span>.
+              {t("footer.tagline")} <span className="text-sage-500">{t("footer.taglineAccent")}</span>.
             </p>
           </div>
         </div>
