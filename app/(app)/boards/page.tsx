@@ -35,7 +35,7 @@ export default async function BoardsPage() {
     <main className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
       <header className="flex items-center justify-between mb-10">
         <div>
-          <a href="/?browse" className="inline-flex items-center gap-2.5">
+          <a href="/?browse=1" className="inline-flex items-center gap-2.5">
             <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
               B
             </span>

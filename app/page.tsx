@@ -10,8 +10,9 @@ const CDN = "https://pdxuzstqqrliidgsfblc.supabase.co/storage/v1/object/public/a
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const params = await searchParams;
+  const isBrowsing = params.browse !== undefined;
   const { userId } = await auth();
-  if (userId && !("browse" in params)) redirect("/boards");
+  if (userId && !isBrowsing) redirect("/boards");
 
   const isLoggedIn = !!userId;
 
