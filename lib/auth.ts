@@ -13,12 +13,22 @@ export async function getOrCreateUser() {
     .filter(Boolean)
     .join(" ") || null;
 
-  const existing = await prisma.user.findUnique({ where: { clerkId: userId } });
+  let existing = await prisma.user.findUnique({ where: { clerkId: userId } });
 
-  const user = await prisma.user.upsert({
-    where: { clerkId: userId },
-    update: { email, name },
-    create: { clerkId: userId, email, name },
+  // If no user found by clerkId, check if one exists with the same email
+  // (handles migration from dev to production Clerk instance)
+  if (!existing) {
+    const byEmail = await prisma.user.findUnique({ where: { email } });
+    if (byEmail) {
+      existing = await prisma.user.update({
+        where: { email },
+        data: { clerkId: userId, name },
+      });
+    }
+  }
+
+  const user = existing ?? await prisma.user.create({
+    data: { clerkId: userId, email, name },
   });
 
   // On first login, process any pending board invites
