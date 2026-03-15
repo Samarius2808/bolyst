@@ -6,63 +6,63 @@
       "goToBoards": "Zu den Boards"
     },
     "hero": {
-      "subtitle": "Gemeinsame Wohnungssuche",
+      "subtitle": "Die gemeinsame Wohnungssuche",
       "titleLine1": "Findet euer Zuhause,",
       "titleLine2": "gemeinsam.",
-      "description": "Keine verlorenen Wohnungslinks mehr in Gruppenchats. Mit Bolyst habt ihr und eure Mitbewohner ein gemeinsames Board zum Speichern, Vergleichen und Entscheiden.",
+      "description": "Schluss mit verlorenen Links im Gruppenchat. Mit Bolyst habt ihr ein gemeinsames Board zum Speichern, Vergleichen und Entscheiden.",
       "cta": "Board erstellen \u2013 kostenlos"
     },
     "features": {
-      "heading": "Alles was ihr braucht, um",
+      "heading": "Alles, was ihr braucht, um",
       "headingAccent": "gemeinsam",
       "subheading": "zu entscheiden. Keine verstreuten Links, verlorenen Screenshots oder \"Welche war das nochmal?\"-Momente.",
       "share": {
-        "title": "Mit deinen Leuten teilen",
-        "description": "Lade Mitbewohner oder Partner per E-Mail ein. Jeder kann Inserate hinzuf\u00fcgen, kommentieren, taggen und favorisieren. Alles an einem Ort."
+        "title": "Gemeinsam suchen",
+        "description": "Ladet Mitbewohner oder Partner per E-Mail ein. Alle k\u00f6nnen Inserate hinzuf\u00fcgen, kommentieren, taggen und favorisieren \u2013 alles an einem Ort."
       },
       "map": {
         "title": "Kartenansicht",
-        "description": "Sieh alle Inserate auf einer Karte mit Pins f\u00fcr Arbeit, Uni oder andere wichtige Orte. Entfernung wird automatisch berechnet."
+        "description": "Alle Inserate auf einer Karte \u2013 mit Pins f\u00fcr Arbeit, Uni oder andere wichtige Orte. Entfernungen werden automatisch berechnet."
       },
       "compare": {
-        "title": "Seite an Seite vergleichen",
-        "description": "W\u00e4hle Inserate aus und vergleiche Preis, Gr\u00f6\u00dfe, Preis pro m\u00b2, Lage und Tags in einer \u00fcbersichtlichen Tabelle. Sortiere nach jeder Spalte."
+        "title": "Direkt vergleichen",
+        "description": "W\u00e4hlt Inserate aus und vergleicht Preis, Gr\u00f6\u00dfe, Preis pro m\u00b2, Lage und Tags in einer \u00fcbersichtlichen Tabelle."
       }
     },
     "howItWorks": {
       "heading": "In unter einer Minute startklar",
       "step1": {
         "title": "Board erstellen",
-        "description": "Gib ihm einen Namen wie \"Berlin Q2\" oder \"Hamburg Sommer\" und lade deine Mitsuchenden ein."
+        "description": "Gebt eurem Board einen Namen wie \"Berlin Q2\" oder \"Hamburg Sommer\" und ladet eure Mitsuchenden ein."
       },
       "step2": {
         "title": "Link einf\u00fcgen",
-        "description": "F\u00fcge eine Inserats-URL ein und Bolyst extrahiert automatisch Titel, Preis, Bilder und Standort."
+        "description": "F\u00fcgt eine URL ein und Bolyst \u00fcbernimmt automatisch Titel, Preis, Bilder und Standort."
       },
       "step3": {
         "title": "Vergleichen & entscheiden",
-        "description": "Tagge, kommentiere, favorisiere und vergleiche Inserate, bis ihr die richtige findet.",
+        "description": "Taggt, kommentiert, favorisiert und vergleicht Inserate \u2013 bis ihr die richtige findet.",
         "accent": "Gemeinsam."
       }
     },
     "details": {
       "pasteUrl": {
-        "title": "Beliebige Inserats-URL einf\u00fcgen",
-        "description": "Funktioniert mit jeder Immobilienseite. Immobilienscout, Finn.no, Hemnet, Funda \u2013 egal. Wir extrahieren was wir k\u00f6nnen, den Rest f\u00fcllt ihr aus.",
-        "check": "Titel, Preis, Bilder und Standort automatisch extrahiert"
+        "title": "Einfach den Link einf\u00fcgen",
+        "description": "Funktioniert mit jeder Immobilienseite \u2013 Immobilienscout, Finn.no, Hemnet, Funda, egal. Wir lesen aus, was geht. Den Rest f\u00fcllt ihr aus.",
+        "check": "Titel, Preis, Bilder und Standort werden automatisch \u00fcbernommen"
       },
       "referencePoints": {
         "title": "Referenzpunkte auf der Karte",
-        "description": "Markiere deinen Arbeitsplatz, Uni, Fitnessstudio oder Lieblingscaf\u00e9. Jedes Inserat zeigt die Entfernung zum n\u00e4chsten Pin.",
+        "description": "Markiert euren Arbeitsplatz, die Uni, das Fitnessstudio oder euer Lieblingscaf\u00e9. Jedes Inserat zeigt die Entfernung zum n\u00e4chsten Pin.",
         "check": "Entfernung zum n\u00e4chsten Pin auf jeder Karte"
       },
       "trackProgress": {
-        "title": "Fortschritt verfolgen",
-        "description": "Verschiebe Inserate durch Phasen: Neu, Besichtigung, Beworben, Zugesagt oder Abgelehnt. Sieh auf einen Blick, wo jede Wohnung steht."
+        "title": "Status im Blick behalten",
+        "description": "Verschiebt Inserate durch Phasen: Neu, Besichtigung, Beworben, Zugesagt oder Abgelehnt. Auf einen Blick sehen, wo jede Wohnung steht."
       },
       "tagsFavorites": {
         "title": "Tags & Favoriten",
-        "description": "Erstelle eigene Tags pro Board wie \"Balkon\", \"Haustierfreundlich\" oder \"Nahe U-Bahn\" und filtere oder sortiere danach. Markiere deine Favoriten und sieh, wer was geliked hat.",
+        "description": "Erstellt eigene Tags pro Board wie \"Balkon\", \"Haustierfreundlich\" oder \"Nahe U-Bahn\" und filtert danach. Markiert eure Favoriten und seht, wem was gef\u00e4llt.",
         "exampleTags": ["Balkon", "Haustierfreundlich", "Nahe U-Bahn"]
       }
     },
@@ -70,11 +70,11 @@
       "titleLine1": "Euer n\u00e4chstes Zuhause ist da drau\u00dfen.",
       "titleLine2": "Findet es,",
       "titleAccent": "gemeinsam.",
-      "description": "Kostenlos nutzbar. Erstellt ein Board in Sekunden. Ladet ein, mit wem ihr sucht.",
+      "description": "Kostenlos nutzbar. Board in Sekunden erstellen. Einfach einladen, mit wem ihr sucht.",
       "button": "Kostenlos loslegen"
     },
     "footer": {
-      "description": "Der gemeinsame Arbeitsbereich f\u00fcr die Wohnungssuche. Inserate speichern, Optionen vergleichen und",
+      "description": "Die gemeinsame Plattform f\u00fcr die Wohnungssuche. Inserate speichern, vergleichen und",
       "descriptionAccent": "gemeinsam",
       "product": "Produkt",
       "getStarted": "Loslegen",
@@ -171,9 +171,9 @@
     "urlHint": "F\u00fcge eine Inserats-URL ein, um Details automatisch auszuf\u00fcllen.",
     "urlPlaceholder": "https://...",
     "cancel": "Abbrechen",
-    "extracting": "Wird extrahiert\u2026",
+    "extracting": "Wird ausgelesen\u2026",
     "extract": "Extrahieren",
-    "dataExtracted": "Daten aus URL extrahiert",
+    "dataExtracted": "Daten aus URL \u00fcbernommen",
     "titlePlaceholder": "Titel *",
     "urlOptionalPlaceholder": "URL (optional)",
     "pricePlaceholder": "Preis (\u20ac/Monat)",
