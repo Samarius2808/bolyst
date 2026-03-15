@@ -74,3 +74,8 @@ textarea::placeholder {
 .modal-scroll::-webkit-scrollbar-thumb:hover {
   background: #a1a1aa;
 }
+
+/* Hide Leaflet attribution watermark */
+.leaflet-container .leaflet-control-attribution {
+  display: none !important;
+}

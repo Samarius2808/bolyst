@@ -5,6 +5,7 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 import { BoardSettings } from "./BoardSettings";
+import { AddListingModal } from "../listings/AddListingModal";
 
 interface Member {
   id: string;
@@ -28,6 +29,7 @@ function getInitial(name: string | null, email: string): string {
 export function BoardHeader({
   board,
   isOwner,
+  boardTags = [],
 }: {
   board: {
     id: string;
@@ -37,8 +39,10 @@ export function BoardHeader({
     pendingInvites: string[];
   };
   isOwner: boolean;
+  boardTags?: { id: string; name: string }[];
 }) {
   const [showSettings, setShowSettings] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
   const t = useTranslations("boardHeader");
   const tb = useTranslations("boards");
 
@@ -91,6 +95,12 @@ export function BoardHeader({
           </div>
         </div>
         <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setShowAdd(true)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
+          >
+            {t("addListing")}
+          </button>
           {board.listingCount >= 2 && (
             <Link
               href={`/boards/${board.id}/compare`}
@@ -125,6 +135,14 @@ export function BoardHeader({
           members={board.members}
           initialPendingInvites={board.pendingInvites}
           onClose={() => setShowSettings(false)}
+        />
+      )}
+
+      {showAdd && (
+        <AddListingModal
+          boardId={board.id}
+          boardTags={boardTags}
+          onClose={() => setShowAdd(false)}
         />
       )}
     </>

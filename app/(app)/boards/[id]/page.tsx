@@ -78,6 +78,7 @@ export default async function BoardDetailPage({
           pendingInvites: board.invites.map((i) => i.email),
         }}
         isOwner={isOwner}
+        boardTags={board.tags}
       />
       <ListingGrid
         boardId={board.id}

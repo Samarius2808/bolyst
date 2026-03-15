@@ -21,9 +21,12 @@ interface ListingCardProps {
   isFavorited?: boolean;
   onToggleFavorite?: () => void;
   favoritedBy?: { id: string; name: string | null; email: string }[];
+  boardMembers?: { id: string; name: string | null; email: string }[];
   selectable?: boolean;
   selected?: boolean;
   onToggleSelect?: () => void;
+  showCommute?: boolean;
+  onCommute?: () => void;
   onClick: () => void;
   onHover?: () => void;
   onHoverEnd?: () => void;
@@ -46,19 +49,14 @@ const tagColors = [
   "bg-rose-50 text-rose-600",
 ];
 
-const heartColors = [
-  { bg: "bg-rose-400", text: "text-white" },
-  { bg: "bg-blue-400", text: "text-white" },
-  { bg: "bg-emerald-400", text: "text-white" },
-  { bg: "bg-amber-400", text: "text-white" },
-  { bg: "bg-sage-400", text: "text-white" },
+// Must match avatarColors in BoardHeader.tsx
+const memberColors = [
+  { bg: "bg-sage-100", text: "text-sage-600" },
+  { bg: "bg-blue-100", text: "text-blue-600" },
+  { bg: "bg-emerald-100", text: "text-emerald-600" },
+  { bg: "bg-amber-100", text: "text-amber-600" },
+  { bg: "bg-rose-100", text: "text-rose-600" },
 ];
-
-function hashHeartColor(name: string) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return heartColors[Math.abs(hash) % heartColors.length];
-}
 
 function hashColor(name: string): string {
   let hash = 0;
@@ -81,9 +79,12 @@ export function ListingCard({
   isFavorited = false,
   onToggleFavorite,
   favoritedBy = [],
+  boardMembers = [],
   selectable = false,
   selected = false,
   onToggleSelect,
+  showCommute = false,
+  onCommute,
   onClick,
   onHover,
   onHoverEnd,
@@ -288,7 +289,8 @@ export function ListingCard({
           <div className="flex items-center gap-1 mt-2">
             {favoritedBy.map((u) => {
               const name = u.name || u.email.split("@")[0];
-              const color = hashHeartColor(name);
+              const memberIdx = boardMembers.findIndex((m) => m.id === u.id);
+              const color = memberColors[memberIdx !== -1 ? memberIdx % memberColors.length : 0];
               return (
                 <span
                   key={u.id}
@@ -306,14 +308,14 @@ export function ListingCard({
         )}
 
         <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-zinc-50 text-xs text-zinc-300">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {sourceUrl ? (
               <a
                 href={sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="text-sage-400 hover:text-sage-600 inline-flex items-center gap-1 transition-colors"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-sage-400 hover:bg-sage-50 hover:text-sage-600 transition-colors text-[11px] font-medium"
               >
                 <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
@@ -321,22 +323,38 @@ export function ListingCard({
                 {t("link")}
               </a>
             ) : (
-              <span>{t("manual")}</span>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[11px] font-medium text-zinc-300">{t("manual")}</span>
             )}
-            {displayName && (
-              <span className="text-zinc-300 truncate max-w-[80px]" title={addedBy?.name || addedBy?.email || ""}>
-                · {displayName}
+            {showCommute && (
+              <span
+                role="button"
+                onClick={(e) => { e.stopPropagation(); onCommute?.(); }}
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-sage-400 hover:bg-sage-50 hover:text-sage-600 transition-colors text-[11px] font-medium"
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="6" cy="19" r="3" />
+                  <circle cx="18" cy="5" r="3" />
+                  <path d="M12 19h4.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H12" />
+                </svg>
+                {t("commute")}
               </span>
             )}
           </div>
-          {commentCount > 0 && (
-            <span className="inline-flex items-center gap-1 text-zinc-400">
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v5a2 2 0 01-2 2H6l-3 3V4z" />
-              </svg>
-              {commentCount}
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {displayName && (
+              <span className="text-zinc-300 truncate max-w-[80px] text-[11px]" title={addedBy?.name || addedBy?.email || ""}>
+                {displayName}
+              </span>
+            )}
+            {commentCount > 0 && (
+              <span className="inline-flex items-center gap-1 text-zinc-400">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v5a2 2 0 01-2 2H6l-3 3V4z" />
+                </svg>
+                {commentCount}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </button>

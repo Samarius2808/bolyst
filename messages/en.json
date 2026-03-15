@@ -105,6 +105,7 @@
   },
   "boardHeader": {
     "boards": "Boards",
+    "addListing": "+ Add listing",
     "compare": "Compare",
     "settings": "Settings"
   },
@@ -162,7 +163,8 @@
     },
     "link": "Link",
     "manual": "Manual",
-    "likedThis": "{name} liked this"
+    "likedThis": "{name} liked this",
+    "commute": "Commute"
   },
   "addListing": {
     "title": "Add a listing",
@@ -276,7 +278,16 @@
     "referencePoint": "Reference point",
     "fromNearestPin": "{distance} from nearest pin",
     "viewDetails": "View details \u2192",
-    "showingCount": "Showing {shown} of {total} listings on map. {missing} missing location data."
+    "showingCount": "Showing {shown} of {total} listings on map. {missing} missing location data.",
+    "routeTo": "Route to {name}",
+    "calculatingRoute": "Calculating\u2026",
+    "mode_walking": "Walk",
+    "mode_cycling": "Bike",
+    "mode_transit": "Transit",
+    "commute": "Commute",
+    "calculate": "Calculate",
+    "addPinNudge": "Add a reference point (work, uni, gym) to see distances and commute times.",
+    "fasterToWalk": "Faster to walk"
   },
   "metadata": {
     "title": "Bolyst",

@@ -242,7 +242,7 @@ export function SortControls({
           setOpen(!open);
           setExpandedGroup(null);
         }}
-        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
+        className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium rounded-lg border transition-all ${
           isActive
             ? "bg-sage-50 border-sage-200 text-sage-600"
             : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"

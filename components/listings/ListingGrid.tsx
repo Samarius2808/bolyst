@@ -85,10 +85,23 @@ export function ListingGrid({
   const [favorites, setFavorites] = useState<Set<string>>(new Set(favoritedIds));
   const [compareMode, setCompareMode] = useState(false);
   const [compareSet, setCompareSet] = useState<Set<string>>(new Set());
+  const [commuteListingId, setCommuteListingId] = useState<string | null>(null);
 
   const hasGeocodedListings = listings.some(
     (l) => l.latitude != null && l.longitude != null
   );
+
+  const geoCenter = useMemo(() => {
+    const coords = listings.filter((l) => l.latitude != null && l.longitude != null);
+    if (coords.length === 0 && boardPins.length === 0) return null;
+    const all = [
+      ...coords.map((l) => ({ lat: l.latitude!, lng: l.longitude! })),
+      ...boardPins.map((p) => ({ lat: p.latitude, lng: p.longitude })),
+    ];
+    const lat = all.reduce((s, c) => s + c.lat, 0) / all.length;
+    const lng = all.reduce((s, c) => s + c.lng, 0) / all.length;
+    return { lat, lng };
+  }, [listings, boardPins]);
 
   const distanceMap = useMemo(() => {
     const map = new Map<string, number | null>();
@@ -205,71 +218,6 @@ export function ListingGrid({
 
   return (
     <>
-      {/* Toolbar */}
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-        <div className="flex items-center gap-2 flex-wrap">
-          {listings.length > 0 && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 text-zinc-500 rounded-full text-xs font-medium">
-              {showFavoritesOnly
-                ? (sortedListings.length !== 1
-                    ? t("favoriteCountPlural", { count: sortedListings.length })
-                    : t("favoriteCount", { count: sortedListings.length }))
-                : (listings.length !== 1
-                    ? tb("listingCountPlural", { count: listings.length })
-                    : tb("listingCount", { count: listings.length }))}
-            </span>
-          )}
-          {listings.length > 0 && (
-            <>
-              <SortControls
-                value={sortKey}
-                onChange={setSortKey}
-                hasPins={boardPins.length > 0}
-                boardTags={boardTags}
-                members={members}
-                pins={boardPins}
-              />
-              <button
-                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
-                  showFavoritesOnly
-                    ? "bg-rose-50 border-rose-200 text-rose-600"
-                    : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
-                }`}
-              >
-                <svg width="12" height="12" viewBox="0 0 16 16" fill={showFavoritesOnly ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
-                  <path d="M8 14s-5.5-3.5-5.5-7.5C2.5 4 4.5 2 6.5 2c1.1 0 2.1.5 2.5 1.5C9.4 2.5 10.4 2 11.5 2c2 0 3.5 1.5 3.5 3.5S13.5 10.5 8 14z" />
-                </svg>
-                {t("favorites")}
-              </button>
-              <button
-                onClick={() => {
-                  setCompareMode(!compareMode);
-                  if (compareMode) setCompareSet(new Set());
-                }}
-                className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border transition-all ${
-                  compareMode
-                    ? "bg-sage-50 border-sage-200 text-sage-600"
-                    : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
-                }`}
-              >
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="1" y="3" width="5" height="10" rx="1" />
-                  <rect x="10" y="3" width="5" height="10" rx="1" />
-                </svg>
-                {t("compare")}
-              </button>
-            </>
-          )}
-        </div>
-        <button
-          onClick={() => setShowAdd(true)}
-          className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
-        >
-          {t("addListing")}
-        </button>
-      </div>
-
       {listings.length === 0 ? (
         <div className="text-center py-24 bg-white border border-zinc-100/80 rounded-2xl">
           <svg
@@ -303,13 +251,56 @@ export function ListingGrid({
             hasGeocodedListings ? "flex gap-6 items-start" : ""
           }
         >
-          <div
-            className={
-              hasGeocodedListings
-                ? "flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-2 gap-5 items-start"
-                : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start"
-            }
-          >
+          <div className={hasGeocodedListings ? "flex-1 min-w-0" : ""}>
+            {/* Toolbar */}
+            <div className="flex items-center gap-2 flex-wrap mb-4">
+              <SortControls
+                value={sortKey}
+                onChange={setSortKey}
+                hasPins={boardPins.length > 0}
+                boardTags={boardTags}
+                members={members}
+                pins={boardPins}
+              />
+              <button
+                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                className={`inline-flex items-center gap-1 px-3.5 py-2.5 text-xs font-medium rounded-lg border transition-all ${
+                  showFavoritesOnly
+                    ? "bg-rose-50 border-rose-200 text-rose-600"
+                    : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
+                }`}
+              >
+                <svg width="12" height="12" viewBox="0 0 16 16" fill={showFavoritesOnly ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
+                  <path d="M8 14s-5.5-3.5-5.5-7.5C2.5 4 4.5 2 6.5 2c1.1 0 2.1.5 2.5 1.5C9.4 2.5 10.4 2 11.5 2c2 0 3.5 1.5 3.5 3.5S13.5 10.5 8 14z" />
+                </svg>
+                {t("favorites")}
+              </button>
+              <button
+                onClick={() => {
+                  setCompareMode(!compareMode);
+                  if (compareMode) setCompareSet(new Set());
+                }}
+                className={`inline-flex items-center gap-1 px-3.5 py-2.5 text-xs font-medium rounded-lg border transition-all ${
+                  compareMode
+                    ? "bg-sage-50 border-sage-200 text-sage-600"
+                    : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
+                }`}
+              >
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="1" y="3" width="5" height="10" rx="1" />
+                  <rect x="10" y="3" width="5" height="10" rx="1" />
+                </svg>
+                {t("compare")}
+              </button>
+            </div>
+
+            <div
+              className={
+                hasGeocodedListings
+                  ? "grid grid-cols-1 sm:grid-cols-2 gap-5 items-start"
+                  : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start"
+              }
+            >
             {sortedListings.map((l) => (
               <ListingCard
                 key={l.id}
@@ -328,9 +319,12 @@ export function ListingGrid({
                 isFavorited={favorites.has(l.id)}
                 onToggleFavorite={() => toggleFavorite(l.id)}
                 favoritedBy={(memberFavorites[l.id] || []).filter((u) => u.id !== currentUserId)}
+                boardMembers={members}
                 selectable={compareMode}
                 selected={compareSet.has(l.id)}
                 onToggleSelect={() => toggleCompare(l.id)}
+                showCommute={hasGeocodedListings && boardPins.length > 0 && l.latitude != null && l.longitude != null}
+                onCommute={() => setCommuteListingId(l.id)}
                 onClick={() => setSelectedId(l.id)}
                 onHover={() => setHoveredId(l.id)}
                 onHoverEnd={() => setHoveredId(null)}
@@ -341,23 +335,29 @@ export function ListingGrid({
                 <p className="text-sm text-zinc-400">{t("noFavorites")}</p>
               </div>
             )}
+            </div>
           </div>
 
           {hasGeocodedListings && (
-            <div className="hidden lg:block w-[480px] flex-shrink-0 sticky top-6 space-y-3">
-              <PinManager
-                boardId={boardId}
-                pins={boardPins}
-                onPinsChange={setBoardPins}
-              />
-              <div className="h-[calc(100vh-14rem)]">
+            <div className="hidden lg:block w-[480px] flex-shrink-0 sticky top-6">
+              <div className="relative z-[500]">
+                <PinManager
+                  boardId={boardId}
+                  pins={boardPins}
+                  onPinsChange={setBoardPins}
+                  geoCenter={geoCenter}
+                />
+              </div>
+              <div className="h-[calc(100vh-16rem)] mt-4">
                 <ListingMapWrapper
                   listings={sortedListings}
                   pins={boardPins}
                   favoritedIds={favorites}
                   members={members}
                   hoveredId={hoveredId}
+                  commuteListingId={commuteListingId}
                   onListingClick={(id) => setSelectedId(id)}
+                  onCommuteClose={() => setCommuteListingId(null)}
                 />
               </div>
             </div>
