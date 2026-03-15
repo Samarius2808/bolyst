@@ -48,7 +48,7 @@
     "details": {
       "pasteUrl": {
         "title": "Einfach den Link einf\u00fcgen",
-        "description": "Funktioniert mit jeder Immobilienseite \u2013 Immobilienscout, Finn.no, Hemnet, Funda, egal. Wir lesen aus, was geht. Den Rest f\u00fcllt ihr aus.",
+        "description": "Funktioniert mit jeder Immobilienseite \u2013 Immobilienscout, Finn.no, Hemnet, Funda, egal. Wir \u00fcbernehmen, was geht. Den Rest gebt ihr manuell ein.",
         "check": "Titel, Preis, Bilder und Standort werden automatisch \u00fcbernommen"
       },
       "referencePoints": {
