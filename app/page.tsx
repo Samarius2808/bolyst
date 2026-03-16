@@ -6,7 +6,7 @@ import { HeroVideo } from "@/components/landing/HeroVideo";
 import { FeatureCard } from "@/components/landing/FeatureCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const CDN = "https://pdxuzstqqrliidgsfblc.supabase.co/storage/v1/object/public/assets";
+const CDN = "https://bolyst-cdn.bolyst-team.workers.dev";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const params = await searchParams;
