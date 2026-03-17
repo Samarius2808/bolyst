@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { HeroVideo } from "@/components/landing/HeroVideo";
+import { ContainerScroll, ContainerInset } from "@/components/landing/VideoScroll";
 import { FeatureCard } from "@/components/landing/FeatureCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
@@ -87,17 +88,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
         </div>
       </section>
 
-      {/* Hero video */}
-      <section className="pb-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="rounded-2xl border border-sage-200/60 shadow-2xl shadow-sage-900/5 overflow-hidden bg-white">
-            <HeroVideo
-              src={`${CDN}/videos/hero.mp4`}
-              poster={`${CDN}/images/hero-screenshot.png`}
-            />
-          </div>
-        </div>
-      </section>
+      {/* Hero video — scroll-locked reveal */}
+      <ContainerScroll className="bg-[#faf9f7]">
+        <ContainerInset roundednessRange={[24, 0]} className="shadow-2xl shadow-sage-900/10 border border-sage-200/60 bg-white">
+          <HeroVideo
+            src={`${CDN}/videos/hero.mp4`}
+            poster={`${CDN}/images/hero-screenshot.png`}
+          />
+        </ContainerInset>
+      </ContainerScroll>
 
       {/* Features */}
       <section className="py-24 px-6" id="features">
