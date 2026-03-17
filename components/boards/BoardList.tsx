@@ -20,7 +20,7 @@ export function BoardList({ boards }: { boards: Board[] }) {
     <>
       <div className="flex items-center justify-between mb-6">
         {boards.length > 0 ? (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 text-zinc-500 rounded-full text-xs font-medium">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 rounded-full text-xs font-medium">
             {boards.length !== 1
               ? t("countPlural", { count: boards.length })
               : t("count", { count: boards.length })}
@@ -37,7 +37,7 @@ export function BoardList({ boards }: { boards: Board[] }) {
       </div>
 
       {boards.length === 0 ? (
-        <div className="text-center py-24 bg-white border border-zinc-100/80 rounded-2xl">
+        <div className="text-center py-24 bg-white dark:bg-zinc-900 border border-zinc-100/80 dark:border-zinc-800 rounded-2xl">
           <svg
             className="mx-auto mb-5 text-sage-200"
             width="56"
@@ -50,7 +50,7 @@ export function BoardList({ boards }: { boards: Board[] }) {
             <rect x="8" y="12" width="40" height="32" rx="4" />
             <path d="M20 28h16M28 20v16" />
           </svg>
-          <h3 className="text-lg font-semibold text-zinc-700 mb-2">
+          <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200 mb-2">
             {t("emptyTitle")}
           </h3>
           <p className="text-sm text-zinc-400 mb-6 max-w-xs mx-auto">

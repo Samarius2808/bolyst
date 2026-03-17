@@ -528,7 +528,7 @@ export function ListingMap({
 
   if (geocoded.length === 0 && pins.length === 0) {
     return (
-      <div className="flex items-center justify-center h-[500px] bg-white border border-zinc-100 rounded-2xl">
+      <div className="flex items-center justify-center h-[500px] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl">
         <p className="text-zinc-400 text-sm">
           {t("noListings")}
         </p>
@@ -557,7 +557,7 @@ export function ListingMap({
 
   return (
     <>
-    <div className="rounded-2xl overflow-hidden border border-zinc-100 bg-white h-full relative">
+    <div className="rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-full relative">
       <MapContainer
         center={center}
         zoom={13}
@@ -580,10 +580,10 @@ export function ListingMap({
           <Marker key={`pin-${p.id}`} position={[p.latitude, p.longitude]} icon={pinIcon}>
             <Popup>
               <div className="min-w-[140px]">
-                <p className="font-semibold text-sm text-sage-700 flex items-center gap-1">
+                <p className="font-semibold text-sm text-sage-700 dark:text-sage-400 flex items-center gap-1">
                   <span>★</span> {p.name}
                 </p>
-                <p className="text-xs text-zinc-400 mt-0.5">{t("referencePoint")}</p>
+                <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">{t("referencePoint")}</p>
               </div>
             </Popup>
           </Marker>
@@ -621,32 +621,32 @@ export function ListingMap({
                       className="w-full h-24 object-cover rounded mb-2"
                     />
                   )}
-                  <p className="font-semibold text-sm text-zinc-900 mb-0.5">
+                  <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-0.5">
                     {l.title}
                   </p>
                   {l.price != null && (
-                    <p className="text-sm font-bold text-zinc-700">
+                    <p className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
                       &euro;{l.price.toLocaleString()}/mo
                     </p>
                   )}
                   {l.location && (
-                    <p className="text-xs text-zinc-400 mt-0.5">{l.location}</p>
+                    <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">{l.location}</p>
                   )}
                   {distStr != null && (
-                    <p className="text-xs text-sage-500 font-medium mt-1">
+                    <p className="text-xs text-sage-500 dark:text-sage-400 font-medium mt-1">
                       ★ {t("fromNearestPin", { distance: distStr })}
                     </p>
                   )}
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() => onListingClick(l.id)}
-                      className="text-xs font-medium text-sage-600 hover:text-sage-700"
+                      className="text-xs font-medium text-sage-600 dark:text-sage-400 hover:text-sage-700"
                     >
                       {t("viewDetails")}
                     </button>
                     {pins.length > 0 && (
                       <>
-                        <span className="text-zinc-200">|</span>
+                        <span className="text-zinc-200 dark:text-zinc-700">|</span>
                         <button
                           onClick={() => {
                             setRoutePanelListingId(
@@ -654,7 +654,7 @@ export function ListingMap({
                             );
                             if (routePanelListingId !== l.id) setRoute(null);
                           }}
-                          className="text-xs font-medium text-zinc-400 hover:text-zinc-600 flex items-center gap-1"
+                          className="text-xs font-medium text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 flex items-center gap-1"
                         >
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="6" cy="19" r="3" />
@@ -675,14 +675,14 @@ export function ListingMap({
 
       {/* Empty pins nudge */}
       {pins.length === 0 && geocoded.length > 0 && !routePanelListingId && (
-        <div className="absolute top-3 left-3 right-3 z-[1000] bg-white/90 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 px-3 py-2 flex items-center gap-2">
-          <span className="text-sage-600 flex-shrink-0">
+        <div className="absolute top-3 left-3 right-3 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-800 px-3 py-2 flex items-center gap-2">
+          <span className="text-sage-600 dark:text-sage-500 flex-shrink-0">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
               <circle cx="8" cy="6" r="1.5" />
             </svg>
           </span>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             {t("addPinNudge")}
           </p>
         </div>
@@ -692,14 +692,14 @@ export function ListingMap({
       {routePanelListing && pins.length > 0 && (
         <div
           ref={routePanelRef}
-          className="absolute bottom-2 left-2 right-2 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-zinc-100 p-3"
+          className="absolute bottom-2 left-2 right-2 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-xl shadow-lg border border-zinc-100 dark:border-zinc-800 p-3"
         >
           {/* Header: listing name + mode tabs + close */}
           <div className="flex items-center justify-between gap-2 mb-2">
-            <p className="text-xs font-semibold text-zinc-700 truncate flex-1">
+            <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-200 truncate flex-1">
               {routePanelListing.title}
             </p>
-            <div className="flex items-center gap-0.5 bg-zinc-100 rounded-lg p-0.5">
+            <div className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5">
               {(["walking", "cycling", "transit"] as TransportMode[]).map((m) => (
                 <button
                   key={m}
@@ -721,8 +721,8 @@ export function ListingMap({
                   }}
                   className={`p-1.5 rounded-md transition-all ${
                     transportMode === m
-                      ? "bg-white shadow-sm text-zinc-700"
-                      : "text-zinc-400 hover:text-zinc-600"
+                      ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-700 dark:text-zinc-200"
+                      : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
                   }`}
                   title={t(`mode_${m}`)}
                 >
@@ -774,13 +774,13 @@ export function ListingMap({
                     transitSlowerThanWalk
                       ? "opacity-50 border border-transparent"
                       : isActive
-                        ? "bg-sage-50 border border-sage-200"
-                        : "hover:bg-zinc-50 border border-transparent"
+                        ? "bg-sage-50 dark:bg-sage-950/40 border border-sage-200 dark:border-sage-800"
+                        : "hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-transparent"
                   }`}
                 >
                   <span className="text-sage-600 text-xs flex-shrink-0">★</span>
-                  <span className="text-xs text-zinc-600 flex-1 truncate">{p.name}</span>
-                  <span className="text-xs font-medium text-zinc-400 flex-shrink-0">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-300 flex-1 truncate">{p.name}</span>
+                  <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex-shrink-0">
                     {isLoading ? (
                       <span className="inline-block w-3 h-3 border-2 border-zinc-300 border-t-sage-500 rounded-full animate-spin" />
                     ) : transitSlowerThanWalk ? (

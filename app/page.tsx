@@ -6,6 +6,7 @@ import { HeroVideo } from "@/components/landing/HeroVideo";
 import { ContainerScroll, ContainerInset } from "@/components/landing/VideoScroll";
 import { FeatureCard } from "@/components/landing/FeatureCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeSelector } from "@/components/settings/ThemeSelector";
 
 const CDN = "https://bolyst-cdn.bolyst-team.workers.dev";
 
@@ -22,20 +23,21 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
   const locale = await getLocale();
 
   return (
-    <div className="min-h-screen bg-[#faf9f7]">
+    <div className="min-h-screen bg-[#faf9f7] dark:bg-[#111110]">
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf9f7]/80 backdrop-blur-lg border-b border-sage-100/60">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf9f7]/80 dark:bg-[#111110]/80 backdrop-blur-lg border-b border-sage-100/60 dark:border-zinc-800/60">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <a href="#" className="flex items-center gap-2.5">
             <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
               B
             </span>
-            <span className="text-lg font-bold tracking-tight text-zinc-900">
+            <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
               Bolyst
             </span>
           </a>
           <div className="flex items-center gap-3">
             <LanguageSwitcher locale={locale} variant="landing" />
+            <ThemeSelector compact toggleSize={11} />
             {isLoggedIn ? (
               <Link
                 href="/boards"
@@ -47,7 +49,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               <>
                 <Link
                   href="/sign-in"
-                  className="px-4 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 >
                   {t("nav.signIn")}
                 </Link>
@@ -69,12 +71,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
           <p className="text-sm font-medium text-sage-600 mb-8">
             {t("hero.subtitle")}
           </p>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 leading-[1.08]">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.08]">
             {t("hero.titleLine1")}
             <br />
             <span className="text-sage-600">{t("hero.titleLine2")}</span>.
           </h1>
-          <p className="mt-6 text-lg sm:text-xl text-zinc-500 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-lg sm:text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
             {t("hero.description")}
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
@@ -89,8 +91,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       </section>
 
       {/* Hero video — scroll-locked reveal */}
-      <ContainerScroll className="bg-[#faf9f7]">
-        <ContainerInset roundednessRange={[24, 0]} className="shadow-2xl shadow-sage-900/10 border border-sage-200/60 bg-white">
+      <ContainerScroll className="bg-[#faf9f7] dark:bg-[#111110]">
+        <ContainerInset roundednessRange={[24, 0]} className="shadow-2xl shadow-sage-900/10 border border-sage-200/60 dark:border-zinc-700/60 bg-white dark:bg-zinc-900">
           <HeroVideo
             src={`${CDN}/videos/hero.mp4`}
             poster={`${CDN}/images/hero-screenshot.png`}
@@ -102,11 +104,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       <section className="py-24 px-6" id="features">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
               {t("features.heading")}{" "}
               <span className="text-sage-600">{t("features.headingAccent")}</span>.
             </h2>
-            <p className="mt-4 text-base text-zinc-500 max-w-xl mx-auto">
+            <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto">
               {t("features.subheading")}
             </p>
           </div>
@@ -155,10 +157,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       </section>
 
       {/* How it works */}
-      <section className="py-24 px-6 bg-sage-50/50">
+      <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
               {t("howItWorks.heading")}
             </h2>
           </div>
@@ -168,10 +170,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               <div className="w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
                 1
               </div>
-              <h3 className="text-[15px] font-bold text-zinc-900 mb-2">
+              <h3 className="text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 {t("howItWorks.step1.title")}
               </h3>
-              <p className="text-sm text-zinc-500 leading-relaxed">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 {t("howItWorks.step1.description")}
               </p>
             </div>
@@ -179,10 +181,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               <div className="w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
                 2
               </div>
-              <h3 className="text-[15px] font-bold text-zinc-900 mb-2">
+              <h3 className="text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 {t("howItWorks.step2.title")}
               </h3>
-              <p className="text-sm text-zinc-500 leading-relaxed">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 {t("howItWorks.step2.description")}
               </p>
             </div>
@@ -190,10 +192,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               <div className="w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
                 3
               </div>
-              <h3 className="text-[15px] font-bold text-zinc-900 mb-2">
+              <h3 className="text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 {t("howItWorks.step3.title")}
               </h3>
-              <p className="text-sm text-zinc-500 leading-relaxed">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 {t("howItWorks.step3.description")}{" "}
                 <span className="text-sage-600 font-semibold">{t("howItWorks.step3.accent")}</span>.
               </p>
@@ -206,62 +208,62 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       <section className="py-24 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-2xl border border-zinc-100 p-8">
-              <h3 className="text-lg font-bold text-zinc-900 mb-3">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {t("details.pasteUrl.title")}
               </h3>
-              <p className="text-sm text-zinc-500 leading-relaxed mb-4">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
                 {t("details.pasteUrl.description")}
               </p>
-              <div className="flex items-center gap-2 text-xs text-sage-600 font-medium">
+              <div className="flex items-center gap-2 text-xs text-sage-600 dark:text-sage-400 font-medium">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M3 8.5l3 3 7-7" />
                 </svg>
                 {t("details.pasteUrl.check")}
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-zinc-100 p-8">
-              <h3 className="text-lg font-bold text-zinc-900 mb-3">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {t("details.referencePoints.title")}
               </h3>
-              <p className="text-sm text-zinc-500 leading-relaxed mb-4">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
                 {t("details.referencePoints.description")}
               </p>
-              <div className="flex items-center gap-2 text-xs text-sage-600 font-medium">
+              <div className="flex items-center gap-2 text-xs text-sage-600 dark:text-sage-400 font-medium">
                 <span className="text-base">★</span>
                 {t("details.referencePoints.check")}
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-zinc-100 p-8">
-              <h3 className="text-lg font-bold text-zinc-900 mb-3">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {t("details.trackProgress.title")}
               </h3>
-              <p className="text-sm text-zinc-500 leading-relaxed mb-4">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
                 {t("details.trackProgress.description")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {(["New", "Viewing", "Applied", "Accepted"] as const).map((s) => (
                   <span
                     key={s}
-                    className="px-2.5 py-1 text-xs font-medium rounded-full bg-sage-50 text-sage-700 border border-sage-200"
+                    className="px-2.5 py-1 text-xs font-medium rounded-full bg-sage-50 dark:bg-sage-950/40 text-sage-700 dark:text-sage-400 border border-sage-200 dark:border-sage-800"
                   >
                     {tStatus(s)}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-zinc-100 p-8">
-              <h3 className="text-lg font-bold text-zinc-900 mb-3">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8">
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {t("details.tagsFavorites.title")}
               </h3>
-              <p className="text-sm text-zinc-500 leading-relaxed mb-4">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
                 {t("details.tagsFavorites.description")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {(t.raw("details.tagsFavorites.exampleTags") as string[]).map((tag: string) => (
                   <span
                     key={tag}
-                    className="px-2.5 py-1 text-xs font-medium rounded-full bg-sage-50 text-sage-700 border border-sage-200"
+                    className="px-2.5 py-1 text-xs font-medium rounded-full bg-sage-50 dark:bg-sage-950/40 text-sage-700 dark:text-sage-400 border border-sage-200 dark:border-sage-800"
                   >
                     {tag}
                   </span>
@@ -273,15 +275,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-6 bg-sage-50/50">
+      <section className="py-24 px-6">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
             {t("cta.titleLine1")}
             <br />
             {t("cta.titleLine2")}{" "}
             <span className="text-sage-600">{t("cta.titleAccent")}</span>.
           </h2>
-          <p className="mt-5 text-base text-zinc-500">
+          <p className="mt-5 text-base text-zinc-500 dark:text-zinc-400">
             {t("cta.description")}
           </p>
           <div className="mt-8">
@@ -296,7 +298,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-100 bg-white">
+      <footer className="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#111110]">
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
             {/* Brand */}
@@ -305,29 +307,29 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
                 <span className="w-7 h-7 bg-sage-600 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shadow-sm">
                   B
                 </span>
-                <span className="text-base font-bold text-zinc-900">
+                <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
                   Bolyst
                 </span>
               </a>
-              <p className="text-sm text-zinc-500 leading-relaxed">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 {t("footer.description")}{" "}
-                <span className="text-sage-600 font-medium">{t("footer.descriptionAccent")}</span>.
+                <span className="text-sage-600 dark:text-sage-400 font-medium">{t("footer.descriptionAccent")}</span>.
               </p>
             </div>
 
             {/* Product */}
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-4">
                 {t("footer.product")}
               </h4>
               <ul className="space-y-2.5">
                 <li>
-                  <Link href="/sign-up" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
+                  <Link href="/sign-up" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
                     {t("footer.getStarted")}
                   </Link>
                 </li>
                 <li>
-                  <a href="#features" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
+                  <a href="#features" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
                     {t("footer.features")}
                   </a>
                 </li>
@@ -336,22 +338,22 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
 
             {/* Company */}
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-4">
                 {t("footer.company")}
               </h4>
               <ul className="space-y-2.5">
                 <li>
-                  <a href="mailto:hello@bolyst.eu" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
+                  <a href="mailto:hello@bolyst.eu" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
                     {t("footer.contact")}
                   </a>
                 </li>
                 <li>
-                  <Link href="/impressum" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
+                  <Link href="/impressum" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
                     {t("footer.impressum")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="text-sm text-zinc-600 hover:text-sage-600 transition-colors">
+                  <Link href="/privacy" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
                     {t("footer.privacy")}
                   </Link>
                 </li>
@@ -359,12 +361,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-zinc-100 flex items-center justify-between">
-            <p className="text-xs text-zinc-400">
+          <div className="mt-10 pt-6 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+            <p className="text-xs text-zinc-400 dark:text-zinc-500">
               &copy; {new Date().getFullYear()} Bolyst
             </p>
-            <p className="text-xs text-zinc-400">
-              {t("footer.tagline")} <span className="text-sage-500">{t("footer.taglineAccent")}</span>.
+            <p className="text-xs text-zinc-400 dark:text-zinc-500">
+              {t("footer.tagline")} <span className="text-sage-500 dark:text-sage-400">{t("footer.taglineAccent")}</span>.
             </p>
           </div>
         </div>

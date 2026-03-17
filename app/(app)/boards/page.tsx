@@ -39,17 +39,17 @@ export default async function BoardsPage() {
             <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
               B
             </span>
-            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">
+            <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
               Bolyst
             </h1>
           </a>
-          <p className="text-base text-zinc-500 mt-1">
+          <p className="text-base text-zinc-500 dark:text-zinc-400 mt-1">
             {t("subtitle")}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <LanguageSwitcher locale={locale} />
-          <UserButton />
+<UserButton />
         </div>
       </header>
       <BoardList boards={boards} />

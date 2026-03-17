@@ -119,14 +119,14 @@ export function ListingCard({
       onClick={onClick}
       onMouseEnter={onHover}
       onMouseLeave={onHoverEnd}
-      className={`group bg-white border rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-200 text-left w-full ${
+      className={`group bg-white dark:bg-zinc-900 border rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-200 text-left w-full ${
         selected
           ? "border-sage-400 ring-2 ring-sage-400/30"
-          : "border-zinc-100/80 hover:border-sage-200/60"
+          : "border-zinc-100/80 dark:border-zinc-800 hover:border-sage-200/60 dark:hover:border-sage-800/60"
       }`}
     >
       {/* Image carousel */}
-      <div className="relative aspect-[4/3] bg-gradient-to-br from-sage-50 to-zinc-100 overflow-hidden">
+      <div className="relative aspect-[4/3] bg-gradient-to-br from-sage-50 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900 overflow-hidden">
         {imageUrls.length > 0 ? (
           <img
             src={imageUrls[imgIndex]}
@@ -190,18 +190,18 @@ export function ListingCard({
             <div
               role="button"
               onClick={handlePrev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-sm"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md text-zinc-700"
             >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M10 4l-4 4 4 4" />
               </svg>
             </div>
             <div
               role="button"
               onClick={handleNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-sm"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md text-zinc-700"
             >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M6 4l4 4-4 4" />
               </svg>
             </div>
@@ -239,7 +239,7 @@ export function ListingCard({
       {/* Content */}
       <div className="px-4 py-3.5">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-[13px] text-zinc-900 leading-snug line-clamp-1 group-hover:text-sage-600 transition-colors flex-1 min-w-0" title={title}>
+          <h3 className="font-semibold text-[13px] text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-1 group-hover:text-sage-600 transition-colors flex-1 min-w-0" title={title}>
             {title}
           </h3>
           {status && status !== "NEW" && (
@@ -249,7 +249,7 @@ export function ListingCard({
           )}
         </div>
 
-        <div className="flex items-center gap-2.5 mt-1.5 text-xs text-zinc-400">
+        <div className="flex items-center gap-2.5 mt-1.5 text-xs text-zinc-400 dark:text-zinc-500">
           {size != null && <span>{size} m&sup2;</span>}
           {location && (
             <span className="truncate flex items-center gap-1">
@@ -278,7 +278,7 @@ export function ListingCard({
               </span>
             ))}
             {tags.length > 2 && (
-              <span className="px-2 py-0.5 text-[11px] font-medium rounded-full bg-zinc-100 text-zinc-500">
+              <span className="px-2 py-0.5 text-[11px] font-medium rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
                 +{tags.length - 2}
               </span>
             )}
@@ -307,7 +307,7 @@ export function ListingCard({
           </div>
         )}
 
-        <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-zinc-50 text-xs text-zinc-300">
+        <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-zinc-50 dark:border-zinc-800 text-xs text-zinc-300 dark:text-zinc-600">
           <div className="flex items-center gap-1.5">
             {sourceUrl ? (
               <a

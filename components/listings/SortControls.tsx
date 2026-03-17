@@ -244,8 +244,8 @@ export function SortControls({
         }}
         className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium rounded-lg border transition-all ${
           isActive
-            ? "bg-sage-50 border-sage-200 text-sage-600"
-            : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
+            ? "bg-sage-50 dark:bg-sage-950/40 border-sage-200 dark:border-sage-800 text-sage-600 dark:text-sage-400"
+            : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
         }`}
       >
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -266,7 +266,7 @@ export function SortControls({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1.5 z-50 w-56 bg-white border border-zinc-100 rounded-xl shadow-lg shadow-black/5 py-1 modal-content">
+        <div className="absolute top-full left-0 mt-1.5 z-50 w-56 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl shadow-lg shadow-black/5 py-1 modal-content">
           {allGroups.map((group) => {
             const groupActive = isGroupActive(group);
             const isExpanded = expandedGroup === group.label;
@@ -280,8 +280,8 @@ export function SortControls({
                   onClick={() => select(opt.key)}
                   className={`w-full text-left px-3.5 py-2 text-xs flex items-center gap-2.5 transition-colors ${
                     value === opt.key
-                      ? "bg-sage-50 text-sage-600 font-medium"
-                      : "text-zinc-600 hover:bg-zinc-50"
+                      ? "bg-sage-50 dark:bg-sage-950/40 text-sage-600 dark:text-sage-400 font-medium"
+                      : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                   }`}
                 >
                   <span className="w-4 flex justify-center text-zinc-400">{group.icon}</span>
@@ -297,8 +297,8 @@ export function SortControls({
                   onClick={() => setExpandedGroup(isExpanded ? null : group.label)}
                   className={`w-full text-left px-3.5 py-2 text-xs flex items-center gap-2.5 transition-colors ${
                     groupActive
-                      ? "bg-sage-50 text-sage-600 font-medium"
-                      : "text-zinc-600 hover:bg-zinc-50"
+                      ? "bg-sage-50 dark:bg-sage-950/40 text-sage-600 dark:text-sage-400 font-medium"
+                      : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                   }`}
                 >
                   <span className="w-4 flex justify-center text-zinc-400">{group.icon}</span>
@@ -308,15 +308,15 @@ export function SortControls({
                   </span>
                 </button>
                 {isExpanded && (
-                  <div className="bg-zinc-50/50">
+                  <div className="bg-zinc-50/50 dark:bg-zinc-800">
                     {group.options.map((opt) => (
                       <button
                         key={opt.key}
                         onClick={() => select(opt.key)}
                         className={`w-full text-left pl-10 pr-3.5 py-1.5 text-xs flex items-center gap-2 transition-colors ${
                           value === opt.key
-                            ? "text-sage-600 font-medium"
-                            : "text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100/50"
+                            ? "text-sage-600 dark:text-sage-400 font-medium"
+                            : "text-zinc-500 dark:text-zinc-300 hover:text-zinc-700 dark:hover:text-zinc-100 hover:bg-zinc-100/50 dark:hover:bg-zinc-700"
                         }`}
                       >
                         {opt.label}

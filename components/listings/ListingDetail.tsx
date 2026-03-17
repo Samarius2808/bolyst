@@ -34,16 +34,16 @@ interface ListingData {
 }
 
 const statusColorMap: Record<ListingStatus, string> = {
-  NEW: "bg-zinc-100 text-zinc-500 border-zinc-200",
-  VIEWING: "bg-blue-50 text-blue-600 border-blue-200",
-  APPLIED: "bg-amber-50 text-amber-600 border-amber-200",
-  REJECTED: "bg-red-50 text-red-500 border-red-200",
-  ACCEPTED: "bg-emerald-50 text-emerald-600 border-emerald-200",
-  DELISTED: "bg-zinc-200 text-zinc-500 border-zinc-300",
+  NEW: "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700",
+  VIEWING: "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+  APPLIED: "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800",
+  REJECTED: "bg-red-50 dark:bg-red-950/40 text-red-500 dark:text-red-400 border-red-200 dark:border-red-800",
+  ACCEPTED: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+  DELISTED: "bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 border-zinc-300 dark:border-zinc-600",
 };
 
 const inputClass =
-  "w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-colors";
+  "w-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-colors";
 
 const avatarColors = [
   "bg-sage-100 text-sage-600",
@@ -236,14 +236,14 @@ export function ListingDetail({
   if (!listing) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm modal-backdrop">
-        <div className="bg-white rounded-2xl p-8 w-full max-w-3xl mx-4 modal-content">
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl p-8 w-full max-w-3xl mx-4 modal-content">
           <div className="space-y-4 animate-pulse">
-            <div className="h-48 bg-zinc-100 rounded-xl" />
-            <div className="h-6 bg-zinc-100 rounded-lg w-2/3" />
+            <div className="h-48 bg-zinc-100 dark:bg-zinc-800 rounded-xl" />
+            <div className="h-6 bg-zinc-100 dark:bg-zinc-800 rounded-lg w-2/3" />
             <div className="flex gap-3">
-              <div className="h-16 bg-zinc-100 rounded-xl flex-1" />
-              <div className="h-16 bg-zinc-100 rounded-xl flex-1" />
-              <div className="h-16 bg-zinc-100 rounded-xl flex-1" />
+              <div className="h-16 bg-zinc-100 dark:bg-zinc-800 rounded-xl flex-1" />
+              <div className="h-16 bg-zinc-100 dark:bg-zinc-800 rounded-xl flex-1" />
+              <div className="h-16 bg-zinc-100 dark:bg-zinc-800 rounded-xl flex-1" />
             </div>
           </div>
         </div>
@@ -258,11 +258,11 @@ export function ListingDetail({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl shadow-2xl shadow-black/10 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll"
+        className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl shadow-black/10 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll"
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors shadow-sm"
+          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors shadow-sm"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
             <path d="M4 4l8 8M12 4l-8 8" />
@@ -384,7 +384,7 @@ export function ListingDetail({
                       <button
                         type="button"
                         onClick={() => setEditing(false)}
-                        className="px-4 py-2 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
+                        className="px-4 py-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
                       >
                         {t("cancel")}
                       </button>
@@ -393,7 +393,7 @@ export function ListingDetail({
                 </form>
               ) : (
                 <>
-                  <h2 className="text-xl font-bold tracking-tight text-zinc-900">
+                  <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
                     {listing.title}
                   </h2>
                   <div className="flex items-center gap-3 mt-1">
@@ -411,7 +411,7 @@ export function ListingDetail({
                       </a>
                     )}
                     {listing.addedBy && (
-                      <span className="text-xs text-zinc-400">
+                      <span className="text-xs text-zinc-400 dark:text-zinc-500">
                         {t("addedBy", { name: listing.addedBy.name || listing.addedBy.email.split("@")[0] })}
                       </span>
                     )}
@@ -422,7 +422,7 @@ export function ListingDetail({
             {!editing && (
               <button
                 onClick={startEditing}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-400 hover:text-sage-600 border border-zinc-200 rounded-lg hover:border-sage-200 transition-all"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-400 dark:text-zinc-500 hover:text-sage-600 dark:hover:text-sage-400 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:border-sage-200 dark:hover:border-sage-800 transition-all"
               >
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M11.5 2.5l2 2L5 13H3v-2l8.5-8.5z" />
@@ -434,21 +434,21 @@ export function ListingDetail({
 
           {!editing && (listing.price != null || listing.size != null || listing.location) && (
             <div className="grid grid-cols-3 gap-3 mb-5">
-              <div className="bg-zinc-50 rounded-xl px-4 py-3 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl px-4 py-3 text-center">
                 <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("price")}</p>
-                <p className="text-lg font-bold text-zinc-900">
+                <p className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
                   {listing.price != null ? `€${listing.price.toLocaleString()}` : "—"}
                 </p>
               </div>
-              <div className="bg-zinc-50 rounded-xl px-4 py-3 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl px-4 py-3 text-center">
                 <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("size")}</p>
-                <p className="text-lg font-bold text-zinc-900">
+                <p className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
                   {listing.size != null ? `${listing.size} m²` : "—"}
                 </p>
               </div>
-              <div className="bg-zinc-50 rounded-xl px-4 py-3 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl px-4 py-3 text-center">
                 <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("location")}</p>
-                <p className="text-sm font-semibold text-zinc-900 truncate">
+                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
                   {listing.location || "—"}
                 </p>
               </div>
@@ -457,7 +457,7 @@ export function ListingDetail({
 
           {!editing && (
             <div className="mb-5">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2.5">
                 {t("status")}
               </h3>
               <div className="flex flex-wrap gap-1.5">
@@ -476,7 +476,7 @@ export function ListingDetail({
                     className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
                       listing.status === val
                         ? statusColorMap[val]
-                        : "bg-white border-zinc-100 text-zinc-400 hover:border-zinc-200 hover:text-zinc-500"
+                        : "bg-white dark:bg-zinc-800 border-zinc-100 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:border-zinc-200 dark:hover:border-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-400"
                     }`}
                   >
                     {ts(val)}
@@ -487,13 +487,13 @@ export function ListingDetail({
           )}
 
           {!editing && listing.description && (
-            <p className="text-sm text-zinc-600 mb-5 whitespace-pre-wrap leading-relaxed">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-5 whitespace-pre-wrap leading-relaxed">
               {listing.description}
             </p>
           )}
 
           <div className="mb-6">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2.5">
               {t("tags")}
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -505,8 +505,8 @@ export function ListingDetail({
                     onClick={() => handleToggleTag(tag)}
                     className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-150 ${
                       active
-                        ? "bg-sage-100 border-sage-200 text-sage-700"
-                        : "bg-zinc-50 border-zinc-100 text-zinc-400 hover:border-zinc-200 hover:text-zinc-500"
+                        ? "bg-sage-100 dark:bg-sage-950/40 border-sage-200 dark:border-sage-800 text-sage-700 dark:text-sage-400"
+                        : "bg-zinc-50 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:border-zinc-200 dark:hover:border-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-400"
                     }`}
                   >
                     {active && (
@@ -525,7 +525,7 @@ export function ListingDetail({
                 value={newTagName}
                 onChange={(e) => setNewTagName(e.target.value)}
                 placeholder={t("newTagPlaceholder")}
-                className="border border-zinc-200 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
+                className="border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
               />
               <button
                 type="submit"
@@ -537,8 +537,8 @@ export function ListingDetail({
             </form>
           </div>
 
-          <div className="border-t border-zinc-100 pt-5">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+          <div className="border-t border-zinc-100 dark:border-zinc-800 pt-5">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-3">
               {t("comments")} ({comments.length})
             </h3>
 
@@ -554,23 +554,23 @@ export function ListingDetail({
                       {initial}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="bg-zinc-50 rounded-2xl rounded-tl-md px-4 py-3">
+                      <div className="bg-zinc-50 dark:bg-zinc-800 rounded-2xl rounded-tl-md px-4 py-3">
                         <div className="flex items-baseline gap-2">
-                          <span className="font-medium text-sm text-zinc-700">
+                          <span className="font-medium text-sm text-zinc-700 dark:text-zinc-300">
                             {displayName}
                           </span>
-                          <span className="text-[11px] text-zinc-300">
+                          <span className="text-[11px] text-zinc-300 dark:text-zinc-600">
                             {timeAgo(c.createdAt)}
                           </span>
                         </div>
-                        <p className="text-sm text-zinc-500 mt-0.5">{c.content}</p>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">{c.content}</p>
                       </div>
                     </div>
                   </div>
                 );
               })}
               {comments.length === 0 && (
-                <p className="text-xs text-zinc-300">{t("noComments")}</p>
+                <p className="text-xs text-zinc-300 dark:text-zinc-600">{t("noComments")}</p>
               )}
             </div>
 
@@ -580,7 +580,7 @@ export function ListingDetail({
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder={t("addComment")}
-                className="w-full bg-zinc-50 border-0 rounded-2xl px-4 py-3 pr-12 text-sm text-zinc-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-sage-500 transition-colors"
+                className="w-full bg-zinc-50 dark:bg-zinc-800 border-0 rounded-2xl px-4 py-3 pr-12 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:bg-white dark:focus:bg-zinc-700 focus:ring-2 focus:ring-sage-500 transition-colors"
               />
               <button
                 type="submit"
@@ -594,7 +594,7 @@ export function ListingDetail({
             </form>
           </div>
 
-          <div className="border-t border-zinc-100 mt-6 pt-4">
+          <div className="border-t border-zinc-100 dark:border-zinc-800 mt-6 pt-4">
             <button
               onClick={handleDelete}
               className="text-xs text-red-400 hover:text-red-600 transition-colors"

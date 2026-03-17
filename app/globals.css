@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+/* Class-based dark mode for next-themes */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #faf9f7;
   --foreground: #18181b;
+}
+
+.dark {
+  --background: #111110;
+  --foreground: #f0efe9;
 }
 
 @theme inline {
@@ -112,4 +120,18 @@ textarea::placeholder {
 /* Hide Leaflet attribution watermark */
 .leaflet-container .leaflet-control-attribution {
   display: none !important;
+}
+
+/* Leaflet popup dark mode */
+.dark .leaflet-popup-content-wrapper {
+  background: #252523 !important;
+  color: #f0efe9 !important;
+  border: 1px solid #3a3a36 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
+}
+.dark .leaflet-popup-tip {
+  background: #252523 !important;
+}
+.dark .leaflet-popup-close-button {
+  color: #71717a !important;
 }

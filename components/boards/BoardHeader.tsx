@@ -59,11 +59,11 @@ export function BoardHeader({
             </svg>
             {t("boards")}
           </Link>
-          <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900">
+          <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
             {board.name}
           </h1>
           <div className="flex items-center gap-2.5 mt-1.5">
-            <span className="px-2.5 py-0.5 bg-zinc-100 rounded-full text-xs text-zinc-500">
+            <span className="px-2.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-full text-xs text-zinc-500 dark:text-zinc-400">
               {board.listingCount !== 1
                 ? tb("listingCountPlural", { count: board.listingCount })
                 : tb("listingCount", { count: board.listingCount })}
@@ -74,14 +74,14 @@ export function BoardHeader({
                 {board.members.slice(0, 5).map((m, i) => (
                   <div
                     key={m.id}
-                    className={`w-7 h-7 rounded-full ${avatarColors[i % avatarColors.length]} text-[11px] font-semibold flex items-center justify-center border-2 border-[#faf9f7]`}
+                    className={`w-7 h-7 rounded-full ${avatarColors[i % avatarColors.length]} text-[11px] font-semibold flex items-center justify-center border-2 border-[#faf9f7] dark:border-[#111110]`}
                     title={m.user.name || m.user.email}
                   >
                     {getInitial(m.user.name, m.user.email)}
                   </div>
                 ))}
                 {board.members.length > 5 && (
-                  <div className="w-7 h-7 rounded-full bg-zinc-100 text-zinc-500 text-[10px] font-medium flex items-center justify-center border-2 border-[#faf9f7]">
+                  <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10px] font-medium flex items-center justify-center border-2 border-[#faf9f7] dark:border-[#111110]">
                     +{board.members.length - 5}
                   </div>
                 )}
@@ -104,7 +104,7 @@ export function BoardHeader({
           {board.listingCount >= 2 && (
             <Link
               href={`/boards/${board.id}/compare`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 text-zinc-700 rounded-xl hover:bg-zinc-50 hover:border-sage-200 hover:text-sage-600 transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-sage-200 hover:text-sage-600 transition-all"
             >
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <rect x="1" y="2" width="5" height="12" rx="1" />
@@ -115,7 +115,7 @@ export function BoardHeader({
           )}
           <button
             onClick={() => setShowSettings(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 text-zinc-700 rounded-xl hover:bg-zinc-50 hover:border-sage-200 hover:text-sage-600 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-sage-200 hover:text-sage-600 transition-all"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
               <circle cx="8" cy="8" r="2.5" />

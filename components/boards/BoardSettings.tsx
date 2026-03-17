@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { ThemeSelector } from "@/components/settings/ThemeSelector";
 
 interface Member {
   id: string;
@@ -112,7 +113,7 @@ export function BoardSettings({
   }
 
   const inputClass =
-    "flex-1 border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-colors";
+    "flex-1 border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-colors";
 
   return (
     <div
@@ -121,16 +122,16 @@ export function BoardSettings({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl shadow-2xl shadow-black/10 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll"
+        className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl shadow-black/10 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll"
       >
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-zinc-900">
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               {t("title")}
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 transition-colors"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                 <path d="M4 4l8 8M12 4l-8 8" />
@@ -162,9 +163,19 @@ export function BoardSettings({
             </form>
           )}
 
+          {/* Appearance */}
+          <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4 mb-5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                Appearance
+              </span>
+              <ThemeSelector />
+            </div>
+          </div>
+
           {/* Members */}
-          <div className="border-t border-zinc-100 pt-5 mb-6">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+          <div className="border-t border-zinc-100 dark:border-zinc-800 pt-5 mb-6">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-3">
               {t("members")} ({memberList.length})
             </h3>
             <div className="space-y-2 mb-3">
@@ -174,7 +185,7 @@ export function BoardSettings({
                 return (
                   <div
                     key={m.id}
-                    className="flex items-center justify-between py-2.5 px-3.5 rounded-xl bg-zinc-50/50 hover:bg-zinc-100/50 transition-colors"
+                    className="flex items-center justify-between py-2.5 px-3.5 rounded-xl bg-zinc-50/50 dark:bg-zinc-800 hover:bg-zinc-100/50 dark:hover:bg-zinc-700/80 transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div
@@ -183,7 +194,7 @@ export function BoardSettings({
                         {initial}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-zinc-900 truncate">
+                        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
                           {displayName}
                         </p>
                         {m.user.name && (
@@ -197,8 +208,8 @@ export function BoardSettings({
                       <span
                         className={`px-2 py-0.5 text-[11px] font-medium rounded-full ${
                           m.role === "OWNER"
-                            ? "bg-sage-100 text-sage-600"
-                            : "bg-zinc-100 text-zinc-500"
+                            ? "bg-sage-100 dark:bg-sage-950/50 text-sage-600 dark:text-sage-400"
+                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400"
                         }`}
                       >
                         {m.role === "OWNER" ? t("owner") : t("member")}

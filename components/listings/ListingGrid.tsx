@@ -266,8 +266,8 @@ export function ListingGrid({
                 onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
                 className={`inline-flex items-center gap-1 px-3.5 py-2.5 text-xs font-medium rounded-lg border transition-all ${
                   showFavoritesOnly
-                    ? "bg-rose-50 border-rose-200 text-rose-600"
-                    : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
+                    ? "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400"
+                    : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
                 }`}
               >
                 <svg width="12" height="12" viewBox="0 0 16 16" fill={showFavoritesOnly ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
@@ -282,8 +282,8 @@ export function ListingGrid({
                 }}
                 className={`inline-flex items-center gap-1 px-3.5 py-2.5 text-xs font-medium rounded-lg border transition-all ${
                   compareMode
-                    ? "bg-sage-50 border-sage-200 text-sage-600"
-                    : "bg-white border-zinc-200 text-zinc-400 hover:text-zinc-600"
+                    ? "bg-sage-50 dark:bg-sage-950/40 border-sage-200 dark:border-sage-800 text-sage-600 dark:text-sage-400"
+                    : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
                 }`}
               >
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">

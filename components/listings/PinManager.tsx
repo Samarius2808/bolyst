@@ -144,10 +144,10 @@ export function PinManager({
   }
 
   return (
-    <div className="relative bg-white border border-zinc-100 rounded-2xl">
+    <div className="relative bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-semibold text-zinc-600 hover:bg-zinc-50 transition-colors"
+        className={`w-full flex items-center justify-between px-4 py-2.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors ${expanded ? "rounded-t-2xl" : "rounded-2xl"}`}
       >
         <span className="flex items-center gap-1.5">
           <span className="text-sage-500">★</span>
@@ -172,13 +172,13 @@ export function PinManager({
       </button>
 
       {expanded && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-zinc-100 rounded-2xl shadow-lg px-4 py-3 space-y-1 z-20">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-lg px-4 py-3 space-y-1 z-20">
           {pins.map((p) => (
             <div
               key={p.id}
               className="flex items-center justify-between py-0.5 group"
             >
-              <span className="text-xs text-zinc-700 flex items-center gap-1.5">
+              <span className="text-xs text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
                 <span className="text-sage-500 text-[10px]">★</span>
                 {p.name}
               </span>
@@ -199,7 +199,7 @@ export function PinManager({
               placeholder={t("namePlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-sage-300 focus:border-sage-300"
+              className="w-full px-3 py-1.5 text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-sage-300 focus:border-sage-300"
             />
             <div className="relative" ref={suggestionsRef}>
               <input
@@ -215,13 +215,13 @@ export function PinManager({
                     setShowSuggestions(true);
                   }
                 }}
-                className="w-full px-3 py-1.5 text-xs border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-sage-300 focus:border-sage-300"
+                className="w-full px-3 py-1.5 text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-sage-300 focus:border-sage-300"
               />
               {showSuggestions && suggestions.length > 0 && dropdownPos && createPortal(
                 <div
                   ref={suggestionsRef}
                   style={{ position: "fixed", top: dropdownPos.top, left: dropdownPos.left, width: dropdownPos.width, zIndex: 9999 }}
-                  className="bg-white border border-zinc-200 rounded-lg shadow-lg overflow-hidden"
+                  className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg overflow-hidden"
                 >
                   {suggestions.map((s, i) => {
                     const parts = s.display_name.split(", ");
@@ -232,15 +232,15 @@ export function PinManager({
                         key={i}
                         type="button"
                         onClick={() => selectSuggestion(s)}
-                        className="w-full text-left px-3 py-2 hover:bg-sage-50 transition-colors border-b border-zinc-50 last:border-b-0 flex items-start gap-2"
+                        className="w-full text-left px-3 py-2 hover:bg-sage-50 dark:hover:bg-zinc-800 transition-colors border-b border-zinc-50 dark:border-zinc-800 last:border-b-0 flex items-start gap-2"
                       >
                         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-300 mt-0.5 flex-shrink-0">
                           <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
                         </svg>
                         <div className="min-w-0">
-                          <div className="text-xs font-medium text-zinc-800 truncate">{primary}</div>
+                          <div className="text-xs font-medium text-zinc-800 dark:text-zinc-200 truncate">{primary}</div>
                           {secondary && (
-                            <div className="text-[11px] text-zinc-400 truncate">{secondary}</div>
+                            <div className="text-[11px] text-zinc-400 dark:text-zinc-500 truncate">{secondary}</div>
                           )}
                         </div>
                       </button>
