@@ -1,8 +1,9 @@
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CompareTable } from "@/components/listings/CompareTable";
+import { AuthGate } from "@/components/auth/AuthGate";
 import { getTranslations } from "next-intl/server";
 
 export default async function ComparePage({
@@ -13,7 +14,7 @@ export default async function ComparePage({
   searchParams: Promise<{ ids?: string }>;
 }) {
   const user = await getOrCreateUser();
-  if (!user) redirect("/sign-in");
+  if (!user) return <AuthGate />;
 
   const { id } = await params;
   const { ids } = await searchParams;

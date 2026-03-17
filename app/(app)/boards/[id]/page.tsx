@@ -1,8 +1,9 @@
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import { ListingGrid } from "@/components/listings/ListingGrid";
 import { BoardHeader } from "@/components/boards/BoardHeader";
+import { AuthGate } from "@/components/auth/AuthGate";
 
 export default async function BoardDetailPage({
   params,
@@ -10,7 +11,7 @@ export default async function BoardDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const user = await getOrCreateUser();
-  if (!user) redirect("/sign-in");
+  if (!user) return <AuthGate />;
 
   const { id } = await params;
 

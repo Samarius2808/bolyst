@@ -1,15 +1,15 @@
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 import { BoardList } from "@/components/boards/BoardList";
 import { UserButton } from "@clerk/nextjs";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { AuthGate } from "@/components/auth/AuthGate";
 
 import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function BoardsPage() {
   const user = await getOrCreateUser();
-  if (!user) redirect("/sign-in");
+  if (!user) return <AuthGate />;
 
   const t = await getTranslations("boards");
   const locale = await getLocale();
