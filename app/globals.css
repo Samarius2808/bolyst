@@ -75,6 +75,40 @@ textarea::placeholder {
   background: #a1a1aa;
 }
 
+/* Auth page animations */
+@keyframes pinDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.7);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes authFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes pinFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
 /* Hide Leaflet attribution watermark */
 .leaflet-container .leaflet-control-attribution {
   display: none !important;
