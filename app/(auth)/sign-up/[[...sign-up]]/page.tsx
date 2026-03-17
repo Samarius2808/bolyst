@@ -22,7 +22,7 @@ export default async function SignUpPage() {
             </h1>
           </Link>
           <p className="text-sm text-zinc-500">
-            {t("tagline")}
+            {t("tagline")} <span className="text-sage-600">{t("taglineAccent")}</span>.
           </p>
         </div>
 

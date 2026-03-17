@@ -8,7 +8,7 @@
     "hero": {
       "subtitle": "Die gemeinsame Wohnungssuche",
       "titleLine1": "Findet euer Zuhause,",
-      "titleLine2": "gemeinsam.",
+      "titleLine2": "gemeinsam",
       "description": "Schluss mit verlorenen Links im Gruppenchat. Mit Bolyst habt ihr ein gemeinsames Board zum Speichern, Vergleichen und Entscheiden.",
       "cta": "Board erstellen \u2013 kostenlos"
     },
@@ -42,7 +42,7 @@
       "step3": {
         "title": "Vergleichen & entscheiden",
         "description": "Taggt, kommentiert, favorisiert und vergleicht Inserate \u2013 bis ihr die richtige findet.",
-        "accent": "Gemeinsam."
+        "accent": "Gemeinsam"
       }
     },
     "details": {
@@ -69,7 +69,7 @@
     "cta": {
       "titleLine1": "Euer n\u00e4chstes Zuhause ist da drau\u00dfen.",
       "titleLine2": "Findet es,",
-      "titleAccent": "gemeinsam.",
+      "titleAccent": "gemeinsam",
       "description": "Kostenlos nutzbar. Board in Sekunden erstellen. Einfach einladen, mit wem ihr sucht.",
       "button": "Kostenlos loslegen"
     },
@@ -88,7 +88,8 @@
     }
   },
   "auth": {
-    "tagline": "Findet euer Zuhause, gemeinsam."
+    "tagline": "Findet euer Zuhause,",
+    "taglineAccent": "gemeinsam"
   },
   "boards": {
     "subtitle": "Deine Wohnungssuche-Boards",

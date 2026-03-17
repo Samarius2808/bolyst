@@ -71,7 +71,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 leading-[1.08]">
             {t("hero.titleLine1")}
             <br />
-            <span className="text-sage-600">{t("hero.titleLine2")}</span>
+            <span className="text-sage-600">{t("hero.titleLine2")}</span>.
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-zinc-500 max-w-2xl mx-auto leading-relaxed">
             {t("hero.description")}
@@ -105,7 +105,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
               {t("features.heading")}{" "}
-              <span className="text-sage-600">{t("features.headingAccent")}</span>
+              <span className="text-sage-600">{t("features.headingAccent")}</span>.
             </h2>
             <p className="mt-4 text-base text-zinc-500 max-w-xl mx-auto">
               {t("features.subheading")}
@@ -196,7 +196,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               </h3>
               <p className="text-sm text-zinc-500 leading-relaxed">
                 {t("howItWorks.step3.description")}{" "}
-                <span className="text-sage-600 font-semibold">{t("howItWorks.step3.accent")}</span>
+                <span className="text-sage-600 font-semibold">{t("howItWorks.step3.accent")}</span>.
               </p>
             </div>
           </div>
@@ -280,7 +280,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
             {t("cta.titleLine1")}
             <br />
             {t("cta.titleLine2")}{" "}
-            <span className="text-sage-600">{t("cta.titleAccent")}</span>
+            <span className="text-sage-600">{t("cta.titleAccent")}</span>.
           </h2>
           <p className="mt-5 text-base text-zinc-500">
             {t("cta.description")}

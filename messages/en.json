@@ -8,7 +8,7 @@
     "hero": {
       "subtitle": "Collaborative apartment search",
       "titleLine1": "Find your place,",
-      "titleLine2": "together.",
+      "titleLine2": "together",
       "description": "Stop losing apartment links in group chats. Bolyst gives you and your roommates a shared board to save, compare, and decide on your next home.",
       "cta": "Start your board, it's free"
     },
@@ -42,7 +42,7 @@
       "step3": {
         "title": "Compare & decide",
         "description": "Tag, comment, favorite, and compare listings until you find the one.",
-        "accent": "Together."
+        "accent": "Together"
       }
     },
     "details": {
@@ -69,7 +69,7 @@
     "cta": {
       "titleLine1": "Your next home is out there.",
       "titleLine2": "Find it,",
-      "titleAccent": "together.",
+      "titleAccent": "together",
       "description": "Free to use. Create a board in seconds. Invite whoever you're searching with.",
       "button": "Get started for free"
     },
@@ -88,7 +88,8 @@
     }
   },
   "auth": {
-    "tagline": "Find your place, together."
+    "tagline": "Find your place,",
+    "taglineAccent": "together"
   },
   "boards": {
     "subtitle": "Your apartment search boards",
