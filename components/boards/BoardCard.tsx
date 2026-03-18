@@ -8,6 +8,7 @@ interface BoardCardProps {
   listingCount: number;
   memberCount: number;
   members: { user: { name: string | null; email: string } }[];
+  previewImages: string[];
 }
 
 function getInitial(name: string | null, email: string): string {
@@ -22,19 +23,59 @@ const avatarColors = [
   "bg-rose-100 text-rose-600",
 ];
 
+const CELL = "h-[72px] overflow-hidden flex-1";
+
+function ImageMosaic({ images }: { images: string[] }) {
+  if (images.length === 0) return <div className="h-1 bg-gradient-to-r from-sage-500 to-sage-400" />;
+
+  const imgs = images.slice(0, 4);
+
+  if (imgs.length === 1) {
+    return (
+      <div className="h-[72px] overflow-hidden">
+        <img src={imgs[0]} alt="" className="w-full h-full object-cover" />
+      </div>
+    );
+  }
+
+  if (imgs.length === 2 || imgs.length === 3) {
+    return (
+      <div className="flex gap-px">
+        {imgs.map((src, i) => (
+          <div key={i} className={CELL}>
+            <img src={src} alt="" className="w-full h-full object-cover" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // 4 images: 2×2 grid, each cell explicitly h-[72px]
+  return (
+    <div className="grid grid-cols-2 gap-px">
+      {imgs.map((src, i) => (
+        <div key={i} className="h-[72px] overflow-hidden">
+          <img src={src} alt="" className="w-full h-full object-cover" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function BoardCard({
   id,
   name,
   listingCount,
   memberCount,
   members,
+  previewImages,
 }: BoardCardProps) {
   return (
     <Link
       href={`/boards/${id}`}
       className="group block bg-white dark:bg-zinc-900 border border-zinc-100/80 dark:border-zinc-800 rounded-2xl overflow-hidden hover:shadow-xl hover:border-sage-200/60 dark:hover:border-sage-800/60 hover:-translate-y-0.5 transition-all duration-200"
     >
-      <div className="h-1 bg-gradient-to-r from-sage-500 to-sage-400" />
+      <ImageMosaic images={previewImages} />
       <div className="p-5 pt-4">
         <h3 className="font-semibold text-[15px] text-zinc-900 dark:text-zinc-100 truncate group-hover:text-sage-600 transition-colors leading-snug">
           {name}

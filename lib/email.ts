@@ -2,6 +2,31 @@ import { BrevoClient } from "@getbrevo/brevo";
 
 const client = new BrevoClient({ apiKey: process.env.BREVO_API_KEY! });
 
+export async function sendFeedbackEmail({
+  fromName,
+  fromEmail,
+  message,
+}: {
+  fromName: string;
+  fromEmail: string;
+  message: string;
+}) {
+  await client.transactionalEmails.sendTransacEmail({
+    sender: { name: "Bolyst Feedback", email: "hello@bolyst.eu" },
+    to: [{ email: "hello@bolyst.eu" }],
+    replyTo: { email: fromEmail, name: fromName },
+    subject: `Feedback from ${fromName}`,
+    headers: { "X-Mailin-Track": "0", "X-Mailin-Track-Links": "0" },
+    htmlContent: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
+        <h2 style="font-size: 18px; font-weight: 700; color: #18181b; margin-bottom: 4px;">New feedback</h2>
+        <p style="color: #71717a; font-size: 13px; margin-bottom: 24px;">From ${fromName} &lt;${fromEmail}&gt;</p>
+        <div style="background: #f4f4f5; border-radius: 8px; padding: 16px 20px; color: #27272a; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${message}</div>
+      </div>
+    `,
+  });
+}
+
 export async function sendBoardInviteEmail({
   to,
   boardName,

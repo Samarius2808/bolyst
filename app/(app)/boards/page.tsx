@@ -6,6 +6,8 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AuthGate } from "@/components/auth/AuthGate";
 
 import { getLocale, getTranslations } from "next-intl/server";
+import { EasterEgg } from "@/components/EasterEgg";
+import { FeedbackButton } from "@/components/FeedbackModal";
 
 export default async function BoardsPage() {
   const user = await getOrCreateUser();
@@ -27,13 +29,21 @@ export default async function BoardsPage() {
         include: { user: { select: { name: true, email: true } } },
         take: 4,
       },
+      listings: {
+        take: 4,
+        select: { imageUrls: true },
+        orderBy: { createdAt: "desc" },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
 
+  const totalListings = boards.reduce((sum, b) => sum + b._count.listings, 0);
+  const firstName = user.name?.split(" ")[0] || user.email.split("@")[0];
+
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
-      <header className="flex items-center justify-between mb-10">
+      <header className="flex items-center justify-between mb-6">
         <div>
           <a href="/?browse=1" className="inline-flex items-center gap-2.5">
             <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
@@ -44,15 +54,19 @@ export default async function BoardsPage() {
             </h1>
           </a>
           <p className="text-base text-zinc-500 dark:text-zinc-400 mt-1">
-            {t("subtitle")}
+            {boards.length > 0
+              ? t("greeting", { name: firstName, boards: boards.length, listings: totalListings })
+              : t("subtitle")}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <FeedbackButton />
           <LanguageSwitcher locale={locale} />
-<UserButton />
+          <UserButton />
         </div>
       </header>
       <BoardList boards={boards} />
+      <EasterEgg />
     </main>
   );
 }

@@ -93,6 +93,7 @@
   },
   "boards": {
     "subtitle": "Your apartment search boards",
+    "greeting": "Hi, {name} — {boards} boards · {listings} listings",
     "count": "{count} board",
     "countPlural": "{count} boards",
     "newBoard": "+ New board",

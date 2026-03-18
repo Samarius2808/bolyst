@@ -93,6 +93,7 @@
   },
   "boards": {
     "subtitle": "Deine Wohnungssuche-Boards",
+    "greeting": "Hi, {name} — {boards} Boards · {listings} Inserate",
     "count": "{count} Board",
     "countPlural": "{count} Boards",
     "newBoard": "+ Neues Board",
