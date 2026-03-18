@@ -56,7 +56,12 @@ export async function GET(request: NextRequest) {
 
   const url = `https://api.openrouteservice.org/v2/directions/${profile}?api_key=${ORS_KEY}&start=${startLng},${startLat}&end=${endLng},${endLat}`;
 
-  const res = await fetch(url);
+  let res: Response;
+  try {
+    res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  } catch {
+    return NextResponse.json({ error: "Routing request timed out" }, { status: 504 });
+  }
   if (!res.ok) {
     const text = await res.text();
     console.error("ORS error:", res.status, text);
@@ -152,7 +157,7 @@ async function fetchWalkingGeometry(
 
   try {
     const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${ORS_KEY}&start=${fromLng},${fromLat}&end=${toLng},${toLat}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) return null;
 
     const data = await res.json();
