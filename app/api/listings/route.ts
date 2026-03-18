@@ -19,6 +19,16 @@ export async function POST(req: Request) {
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  if (tagIds?.length) {
+    const validTags = await prisma.tag.findMany({
+      where: { id: { in: tagIds }, boardId },
+      select: { id: true },
+    });
+    if (validTags.length !== tagIds.length) {
+      return NextResponse.json({ error: "One or more tags are invalid" }, { status: 400 });
+    }
+  }
+
   const coords = location ? await geocodeLocation(location) : null;
 
   const listing = await prisma.listing.create({

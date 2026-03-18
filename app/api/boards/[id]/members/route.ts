@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendBoardInviteEmail } from "@/lib/email";
+import { rateLimit } from "@/lib/ratelimit";
 
 export async function GET(
   _req: Request,
@@ -30,6 +31,10 @@ export async function POST(
 ) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (!rateLimit(`invite:${user.id}`, 10, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
 
   const { id: boardId } = await params;
   const board = await prisma.board.findUnique({ where: { id: boardId } });
