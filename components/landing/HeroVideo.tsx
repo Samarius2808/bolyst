@@ -8,7 +8,7 @@ export function HeroVideo({ src, poster }: { src: string; poster: string }) {
       loop
       playsInline
       poster={poster}
-      className="w-full"
+      className="w-full h-full object-cover"
     >
       <source src={src} type="video/mp4" />
       {/* Fallback to poster image if video not available */}

@@ -48,7 +48,7 @@ const ContainerScroll = ({
         ref={scrollRef}
       >
         {/* Sticky wrapper keeps the video pinned in the viewport while the section scrolls */}
-        <div className="sticky top-0 h-screen flex items-start justify-center pt-4 overflow-hidden">
+        <div className="sticky top-0 h-screen overflow-hidden">
           {children}
         </div>
       </section>
@@ -81,7 +81,7 @@ const ContainerInset = ({
 
   return (
     <motion.div
-      className={`w-full origin-center overflow-hidden ${className ?? ""}`}
+      className={`w-full h-full origin-center overflow-hidden ${className ?? ""}`}
       style={{ clipPath }}
     >
       {children}
