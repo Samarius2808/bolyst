@@ -23,9 +23,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
   const locale = await getLocale();
 
   return (
-    <div className="min-h-screen bg-[#faf9f7] dark:bg-[#111110]">
+    <div className="min-h-screen bg-[#faf9f7] dark:bg-[#1c1c1a]">
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf9f7]/80 dark:bg-[#111110]/80 backdrop-blur-lg border-b border-sage-100/60 dark:border-zinc-800/60">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf9f7]/80 dark:bg-[#1c1c1a]/80 backdrop-blur-lg border-b border-sage-100/60 dark:border-zinc-800/60">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <a href="#" className="flex items-center gap-2.5">
             <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
@@ -91,7 +91,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       </section>
 
       {/* Hero video — scroll-locked reveal */}
-      <ContainerScroll className="bg-[#faf9f7] dark:bg-[#111110]">
+      <ContainerScroll className="bg-[#faf9f7] dark:bg-[#1c1c1a]">
         <ContainerInset roundednessRange={[24, 0]} className="shadow-2xl shadow-sage-900/10 border border-sage-200/60 dark:border-zinc-700/60 bg-white dark:bg-zinc-900">
           <HeroVideo
             src={`${CDN}/videos/hero.mp4`}
@@ -298,7 +298,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#111110]">
+      <footer className="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#1c1c1a]">
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
             {/* Brand */}

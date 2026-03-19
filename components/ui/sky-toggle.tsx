@@ -47,17 +47,17 @@ const StyledWrapper = styled.div`
     --container-width: 5.625em;
     --container-height: 2.5em;
     --container-radius: 6.25em;
-    --container-light-bg: #3D7EAE;
-    --container-night-bg: #1D1F2C;
+    --container-light-bg: #85a279;
+    --container-night-bg: #2c3828;
     --circle-container-diameter: 3.375em;
     --sun-moon-diameter: 2.125em;
-    --sun-bg: #ECCA2F;
-    --moon-bg: #C4C9D1;
-    --spot-color: #959DB1;
+    --sun-bg: #f0c442;
+    --moon-bg: #cfdbc9;
+    --spot-color: #9ab894;
     --circle-container-offset: calc((var(--circle-container-diameter) - var(--container-height)) / 2 * -1);
-    --stars-color: #fff;
-    --clouds-color: #F3FDFF;
-    --back-clouds-color: #AACADF;
+    --stars-color: #e7ede5;
+    --clouds-color: #f4f7f3;
+    --back-clouds-color: #c8d9c0;
     --transition: .5s cubic-bezier(0, -0.02, 0.4, 1.25);
     --circle-transition: .3s cubic-bezier(0, -0.02, 0.35, 1.17);
   }
@@ -118,7 +118,7 @@ const StyledWrapper = styled.div`
     margin: auto;
     border-radius: var(--container-radius);
     background-color: var(--sun-bg);
-    box-shadow: 0.062em 0.062em 0.062em 0em rgba(254, 255, 239, 0.61) inset, 0em -0.062em 0.062em 0em #a1872a inset;
+    box-shadow: 0.062em 0.062em 0.062em 0em rgba(255, 248, 200, 0.6) inset, 0em -0.062em 0.062em 0em #b08820 inset;
     filter: drop-shadow(0.062em 0.125em 0.125em rgba(0, 0, 0, 0.25)) drop-shadow(0em 0.062em 0.125em rgba(0, 0, 0, 0.25));
     overflow: hidden;
     transition: var(--transition);
@@ -130,7 +130,7 @@ const StyledWrapper = styled.div`
     height: 100%;
     background-color: var(--moon-bg);
     border-radius: inherit;
-    box-shadow: 0.062em 0.062em 0.062em 0em rgba(254, 255, 239, 0.61) inset, 0em -0.062em 0.062em 0em #969696 inset;
+    box-shadow: 0.062em 0.062em 0.062em 0em rgba(244, 247, 243, 0.6) inset, 0em -0.062em 0.062em 0em #8aab80 inset;
     transition: var(--transition);
     position: relative;
   }
