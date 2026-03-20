@@ -7,6 +7,7 @@ import { ContainerScroll, ContainerInset } from "@/components/landing/VideoScrol
 import { FeatureCard } from "@/components/landing/FeatureCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSelector } from "@/components/settings/ThemeSelector";
+import { IsometricCity } from "@/components/landing/IsometricCity";
 
 const CDN = "https://bolyst-cdn.bolyst-team.workers.dev";
 
@@ -66,8 +67,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       </nav>
 
       {/* Hero tagline */}
-      <section className="min-h-screen flex items-center justify-center px-6">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="min-h-screen relative flex items-center justify-center px-6 overflow-hidden">
+        {/* Isometric city illustration — right-side background */}
+        <IsometricCity className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-40" />
+        {/* Fade center so hero text stays readable, both sides even */}
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_#faf9f7cc_0%,_#faf9f700_70%)] dark:bg-[radial-gradient(ellipse_at_center,_#1c1c1acc_0%,_#1c1c1a00_70%)]" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <p className="text-sm font-medium text-sage-600 mb-8">
             {t("hero.subtitle")}
           </p>
@@ -76,7 +81,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
             <br />
             <span className="text-sage-600">{t("hero.titleLine2")}</span>.
           </h1>
-          <p className="mt-6 text-lg sm:text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-lg sm:text-xl text-zinc-700 dark:text-zinc-200 max-w-2xl mx-auto leading-relaxed font-medium">
             {t("hero.description")}
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
