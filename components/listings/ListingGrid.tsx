@@ -325,7 +325,7 @@ export function ListingGrid({
                 selected={compareSet.has(l.id)}
                 onToggleSelect={() => toggleCompare(l.id)}
                 showCommute={hasGeocodedListings && boardPins.length > 0 && l.latitude != null && l.longitude != null}
-                onCommute={() => setCommuteListingId(l.id)}
+                onCommute={() => { setCommuteListingId(l.id); if (window.innerWidth < 1024) setShowMobileMap(true); }}
                 onClick={() => setSelectedId(l.id)}
                 onHover={() => setHoveredId(l.id)}
                 onHoverEnd={() => setHoveredId(null)}
