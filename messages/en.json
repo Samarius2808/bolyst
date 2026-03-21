@@ -152,7 +152,8 @@
     "compareArrow": "Compare \u2192",
     "noFavorites": "No favorites yet. Click the heart on a listing to save it.",
     "favoriteCount": "{count} favorite",
-    "favoriteCountPlural": "{count} favorites"
+    "favoriteCountPlural": "{count} favorites",
+    "map": "Map"
   },
   "listingCard": {
     "status": {

@@ -152,7 +152,8 @@
     "compareArrow": "Vergleichen \u2192",
     "noFavorites": "Noch keine Favoriten. Klicke auf das Herz, um ein Inserat zu speichern.",
     "favoriteCount": "{count} Favorit",
-    "favoriteCountPlural": "{count} Favoriten"
+    "favoriteCountPlural": "{count} Favoriten",
+    "map": "Karte"
   },
   "listingCard": {
     "status": {

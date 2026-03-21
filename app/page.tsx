@@ -36,13 +36,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               Bolyst
             </span>
           </a>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSwitcher locale={locale} variant="landing" />
             <ThemeSelector compact toggleSize={11} />
             {isLoggedIn ? (
               <Link
                 href="/boards"
-                className="px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
+                className="px-4 sm:px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
               >
                 {t("nav.goToBoards")}
               </Link>
@@ -50,13 +50,13 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               <>
                 <Link
                   href="/sign-in"
-                  className="px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                  className="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 >
                   {t("nav.signIn")}
                 </Link>
                 <Link
                   href="/sign-up"
-                  className="px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
+                  className="px-4 sm:px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                 >
                   {t("nav.getStarted")}
                 </Link>

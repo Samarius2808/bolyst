@@ -86,6 +86,7 @@ export function ListingGrid({
   const [compareMode, setCompareMode] = useState(false);
   const [compareSet, setCompareSet] = useState<Set<string>>(new Set());
   const [commuteListingId, setCommuteListingId] = useState<string | null>(null);
+  const [showMobileMap, setShowMobileMap] = useState(false);
 
   const hasGeocodedListings = listings.some(
     (l) => l.latitude != null && l.longitude != null
@@ -339,35 +340,76 @@ export function ListingGrid({
           </div>
 
           {hasGeocodedListings && (
-            <div className="hidden lg:block w-[480px] flex-shrink-0 sticky top-6">
-              <div className="relative z-[500]">
-                <PinManager
-                  boardId={boardId}
-                  pins={boardPins}
-                  onPinsChange={setBoardPins}
-                  geoCenter={geoCenter}
-                />
+            <>
+              <div className="hidden lg:block w-[480px] flex-shrink-0 sticky top-6">
+                <div className="relative z-[500]">
+                  <PinManager
+                    boardId={boardId}
+                    pins={boardPins}
+                    onPinsChange={setBoardPins}
+                    geoCenter={geoCenter}
+                  />
+                </div>
+                <div className="h-[calc(100vh-16rem)] mt-4">
+                  <ListingMapWrapper
+                    listings={sortedListings}
+                    pins={boardPins}
+                    favoritedIds={favorites}
+                    members={members}
+                    hoveredId={hoveredId}
+                    commuteListingId={commuteListingId}
+                    onListingClick={(id) => setSelectedId(id)}
+                    onCommuteClose={() => setCommuteListingId(null)}
+                  />
+                </div>
               </div>
-              <div className="h-[calc(100vh-16rem)] mt-4">
-                <ListingMapWrapper
-                  listings={sortedListings}
-                  pins={boardPins}
-                  favoritedIds={favorites}
-                  members={members}
-                  hoveredId={hoveredId}
-                  commuteListingId={commuteListingId}
-                  onListingClick={(id) => setSelectedId(id)}
-                  onCommuteClose={() => setCommuteListingId(null)}
-                />
-              </div>
-            </div>
+              {/* Mobile map toggle */}
+              <button
+                onClick={() => setShowMobileMap(true)}
+                className="lg:hidden fixed bottom-6 right-6 z-40 w-12 h-12 bg-sage-600 text-white rounded-full shadow-lg shadow-sage-600/30 flex items-center justify-center active:scale-95 transition-transform"
+              >
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5z" />
+                  <circle cx="8" cy="6" r="1.5" />
+                </svg>
+              </button>
+            </>
           )}
+        </div>
+      )}
+
+      {/* Mobile map overlay */}
+      {showMobileMap && hasGeocodedListings && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-[#faf9f7] dark:bg-[#1c1c1a] flex flex-col">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{t("map")}</h3>
+            <button
+              onClick={() => setShowMobileMap(false)}
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+            >
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M4 4l8 8M12 4l-8 8" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex-1">
+            <ListingMapWrapper
+              listings={sortedListings}
+              pins={boardPins}
+              favoritedIds={favorites}
+              members={members}
+              hoveredId={hoveredId}
+              commuteListingId={commuteListingId}
+              onListingClick={(id) => { setSelectedId(id); setShowMobileMap(false); }}
+              onCommuteClose={() => setCommuteListingId(null)}
+            />
+          </div>
         </div>
       )}
 
       {/* Compare floating bar */}
       {compareMode && compareSet.size >= 2 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-sage-600 text-white px-6 py-3 rounded-2xl shadow-xl shadow-sage-600/30 flex items-center gap-4">
+        <div className="fixed bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-40 bg-sage-600 text-white px-4 sm:px-6 py-3 rounded-2xl shadow-xl shadow-sage-600/30 flex items-center justify-between sm:justify-start gap-4">
           <span className="text-sm font-medium">
             {t("selected", { count: compareSet.size })}
           </span>

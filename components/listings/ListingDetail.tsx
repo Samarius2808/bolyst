@@ -262,7 +262,7 @@ export function ListingDetail({
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors shadow-sm"
+          className="absolute top-4 right-4 z-10 w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors shadow-sm"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
             <path d="M4 4l8 8M12 4l-8 8" />
@@ -328,7 +328,7 @@ export function ListingDetail({
                       placeholder={t("urlPlaceholder")}
                       className={inputClass}
                     />
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <input
                         type="number"
                         value={editForm.price}
@@ -422,7 +422,7 @@ export function ListingDetail({
             {!editing && (
               <button
                 onClick={startEditing}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-zinc-400 dark:text-zinc-500 hover:text-sage-600 dark:hover:text-sage-400 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:border-sage-200 dark:hover:border-sage-800 transition-all"
+                className="inline-flex items-center gap-1.5 px-3 py-2.5 sm:py-1.5 text-sm text-zinc-400 dark:text-zinc-500 hover:text-sage-600 dark:hover:text-sage-400 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:border-sage-200 dark:hover:border-sage-800 transition-all"
               >
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M11.5 2.5l2 2L5 13H3v-2l8.5-8.5z" />
@@ -433,7 +433,7 @@ export function ListingDetail({
           </div>
 
           {!editing && (listing.price != null || listing.size != null || listing.location) && (
-            <div className="grid grid-cols-3 gap-3 mb-5">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
               <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl px-4 py-3 text-center">
                 <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("price")}</p>
                 <p className="text-lg font-bold text-zinc-900 dark:text-zinc-100">

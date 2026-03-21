@@ -266,7 +266,7 @@ export function SortControls({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1.5 z-50 w-56 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl shadow-lg shadow-black/5 py-1 modal-content">
+        <div className="absolute top-full left-0 sm:left-0 right-0 sm:right-auto mt-1.5 z-50 w-auto sm:w-56 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl shadow-lg shadow-black/5 py-1 modal-content">
           {allGroups.map((group) => {
             const groupActive = isGroupActive(group);
             const isExpanded = expandedGroup === group.label;

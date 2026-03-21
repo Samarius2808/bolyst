@@ -175,7 +175,7 @@ export function ListingCard({
             className={`absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center transition-all ${
               isFavorited
                 ? "bg-rose-500 text-white"
-                : "bg-white/80 backdrop-blur-sm text-zinc-400 opacity-0 group-hover:opacity-100 hover:text-rose-500 hover:bg-white"
+                : "bg-white/80 backdrop-blur-sm text-zinc-400 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 hover:text-rose-500 hover:bg-white"
             }`}
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill={isFavorited ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
@@ -190,7 +190,7 @@ export function ListingCard({
             <div
               role="button"
               onClick={handlePrev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md text-zinc-700"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 lg:w-7 lg:h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-white shadow-md text-zinc-700"
             >
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M10 4l-4 4 4 4" />
@@ -199,7 +199,7 @@ export function ListingCard({
             <div
               role="button"
               onClick={handleNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white shadow-md text-zinc-700"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 lg:w-7 lg:h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-white shadow-md text-zinc-700"
             >
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M6 4l4 4-4 4" />

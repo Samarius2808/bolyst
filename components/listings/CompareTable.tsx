@@ -200,51 +200,88 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
   ];
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-zinc-100 bg-white">
-      <table className="min-w-full text-sm">
-        <thead>
-          <tr className="border-b border-zinc-100">
-            <th className="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wider text-zinc-400 sticky left-0 bg-white min-w-[100px]">
-              {t("field")}
-            </th>
-            {sorted.map((l) => (
-              <th
-                key={l.id}
-                className="text-left py-4 px-5 font-semibold text-zinc-900 min-w-[200px]"
-              >
-                {l.title}
+    <>
+      {/* Desktop table */}
+      <div className="hidden sm:block overflow-x-auto rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="border-b border-zinc-100 dark:border-zinc-800">
+              <th className="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wider text-zinc-400 sticky left-0 bg-white dark:bg-zinc-900 min-w-[100px]">
+                {t("field")}
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {fields.map((field, i) => (
-            <tr
-              key={field.key}
-              className={`border-b border-zinc-50 ${
-                i % 2 === 0 ? "bg-zinc-50/50" : ""
-              }`}
-            >
-              <td
-                className={`py-3.5 px-5 text-xs font-semibold uppercase tracking-wider text-zinc-400 sticky left-0 bg-inherit group ${
-                  field.sortable ? "cursor-pointer hover:text-zinc-600 select-none" : ""
-                }`}
-                onClick={field.sortable ? () => toggleSort(field.sortable!) : undefined}
-              >
-                <span className="inline-flex items-center">
-                  {field.label}
-                  {field.sortable && <SortIcon field={field.sortable} />}
-                </span>
-              </td>
               {sorted.map((l) => (
-                <td key={l.id} className="py-3.5 px-5 text-zinc-600">
-                  {field.render(l)}
-                </td>
+                <th
+                  key={l.id}
+                  className="text-left py-4 px-5 font-semibold text-zinc-900 dark:text-zinc-100 min-w-[200px]"
+                >
+                  {l.title}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {fields.map((field, i) => (
+              <tr
+                key={field.key}
+                className={`border-b border-zinc-50 dark:border-zinc-800 ${
+                  i % 2 === 0 ? "bg-zinc-50/50 dark:bg-zinc-800/30" : ""
+                }`}
+              >
+                <td
+                  className={`py-3.5 px-5 text-xs font-semibold uppercase tracking-wider text-zinc-400 sticky left-0 bg-inherit group ${
+                    field.sortable ? "cursor-pointer hover:text-zinc-600 select-none" : ""
+                  }`}
+                  onClick={field.sortable ? () => toggleSort(field.sortable!) : undefined}
+                >
+                  <span className="inline-flex items-center">
+                    {field.label}
+                    {field.sortable && <SortIcon field={field.sortable} />}
+                  </span>
+                </td>
+                {sorted.map((l) => (
+                  <td key={l.id} className="py-3.5 px-5 text-zinc-600 dark:text-zinc-400">
+                    {field.render(l)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile card stack */}
+      <div className="sm:hidden space-y-4">
+        {sorted.map((l) => (
+          <div
+            key={l.id}
+            className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-4"
+          >
+            <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-3">
+              {l.title}
+            </h3>
+            <div className="space-y-2">
+              {fields.map((field) => (
+                <div key={field.key} className="flex items-start justify-between gap-3">
+                  <span
+                    className={`text-[11px] font-semibold uppercase tracking-wider text-zinc-400 flex-shrink-0 pt-0.5 ${
+                      field.sortable ? "cursor-pointer active:text-zinc-600" : ""
+                    }`}
+                    onClick={field.sortable ? () => toggleSort(field.sortable!) : undefined}
+                  >
+                    <span className="inline-flex items-center">
+                      {field.label}
+                      {field.sortable && <SortIcon field={field.sortable} />}
+                    </span>
+                  </span>
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400 text-right">
+                    {field.render(l)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
