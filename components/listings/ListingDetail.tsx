@@ -501,14 +501,17 @@ export function ListingDetail({
                 {statusValues.map((val) => (
                   <button
                     key={val}
-                    onClick={async () => {
-                      await fetch(`/api/listings/${listingId}`, {
+                    onClick={() => {
+                      const prev = listing.status;
+                      setListing({ ...listing, status: val });
+                      fetch(`/api/listings/${listingId}`, {
                         method: "PATCH",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ status: val }),
+                      }).then((res) => {
+                        if (!res.ok) setListing({ ...listing, status: prev });
+                        router.refresh();
                       });
-                      await loadData();
-                      router.refresh();
                     }}
                     className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
                       listing.status === val
