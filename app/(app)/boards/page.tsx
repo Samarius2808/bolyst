@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { BoardList } from "@/components/boards/BoardList";
@@ -18,10 +19,7 @@ export default async function BoardsPage() {
 
   const boards = await prisma.board.findMany({
     where: {
-      OR: [
-        { ownerId: user.id },
-        { members: { some: { userId: user.id } } },
-      ],
+      OR: [{ ownerId: user.id }, { members: { some: { userId: user.id } } }],
     },
     include: {
       _count: { select: { listings: true, members: true } },
@@ -45,14 +43,14 @@ export default async function BoardsPage() {
     <main className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
       <header className="flex items-center justify-between mb-6">
         <div>
-          <a href="/?browse=1" className="inline-flex items-center gap-2.5">
+          <Link href="/?browse=1" className="inline-flex items-center gap-2.5">
             <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
               B
             </span>
             <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
               Bolyst
             </h1>
-          </a>
+          </Link>
           <p className="text-base text-zinc-500 dark:text-zinc-400 mt-1">
             {boards.length > 0
               ? t("greeting", { name: firstName, boards: boards.length, listings: totalListings })

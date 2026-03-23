@@ -8,10 +8,7 @@ async function getBoardMembership(boardId: string, userId: string) {
   });
 }
 
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -30,10 +27,7 @@ export async function GET(
   return NextResponse.json(board);
 }
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -56,10 +50,7 @@ export async function PATCH(
   return NextResponse.json(updated);
 }
 
-export async function DELETE(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

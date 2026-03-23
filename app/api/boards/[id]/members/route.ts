@@ -4,10 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { sendBoardInviteEmail } from "@/lib/email";
 import { rateLimit } from "@/lib/ratelimit";
 
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -25,10 +22,7 @@ export async function GET(
   return NextResponse.json(members);
 }
 
-export async function POST(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -98,14 +92,11 @@ export async function POST(
 
   return NextResponse.json(
     { pending: true, email: trimmedEmail, message: "Invite sent" },
-    { status: 201 }
+    { status: 201 },
   );
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

@@ -25,21 +25,15 @@ export default function PrivacyPage() {
 
         <div className="prose prose-zinc prose-sm max-w-none space-y-6">
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("responsibleTitle")}
-            </h2>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("responsibleTitle")}</h2>
             <p className="text-sm text-zinc-600 leading-relaxed whitespace-pre-line">
               {t("responsibleBody")}
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("dataCollectedTitle")}
-            </h2>
-            <p className="text-sm text-zinc-600 leading-relaxed mb-3">
-              {t("dataCollectedIntro")}
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("dataCollectedTitle")}</h2>
+            <p className="text-sm text-zinc-600 leading-relaxed mb-3">{t("dataCollectedIntro")}</p>
             <ul className="list-disc pl-5 space-y-1.5 text-sm text-zinc-600">
               <li>{t("dataAccount")}</li>
               <li>{t("dataUsage")}</li>
@@ -48,9 +42,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("purposeTitle")}
-            </h2>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("purposeTitle")}</h2>
             <ul className="list-disc pl-5 space-y-1.5 text-sm text-zinc-600">
               <li>{t("purposeService")}</li>
               <li>{t("purposeAuth")}</li>
@@ -60,9 +52,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("thirdPartyTitle")}
-            </h2>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("thirdPartyTitle")}</h2>
             <ul className="list-disc pl-5 space-y-1.5 text-sm text-zinc-600">
               <li>
                 <strong>Clerk</strong> — {t("thirdClerk")}
@@ -80,21 +70,13 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("cookiesTitle")}
-            </h2>
-            <p className="text-sm text-zinc-600 leading-relaxed">
-              {t("cookiesBody")}
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("cookiesTitle")}</h2>
+            <p className="text-sm text-zinc-600 leading-relaxed">{t("cookiesBody")}</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("rightsTitle")}
-            </h2>
-            <p className="text-sm text-zinc-600 leading-relaxed mb-3">
-              {t("rightsIntro")}
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("rightsTitle")}</h2>
+            <p className="text-sm text-zinc-600 leading-relaxed mb-3">{t("rightsIntro")}</p>
             <ul className="list-disc pl-5 space-y-1.5 text-sm text-zinc-600">
               <li>{t("rightsAccess")}</li>
               <li>{t("rightsCorrection")}</li>
@@ -102,27 +84,17 @@ export default function PrivacyPage() {
               <li>{t("rightsPortability")}</li>
               <li>{t("rightsObjection")}</li>
             </ul>
-            <p className="text-sm text-zinc-600 leading-relaxed mt-3">
-              {t("rightsContact")}
-            </p>
+            <p className="text-sm text-zinc-600 leading-relaxed mt-3">{t("rightsContact")}</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("retentionTitle")}
-            </h2>
-            <p className="text-sm text-zinc-600 leading-relaxed">
-              {t("retentionBody")}
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("retentionTitle")}</h2>
+            <p className="text-sm text-zinc-600 leading-relaxed">{t("retentionBody")}</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("authorityTitle")}
-            </h2>
-            <p className="text-sm text-zinc-600 leading-relaxed">
-              {t("authorityBody")}
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("authorityTitle")}</h2>
+            <p className="text-sm text-zinc-600 leading-relaxed">{t("authorityBody")}</p>
           </section>
         </div>
       </main>

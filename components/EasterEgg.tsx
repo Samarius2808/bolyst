@@ -6,7 +6,10 @@ type Mode = 1 | 2 | 3 | 4 | 5;
 
 const SAGE = "#55704a";
 const COLORS = [SAGE, "#6b8f5e", "#8aad79", "#d97706", "#2563eb", "#dc2626", "#f59e0b", "#10b981"];
-const a2h = (a: number) => Math.round(Math.max(0, Math.min(1, a)) * 255).toString(16).padStart(2, "0");
+const a2h = (a: number) =>
+  Math.round(Math.max(0, Math.min(1, a)) * 255)
+    .toString(16)
+    .padStart(2, "0");
 
 // ─── Mode 1: Fireworks ────────────────────────────────────────────────────────
 
@@ -54,7 +57,8 @@ function FireworksCanvas() {
               const angle = (i / 24) * Math.PI * 2;
               const speed = 3 + Math.random() * 5;
               r.particles.push({
-                x: r.x, y: r.y,
+                x: r.x,
+                y: r.y,
                 vx: Math.cos(angle) * speed,
                 vy: Math.sin(angle) * speed - 1,
                 alpha: 1,
@@ -64,7 +68,10 @@ function FireworksCanvas() {
         } else {
           for (const p of r.particles) {
             if (p.alpha <= 0) continue;
-            p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.alpha -= 0.016;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.12;
+            p.alpha -= 0.016;
             ctx.beginPath();
             ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
             ctx.fillStyle = r.color + a2h(p.alpha);
@@ -98,10 +105,12 @@ function ConfettiCanvas({ ox, oy }: { ox: number; oy: number }) {
       const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.3;
       const speed = 10 + Math.random() * 14;
       return {
-        x: ox, y: oy,
+        x: ox,
+        y: oy,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        w: 5 + Math.random() * 7, h: 3 + Math.random() * 5,
+        w: 5 + Math.random() * 7,
+        h: 3 + Math.random() * 5,
         rot: Math.random() * Math.PI * 2,
         rotV: (Math.random() - 0.5) * 0.28,
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
@@ -116,7 +125,10 @@ function ConfettiCanvas({ ox, oy }: { ox: number; oy: number }) {
       ctx.clearRect(0, 0, cv.width, cv.height);
       for (const p of pieces) {
         if (p.alpha <= 0) continue;
-        p.x += p.vx; p.y += p.vy; p.vy += 0.3; p.rot += p.rotV;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.3;
+        p.rot += p.rotV;
         if (frame > 55) p.alpha -= 0.014;
         ctx.save();
         ctx.translate(p.x, p.y);
@@ -238,9 +250,15 @@ function BouncingHouses() {
       ctx.globalAlpha = alpha;
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.moveTo(3, 12); ctx.lineTo(12, 3); ctx.lineTo(21, 12);
-      ctx.lineTo(21, 21); ctx.lineTo(15, 21); ctx.lineTo(15, 15);
-      ctx.lineTo(9, 15);  ctx.lineTo(9, 21);  ctx.lineTo(3, 21);
+      ctx.moveTo(3, 12);
+      ctx.lineTo(12, 3);
+      ctx.lineTo(21, 12);
+      ctx.lineTo(21, 21);
+      ctx.lineTo(15, 21);
+      ctx.lineTo(15, 15);
+      ctx.lineTo(9, 15);
+      ctx.lineTo(9, 21);
+      ctx.lineTo(3, 21);
       ctx.closePath();
       ctx.fill();
       ctx.restore();
@@ -250,7 +268,8 @@ function BouncingHouses() {
       ctx.clearRect(0, 0, cv.width, cv.height);
       const alpha = frame > MAX * 0.75 ? 1 - (frame - MAX * 0.75) / (MAX * 0.25) : 1;
       for (const h of houses) {
-        h.x += h.vx; h.y += h.vy;
+        h.x += h.vx;
+        h.y += h.vy;
         if (h.x <= 0 || h.x >= cv.width - SIZE) h.vx *= -1;
         if (h.y <= 0 || h.y >= cv.height - SIZE) h.vy *= -1;
         drawHouse(h.x, h.y, SIZE, h.color, alpha);
@@ -291,7 +310,7 @@ export function EasterEgg() {
         onClick={trigger}
         className="fixed bottom-5 right-5 z-40 px-3 py-1.5 text-[11px] font-medium text-zinc-400 dark:text-zinc-500 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:text-zinc-600 dark:hover:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600 transition-all select-none bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm"
       >
-        don't press this
+        don&apos;t press this
       </button>
       {mode === 1 && <FireworksCanvas />}
       {mode === 2 && <ConfettiCanvas ox={origin.x} oy={origin.y} />}

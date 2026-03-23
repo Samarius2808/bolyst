@@ -26,7 +26,8 @@ const avatarColors = [
 const CELL = "h-[72px] overflow-hidden flex-1";
 
 function ImageMosaic({ images }: { images: string[] }) {
-  if (images.length === 0) return <div className="h-1 bg-gradient-to-r from-sage-500 to-sage-400" />;
+  if (images.length === 0)
+    return <div className="h-1 bg-gradient-to-r from-sage-500 to-sage-400" />;
 
   const imgs = images.slice(0, 4);
 
@@ -83,14 +84,28 @@ export function BoardCard({
 
         <div className="flex gap-3 mt-2.5">
           <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <rect x="2" y="2" width="12" height="12" rx="2" />
               <path d="M5 6h6M5 9h4" />
             </svg>
             {listingCount}
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <circle cx="8" cy="5.5" r="2.5" />
               <path d="M3 14c0-2.8 2.2-5 5-5s5 2.2 5 5" />
             </svg>

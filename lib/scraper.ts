@@ -11,8 +11,7 @@ export interface ScrapedListing {
 export async function scrapeListing(url: string): Promise<ScrapedListing> {
   const res = await fetch(url, {
     headers: {
-      "User-Agent":
-        "Mozilla/5.0 (compatible; Bolyst/1.0; +https://bolyst.app)",
+      "User-Agent": "Mozilla/5.0 (compatible; Bolyst/1.0; +https://bolyst.app)",
       Accept: "text/html",
     },
     signal: AbortSignal.timeout(10000),
@@ -40,10 +39,10 @@ function getMeta(html: string, property: string): string | null {
   const pattern = new RegExp(
     `<meta[^>]*(?:property|name)=["']${property}["'][^>]*content=["']([^"']*)["']` +
       `|<meta[^>]*content=["']([^"']*)["'][^>]*(?:property|name)=["']${property}["']`,
-    "i"
+    "i",
   );
   const match = html.match(pattern);
-  return match ? (match[1] || match[2] || null) : null;
+  return match ? match[1] || match[2] || null : null;
 }
 
 function extractTitle(html: string): string | null {
@@ -129,10 +128,12 @@ function extractDescription(html: string): string | null {
 }
 
 // URL path patterns that indicate a people/UI photo rather than a property photo
-const PEOPLE_PATH = /\/(agent|broker|staff|team|person|profile|user|member|support|headshot|portrait|employee|realtor|consultant|advisor|contact|about)s?\//i;
+const PEOPLE_PATH =
+  /\/(agent|broker|staff|team|person|profile|user|member|support|headshot|portrait|employee|realtor|consultant|advisor|contact|about)s?\//i;
 
 // Generic noise patterns that are never property images
-const NOISE_URL = /logo|icon|avatar|badge|button|sprite|pixel|track|1x1|placeholder|banner|favicon/i;
+const NOISE_URL =
+  /logo|icon|avatar|badge|button|sprite|pixel|track|1x1|placeholder|banner|favicon/i;
 
 function isPropertyImage(url: string): boolean {
   if (PEOPLE_PATH.test(url)) return false;
@@ -161,7 +162,10 @@ function normalizeImageUrl(url: string): string {
     // Strip common image format/size suffixes:
     //   wunderflats: {id}-original, {id}-large, {id}-og, {id}-thumbnail, etc.
     //   generic: {name}-800x600, {name}_large, {name}@2x, {name}-w1280, etc.
-    stem = stem.replace(/-(?:original|large|medium|small|thumbnail|og|xl|xxl|tiny|micro|preview|full|main|hero|cover|featured|banner|w\d+|h\d+|\d+x\d+)$/i, "");
+    stem = stem.replace(
+      /-(?:original|large|medium|small|thumbnail|og|xl|xxl|tiny|micro|preview|full|main|hero|cover|featured|banner|w\d+|h\d+|\d+x\d+)$/i,
+      "",
+    );
     stem = stem.replace(/_(?:large|medium|small|thumbnail|original)$/i, "");
     stem = stem.replace(/@\d+x$/i, "");
     return u.hostname + "/" + stem;
@@ -171,12 +175,7 @@ function normalizeImageUrl(url: string): string {
 }
 
 // Recursively walk a parsed JSON structure to find image URLs from a specific CDN host
-function findCdnUrls(
-  obj: unknown,
-  host: string,
-  add: (src: string) => void,
-  depth = 0
-): void {
+function findCdnUrls(obj: unknown, host: string, add: (src: string) => void, depth = 0): void {
   if (depth > 12) return; // prevent runaway recursion on deep structures
   if (typeof obj === "string") {
     if (obj.includes(host) && obj.startsWith("http")) {
@@ -219,7 +218,8 @@ function extractImages(html: string, baseUrl: string): string[] {
   }
 
   // 2. JSON-LD structured data images
-  const jsonLdPattern = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  const jsonLdPattern =
+    /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
   while ((match = jsonLdPattern.exec(html)) !== null) {
     try {
       const data = JSON.parse(match[1]);
@@ -289,7 +289,8 @@ function extractImages(html: string, baseUrl: string): string[] {
       !isPropertyImage(src) ||
       !isAffinityMatch(src) ||
       /(?:_|\/)(?:thumb|tiny|micro|pt_\d+_\d+|smw_\d+|fspt_)\//i.test(src)
-    ) continue;
+    )
+      continue;
     add(src);
   }
 
@@ -297,7 +298,8 @@ function extractImages(html: string, baseUrl: string): string[] {
   //    for image CDN URLs. JSON.parse handles escaped slashes (\/) correctly, and
   //    catches extensionless URLs that regex-based scanning misses.
   if (images.length < 5 && primaryHost) {
-    const jsonScriptPattern = /<script[^>]*(?:id=["']__NEXT_DATA__["']|type=["']application\/json["'])[^>]*>([\s\S]*?)<\/script>/gi;
+    const jsonScriptPattern =
+      /<script[^>]*(?:id=["']__NEXT_DATA__["']|type=["']application\/json["'])[^>]*>([\s\S]*?)<\/script>/gi;
     let jsonMatch;
     while ((jsonMatch = jsonScriptPattern.exec(html)) !== null && images.length < 10) {
       try {
@@ -315,7 +317,7 @@ function extractImages(html: string, baseUrl: string): string[] {
     // Match both normal slashes and JSON-escaped slashes (\/)
     const cdnRe = new RegExp(
       `"(https?:(?:\\\\/\\\\/|//)${escapedHost}(?:\\\\/|/)(?:[^"<\\s]{4,}))"`,
-      "gi"
+      "gi",
     );
     let cdnMatch;
     while ((cdnMatch = cdnRe.exec(html)) !== null && images.length < 10) {

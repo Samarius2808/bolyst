@@ -5,11 +5,7 @@ import { ListingGrid } from "@/components/listings/ListingGrid";
 import { BoardHeader } from "@/components/boards/BoardHeader";
 import { AuthGate } from "@/components/auth/AuthGate";
 
-export default async function BoardDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function BoardDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
   if (!user) return <AuthGate />;
 
@@ -60,7 +56,8 @@ export default async function BoardDetailPage({
     },
   });
   // Group by listingId → array of users who favorited
-  const memberFavoritesMap: Record<string, { id: string; name: string | null; email: string }[]> = {};
+  const memberFavoritesMap: Record<string, { id: string; name: string | null; email: string }[]> =
+    {};
   for (const fav of allFavorites) {
     if (!memberFavoritesMap[fav.listingId]) memberFavoritesMap[fav.listingId] = [];
     memberFavoritesMap[fav.listingId].push(fav.user);

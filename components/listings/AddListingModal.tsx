@@ -108,14 +108,20 @@ export function AddListingModal({
         className="bg-white rounded-2xl shadow-2xl shadow-black/10 p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll"
       >
         <div className="flex items-start justify-between mb-4">
-          <h2 className="text-lg font-semibold text-zinc-900">
-            {t("title")}
-          </h2>
+          <h2 className="text-lg font-semibold text-zinc-900">{t("title")}</h2>
           <button
             onClick={onClose}
             className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
               <path d="M4 4l8 8M12 4l-8 8" />
             </svg>
           </button>
@@ -149,9 +155,7 @@ export function AddListingModal({
 
         {mode === "url" ? (
           <form onSubmit={handleScrape}>
-            <p className="text-sm text-zinc-400 mb-3">
-              {t("urlHint")}
-            </p>
+            <p className="text-sm text-zinc-400 mb-3">{t("urlHint")}</p>
             <input
               type="url"
               value={url}
@@ -163,9 +167,7 @@ export function AddListingModal({
               autoFocus
               className={inputClass}
             />
-            {scrapeError && (
-              <p className="text-xs text-red-500 mt-2">{scrapeError}</p>
-            )}
+            {scrapeError && <p className="text-xs text-red-500 mt-2">{scrapeError}</p>}
             <div className="flex justify-end gap-2 mt-5">
               <button
                 type="button"
@@ -181,8 +183,19 @@ export function AddListingModal({
               >
                 {scraping && (
                   <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                 )}
                 {scraping ? t("extracting") : t("extract")}
@@ -193,7 +206,15 @@ export function AddListingModal({
           <>
             {scraped && (
               <p className="text-xs text-emerald-500 mb-3 inline-flex items-center gap-1">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <path d="M3 8.5l3 3 7-7" />
                 </svg>
                 {t("dataExtracted")}

@@ -35,11 +35,16 @@ interface ListingData {
 
 const statusColorMap: Record<ListingStatus, string> = {
   NEW: "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700",
-  VIEWING: "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-  APPLIED: "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800",
-  REJECTED: "bg-red-50 dark:bg-red-950/40 text-red-500 dark:text-red-400 border-red-200 dark:border-red-800",
-  ACCEPTED: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-  DELISTED: "bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 border-zinc-300 dark:border-zinc-600",
+  VIEWING:
+    "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+  APPLIED:
+    "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800",
+  REJECTED:
+    "bg-red-50 dark:bg-red-950/40 text-red-500 dark:text-red-400 border-red-200 dark:border-red-800",
+  ACCEPTED:
+    "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+  DELISTED:
+    "bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 border-zinc-300 dark:border-zinc-600",
 };
 
 const inputClass =
@@ -86,7 +91,7 @@ export function ListingDetail({
           addedBy: initialData.addedBy ?? null,
           _count: initialData._count || { comments: 0 },
         }
-      : null
+      : null,
   );
   const [comments, setComments] = useState<Comment[]>([]);
   const [boardTags, setBoardTags] = useState<Tag[]>([]);
@@ -231,7 +236,14 @@ export function ListingDetail({
     onClose();
   }
 
-  const statusValues: ListingStatus[] = ["NEW", "VIEWING", "APPLIED", "REJECTED", "ACCEPTED", "DELISTED"];
+  const statusValues: ListingStatus[] = [
+    "NEW",
+    "VIEWING",
+    "APPLIED",
+    "REJECTED",
+    "ACCEPTED",
+    "DELISTED",
+  ];
 
   if (!listing) {
     return (
@@ -264,7 +276,15 @@ export function ListingDetail({
           onClick={onClose}
           className="absolute top-4 right-4 z-10 w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors shadow-sm"
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
             <path d="M4 4l8 8M12 4l-8 8" />
           </svg>
         </button>
@@ -283,9 +303,7 @@ export function ListingDetail({
                     key={i}
                     onClick={() => setHeroImage(i)}
                     className={`w-16 h-16 rounded-lg object-cover flex-shrink-0 overflow-hidden ring-2 transition-all ${
-                      i === heroImage
-                        ? "ring-sage-400"
-                        : "ring-transparent hover:ring-zinc-300"
+                      i === heroImage ? "ring-sage-400" : "ring-transparent hover:ring-zinc-300"
                     }`}
                   >
                     <img
@@ -309,9 +327,7 @@ export function ListingDetail({
                     <input
                       type="text"
                       value={editForm.title}
-                      onChange={(e) =>
-                        setEditForm((f) => ({ ...f, title: e.target.value }))
-                      }
+                      onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))}
                       placeholder={t("titlePlaceholder")}
                       className={inputClass}
                       autoFocus
@@ -332,18 +348,14 @@ export function ListingDetail({
                       <input
                         type="number"
                         value={editForm.price}
-                        onChange={(e) =>
-                          setEditForm((f) => ({ ...f, price: e.target.value }))
-                        }
+                        onChange={(e) => setEditForm((f) => ({ ...f, price: e.target.value }))}
                         placeholder={t("pricePlaceholder")}
                         className={inputClass}
                       />
                       <input
                         type="number"
                         value={editForm.size}
-                        onChange={(e) =>
-                          setEditForm((f) => ({ ...f, size: e.target.value }))
-                        }
+                        onChange={(e) => setEditForm((f) => ({ ...f, size: e.target.value }))}
                         placeholder={t("sizePlaceholder")}
                         step="0.1"
                         className={inputClass}
@@ -405,14 +417,23 @@ export function ListingDetail({
                         className="inline-flex items-center gap-1 text-sm text-sage-500 hover:text-sage-600 transition-colors"
                       >
                         {t("viewOriginal")}
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                        >
                           <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
                         </svg>
                       </a>
                     )}
                     {listing.addedBy && (
                       <span className="text-xs text-zinc-400 dark:text-zinc-500">
-                        {t("addedBy", { name: listing.addedBy.name || listing.addedBy.email.split("@")[0] })}
+                        {t("addedBy", {
+                          name: listing.addedBy.name || listing.addedBy.email.split("@")[0],
+                        })}
                       </span>
                     )}
                   </div>
@@ -424,7 +445,14 @@ export function ListingDetail({
                 onClick={startEditing}
                 className="inline-flex items-center gap-1.5 px-3 py-2.5 sm:py-1.5 text-sm text-zinc-400 dark:text-zinc-500 hover:text-sage-600 dark:hover:text-sage-400 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:border-sage-200 dark:hover:border-sage-800 transition-all"
               >
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
                   <path d="M11.5 2.5l2 2L5 13H3v-2l8.5-8.5z" />
                 </svg>
                 {t("edit")}
@@ -435,19 +463,25 @@ export function ListingDetail({
           {!editing && (listing.price != null || listing.size != null || listing.location) && (
             <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
               <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl px-4 py-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("price")}</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">
+                  {t("price")}
+                </p>
                 <p className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
                   {listing.price != null ? `€${listing.price.toLocaleString()}` : "—"}
                 </p>
               </div>
               <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl px-4 py-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("size")}</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">
+                  {t("size")}
+                </p>
                 <p className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
                   {listing.size != null ? `${listing.size} m²` : "—"}
                 </p>
               </div>
               <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl px-4 py-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">{t("location")}</p>
+                <p className="text-[11px] uppercase tracking-wider text-zinc-400 mb-0.5">
+                  {t("location")}
+                </p>
                 <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
                   {listing.location || "—"}
                 </p>
@@ -510,7 +544,15 @@ export function ListingDetail({
                     }`}
                   >
                     {active && (
-                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      >
                         <path d="M3 8.5l3 3 7-7" />
                       </svg>
                     )}
@@ -563,7 +605,9 @@ export function ListingDetail({
                             {timeAgo(c.createdAt)}
                           </span>
                         </div>
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">{c.content}</p>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+                          {c.content}
+                        </p>
                       </div>
                     </div>
                   </div>

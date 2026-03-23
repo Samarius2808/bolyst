@@ -54,9 +54,7 @@ export function BoardList({ boards }: { boards: Board[] }) {
           <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200 mb-2">
             {t("emptyTitle")}
           </h3>
-          <p className="text-sm text-zinc-400 mb-6 max-w-xs mx-auto">
-            {t("emptyDescription")}
-          </p>
+          <p className="text-sm text-zinc-400 mb-6 max-w-xs mx-auto">{t("emptyDescription")}</p>
           <button
             onClick={() => setShowCreate(true)}
             className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all duration-150 shadow-md shadow-sage-600/20"
@@ -74,7 +72,9 @@ export function BoardList({ boards }: { boards: Board[] }) {
               listingCount={b._count.listings}
               memberCount={b._count.members}
               members={b.members}
-              previewImages={b.listings.map((l) => l.imageUrls[0]).filter((u): u is string => Boolean(u))}
+              previewImages={b.listings
+                .map((l) => l.imageUrls[0])
+                .filter((u): u is string => Boolean(u))}
             />
           ))}
         </div>

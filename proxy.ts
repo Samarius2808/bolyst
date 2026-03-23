@@ -1,16 +1,21 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isPublicRoute = createRouteMatcher(["/", "/sign-in(.*)", "/sign-up(.*)", "/impressum", "/privacy"]);
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/impressum",
+  "/privacy",
+  "/api/health",
+]);
 
 export default clerkMiddleware(async (auth, request) => {
   // Auto-detect locale from Accept-Language if cookie not set
   const hasLocaleCookie = request.cookies.get("NEXT_LOCALE");
   if (!hasLocaleCookie) {
     const acceptLang = request.headers.get("accept-language") || "";
-    const prefersDe = acceptLang
-      .split(",")
-      .some((part) => part.trim().startsWith("de"));
+    const prefersDe = acceptLang.split(",").some((part) => part.trim().startsWith("de"));
     const locale = prefersDe ? "de" : "en";
 
     const response = NextResponse.next();

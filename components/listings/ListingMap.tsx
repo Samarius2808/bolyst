@@ -144,7 +144,15 @@ function TransitLegSequence({ legs, size = 11 }: { legs: TransitLegInfo[]; size?
       {deduped.map((mode, i) => (
         <span key={i} className="inline-flex items-center gap-0.5">
           {i > 0 && (
-            <svg width={7} height={7} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-300">
+            <svg
+              width={7}
+              height={7}
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className="text-zinc-300"
+            >
               <path d="M6 4l4 4-4 4" />
             </svg>
           )}
@@ -163,24 +171,38 @@ function ClosePopups({ active }: { active: boolean }) {
     map.closePopup();
     const handler = () => map.closePopup();
     map.on("popupopen", handler);
-    return () => { map.off("popupopen", handler); };
+    return () => {
+      map.off("popupopen", handler);
+    };
   }, [active, map]);
   return null;
 }
 
 // Fits the map to show the full route whenever coordinates change
-function FitRoute({ coordinates, bottomPadding }: { coordinates: [number, number][]; bottomPadding: number }) {
+function FitRoute({
+  coordinates,
+  bottomPadding,
+}: {
+  coordinates: [number, number][];
+  bottomPadding: number;
+}) {
   const map = useMap();
   // Serialize coordinates to a string so we only fit when they actually change
-  const coordKey = coordinates.length > 0
-    ? `${coordinates[0][0]},${coordinates[0][1]}-${coordinates[coordinates.length - 1][0]},${coordinates[coordinates.length - 1][1]}-${coordinates.length}`
-    : "";
+  const coordKey =
+    coordinates.length > 0
+      ? `${coordinates[0][0]},${coordinates[0][1]}-${coordinates[coordinates.length - 1][0]},${coordinates[coordinates.length - 1][1]}-${coordinates.length}`
+      : "";
   const lastCoordKey = useRef("");
   useEffect(() => {
     if (!coordKey || coordKey === lastCoordKey.current) return;
     lastCoordKey.current = coordKey;
     const bounds = L.latLngBounds(coordinates);
-    map.fitBounds(bounds, { paddingTopLeft: [40, 40], paddingBottomRight: [40, bottomPadding + 20], animate: true, duration: 0.3 });
+    map.fitBounds(bounds, {
+      paddingTopLeft: [40, 40],
+      paddingBottomRight: [40, bottomPadding + 20],
+      animate: true,
+      duration: 0.3,
+    });
   }, [map, coordKey, coordinates, bottomPadding]);
   return null;
 }
@@ -230,11 +252,7 @@ const pinIcon = L.divIcon({
   html: '<div style="width:20px;height:20px;border-radius:50%;background:#55704a;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:bold;line-height:1;">★</div>',
 });
 
-function FitBounds({
-  points,
-}: {
-  points: { latitude: number; longitude: number }[];
-}) {
+function FitBounds({ points }: { points: { latitude: number; longitude: number }[] }) {
   const map = useMap();
   const hasFit = useRef(false);
 
@@ -245,9 +263,7 @@ function FitBounds({
     if (points.length === 1) {
       map.setView([points[0].latitude, points[0].longitude], 14);
     } else {
-      const bounds = L.latLngBounds(
-        points.map((l) => [l.latitude, l.longitude])
-      );
+      const bounds = L.latLngBounds(points.map((l) => [l.latitude, l.longitude]));
       map.fitBounds(bounds, { padding: [50, 50] });
     }
   }, [map, points]);
@@ -345,7 +361,7 @@ function getCachedIcon(color: string, isFav: boolean) {
 function getListingIcon(
   listing: MapListing,
   favoritedIds: Set<string>,
-  memberColorMap: Map<string, string>
+  memberColorMap: Map<string, string>,
 ) {
   if (listing.status === "DELISTED") return delistedIcon;
   const isFav = favoritedIds.has(listing.id);
@@ -392,11 +408,11 @@ const hoveredIconCache = new Map<string, L.DivIcon>();
 function getHoveredIcon(
   listing: MapListing,
   favoritedIds: Set<string>,
-  memberColorMap: Map<string, string>
+  memberColorMap: Map<string, string>,
 ) {
   const isFav = favoritedIds.has(listing.id);
   const memberColor = listing.addedBy ? memberColorMap.get(listing.addedBy.id) : undefined;
-  const color = listing.status === "DELISTED" ? "#a1a1aa" : (memberColor || "#55704a");
+  const color = listing.status === "DELISTED" ? "#a1a1aa" : memberColor || "#55704a";
   const key = `hover-${color}-${isFav}`;
   if (!hoveredIconCache.has(key)) {
     hoveredIconCache.set(key, isFav ? makeHoveredFavIcon(color) : makeHoveredDefaultIcon(color));
@@ -454,7 +470,7 @@ export function ListingMap({
       listingLat: number,
       listingLng: number,
       pin: MapPin,
-      mode: TransportMode
+      mode: TransportMode,
     ) => {
       // Check cache first
       const cacheKey = routeCacheKey(listingId, pin.id, mode);
@@ -506,7 +522,7 @@ export function ListingMap({
         setRouteLoading(null);
       }
     },
-    [routeCache]
+    [routeCache],
   );
 
   const closeRoutePanel = useCallback(() => {
@@ -523,24 +539,8 @@ export function ListingMap({
   });
   const geocoded = listings.filter(
     (l): l is MapListing & { latitude: number; longitude: number } =>
-      l.latitude != null && l.longitude != null
+      l.latitude != null && l.longitude != null,
   );
-
-  if (geocoded.length === 0 && pins.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-[500px] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl">
-        <p className="text-zinc-400 text-sm">
-          {t("noListings")}
-        </p>
-      </div>
-    );
-  }
-
-  const allPoints = [
-    ...geocoded.map((l) => ({ latitude: l.latitude, longitude: l.longitude })),
-    ...pins.map((p) => ({ latitude: p.latitude, longitude: p.longitude })),
-  ];
-  const center: [number, number] = [allPoints[0].latitude, allPoints[0].longitude];
 
   // Measure route panel height for map padding
   useEffect(() => {
@@ -551,279 +551,342 @@ export function ListingMap({
     }
   });
 
+  if (geocoded.length === 0 && pins.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-[500px] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl">
+        <p className="text-zinc-400 text-sm">{t("noListings")}</p>
+      </div>
+    );
+  }
+
+  const allPoints = [
+    ...geocoded.map((l) => ({ latitude: l.latitude, longitude: l.longitude })),
+    ...pins.map((p) => ({ latitude: p.latitude, longitude: p.longitude })),
+  ];
+  const center: [number, number] = [allPoints[0].latitude, allPoints[0].longitude];
+
   const routePanelListing = routePanelListingId
     ? geocoded.find((l) => l.id === routePanelListingId)
     : null;
 
   return (
     <>
-    <div className="rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-full relative">
-      <MapContainer
-        center={center}
-        zoom={13}
-        className="h-full w-full"
-        style={{ minHeight: "400px" }}
-        scrollWheelZoom={true}
-        attributionControl={false}
-        zoomControl={false}
-      >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-        />
-        <FitBounds points={allPoints} />
-        <ClosePopups active={routePanelListingId !== null} />
-        {route && <RouteLayer route={route} />}
-        {route && <FitRoute coordinates={route.coordinates} bottomPadding={routePanelHeight} />}
+      <div className="rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-full relative">
+        <MapContainer
+          center={center}
+          zoom={13}
+          className="h-full w-full"
+          style={{ minHeight: "400px" }}
+          scrollWheelZoom={true}
+          attributionControl={false}
+          zoomControl={false}
+        >
+          <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
+          <FitBounds points={allPoints} />
+          <ClosePopups active={routePanelListingId !== null} />
+          {route && <RouteLayer route={route} />}
+          {route && <FitRoute coordinates={route.coordinates} bottomPadding={routePanelHeight} />}
 
-        {/* Reference pins */}
-        {pins.map((p) => (
-          <Marker key={`pin-${p.id}`} position={[p.latitude, p.longitude]} icon={pinIcon}>
-            <Popup>
-              <div className="min-w-[140px]">
-                <p className="font-semibold text-sm text-sage-700 dark:text-sage-400 flex items-center gap-1">
-                  <span>★</span> {p.name}
-                </p>
-                <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">{t("referencePoint")}</p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-
-        {/* Listing markers */}
-        {geocoded.map((l) => {
-          const dist =
-            pins.length > 0
-              ? Math.min(
-                  ...pins.map((p) => {
-                    const R = 6371;
-                    const dLat = ((p.latitude - l.latitude) * Math.PI) / 180;
-                    const dLng = ((p.longitude - l.longitude) * Math.PI) / 180;
-                    const a =
-                      Math.sin(dLat / 2) ** 2 +
-                      Math.cos((l.latitude * Math.PI) / 180) *
-                        Math.cos((p.latitude * Math.PI) / 180) *
-                        Math.sin(dLng / 2) ** 2;
-                    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                  })
-                )
-              : null;
-          const distStr = dist != null
-            ? dist < 1 ? `${Math.round(dist * 1000)}m` : `${dist.toFixed(1)} km`
-            : null;
-          return (
-            <Marker key={l.id} position={[l.latitude, l.longitude]} icon={hoveredId === l.id ? getHoveredIcon(l, favoritedIds, memberColorMap) : getListingIcon(l, favoritedIds, memberColorMap)}>
+          {/* Reference pins */}
+          {pins.map((p) => (
+            <Marker key={`pin-${p.id}`} position={[p.latitude, p.longitude]} icon={pinIcon}>
               <Popup>
-                <div className="min-w-[180px]">
-                  {l.imageUrls.length > 0 && (
-                    <img
-                      src={l.imageUrls[0]}
-                      alt={l.title}
-                      className="w-full h-24 object-cover rounded mb-2"
-                    />
-                  )}
-                  <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-0.5">
-                    {l.title}
+                <div className="min-w-[140px]">
+                  <p className="font-semibold text-sm text-sage-700 dark:text-sage-400 flex items-center gap-1">
+                    <span>★</span> {p.name}
                   </p>
-                  {l.price != null && (
-                    <p className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
-                      &euro;{l.price.toLocaleString()}/mo
-                    </p>
-                  )}
-                  {l.location && (
-                    <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">{l.location}</p>
-                  )}
-                  {distStr != null && (
-                    <p className="text-xs text-sage-500 dark:text-sage-400 font-medium mt-1">
-                      ★ {t("fromNearestPin", { distance: distStr })}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-2 mt-2">
-                    <button
-                      onClick={() => onListingClick(l.id)}
-                      className="text-xs font-medium text-sage-600 dark:text-sage-400 hover:text-sage-700"
-                    >
-                      {t("viewDetails")}
-                    </button>
-                    {pins.length > 0 && (
-                      <>
-                        <span className="text-zinc-200 dark:text-zinc-700">|</span>
-                        <button
-                          onClick={() => {
-                            setRoutePanelListingId(
-                              routePanelListingId === l.id ? null : l.id
-                            );
-                            if (routePanelListingId !== l.id) setRoute(null);
-                          }}
-                          className="text-xs font-medium text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 flex items-center gap-1"
-                        >
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="6" cy="19" r="3" />
-                            <circle cx="18" cy="5" r="3" />
-                            <path d="M12 19h4.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H12" />
-                          </svg>
-                          {t("commute")}
-                        </button>
-                      </>
-                    )}
-                  </div>
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">
+                    {t("referencePoint")}
+                  </p>
                 </div>
               </Popup>
             </Marker>
-          );
-        })}
-      </MapContainer>
+          ))}
 
-      {/* Empty pins nudge */}
-      {pins.length === 0 && geocoded.length > 0 && !routePanelListingId && (
-        <div className="absolute top-3 left-3 right-3 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-800 px-3 py-2 flex items-center gap-2">
-          <span className="text-sage-600 dark:text-sage-500 flex-shrink-0">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
-              <circle cx="8" cy="6" r="1.5" />
-            </svg>
-          </span>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            {t("addPinNudge")}
-          </p>
-        </div>
-      )}
-
-      {/* Floating route panel */}
-      {routePanelListing && pins.length > 0 && (
-        <div
-          ref={routePanelRef}
-          className="absolute bottom-2 left-2 right-2 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-xl shadow-lg border border-zinc-100 dark:border-zinc-800 p-3"
-        >
-          {/* Header: listing name + mode tabs + close */}
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-200 truncate flex-1">
-              {routePanelListing.title}
-            </p>
-            <div className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5">
-              {(["walking", "cycling", "transit"] as TransportMode[]).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => {
-                    setTransportMode(m);
-                    // Re-fetch active route with new mode
-                    if (activePinId && routePanelListing) {
-                      const pin = pins.find((p) => p.id === activePinId);
-                      if (pin) {
-                        fetchRoute(
-                          routePanelListing.id,
-                          routePanelListing.latitude,
-                          routePanelListing.longitude,
-                          pin,
-                          m
-                        );
-                      }
-                    }
-                  }}
-                  className={`p-1.5 rounded-md transition-all ${
-                    transportMode === m
-                      ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-700 dark:text-zinc-200"
-                      : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
-                  }`}
-                  title={t(`mode_${m}`)}
-                >
-                  <ModeIcon mode={m} size={14} />
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={closeRoutePanel}
-              className="p-1 text-zinc-300 hover:text-zinc-500 transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M4 4L12 12M12 4L4 12" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Pin rows */}
-          <div className="space-y-1">
-            {pins.map((p) => {
-              const cacheKey = routeCacheKey(routePanelListing.id, p.id, transportMode);
-              const cached = routeCache[cacheKey];
-              const isActive = route?.pinId === p.id && route?.listingId === routePanelListing.id;
-              const isLoading = routeLoading === p.id;
-
-              // If transit is slower than walking, show a hint instead
-              const walkCacheKey = routeCacheKey(routePanelListing.id, p.id, "walking");
-              const walkCached = routeCache[walkCacheKey];
-              const transitSlowerThanWalk =
-                transportMode === "transit" &&
-                cached &&
-                walkCached &&
-                cached.duration >= walkCached.duration;
-
-              return (
-                <button
-                  key={p.id}
-                  disabled={isLoading || transitSlowerThanWalk}
-                  onClick={() =>
-                    fetchRoute(
-                      routePanelListing.id,
-                      routePanelListing.latitude,
-                      routePanelListing.longitude,
-                      p,
-                      transportMode
-                    )
-                  }
-                  className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all ${
-                    transitSlowerThanWalk
-                      ? "opacity-50 border border-transparent"
-                      : isActive
-                        ? "bg-sage-50 dark:bg-sage-950/40 border border-sage-200 dark:border-sage-800"
-                        : "hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-transparent"
-                  }`}
-                >
-                  <span className="text-sage-600 text-xs flex-shrink-0">★</span>
-                  <span className="text-xs text-zinc-600 dark:text-zinc-300 flex-1 truncate">{p.name}</span>
-                  <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex-shrink-0">
-                    {isLoading ? (
-                      <span className="inline-block w-3 h-3 border-2 border-zinc-300 border-t-sage-500 rounded-full animate-spin" />
-                    ) : transitSlowerThanWalk ? (
-                      <span className="text-zinc-400">
-                        {t("fasterToWalk")}
-                      </span>
-                    ) : cached ? (
-                      <span className="inline-flex items-center gap-1.5" style={{ color: ROUTE_COLORS[transportMode] }}>
-                        {cached.transitLegs && cached.transitLegs.length > 0 && (
-                          <TransitLegSequence legs={cached.transitLegs} />
-                        )}
-                        {formatDuration(cached.duration)}
-                        <span className="text-zinc-300">·</span>
-                        {formatDistance(cached.distance)}
-                      </span>
-                    ) : (
-                      t("calculate")
+          {/* Listing markers */}
+          {geocoded.map((l) => {
+            const dist =
+              pins.length > 0
+                ? Math.min(
+                    ...pins.map((p) => {
+                      const R = 6371;
+                      const dLat = ((p.latitude - l.latitude) * Math.PI) / 180;
+                      const dLng = ((p.longitude - l.longitude) * Math.PI) / 180;
+                      const a =
+                        Math.sin(dLat / 2) ** 2 +
+                        Math.cos((l.latitude * Math.PI) / 180) *
+                          Math.cos((p.latitude * Math.PI) / 180) *
+                          Math.sin(dLng / 2) ** 2;
+                      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    }),
+                  )
+                : null;
+            const distStr =
+              dist != null
+                ? dist < 1
+                  ? `${Math.round(dist * 1000)}m`
+                  : `${dist.toFixed(1)} km`
+                : null;
+            return (
+              <Marker
+                key={l.id}
+                position={[l.latitude, l.longitude]}
+                icon={
+                  hoveredId === l.id
+                    ? getHoveredIcon(l, favoritedIds, memberColorMap)
+                    : getListingIcon(l, favoritedIds, memberColorMap)
+                }
+              >
+                <Popup>
+                  <div className="min-w-[180px]">
+                    {l.imageUrls.length > 0 && (
+                      <img
+                        src={l.imageUrls[0]}
+                        alt={l.title}
+                        className="w-full h-24 object-cover rounded mb-2"
+                      />
                     )}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+                    <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-0.5">
+                      {l.title}
+                    </p>
+                    {l.price != null && (
+                      <p className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
+                        &euro;{l.price.toLocaleString()}/mo
+                      </p>
+                    )}
+                    {l.location && (
+                      <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">
+                        {l.location}
+                      </p>
+                    )}
+                    {distStr != null && (
+                      <p className="text-xs text-sage-500 dark:text-sage-400 font-medium mt-1">
+                        ★ {t("fromNearestPin", { distance: distStr })}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 mt-2">
+                      <button
+                        onClick={() => onListingClick(l.id)}
+                        className="text-xs font-medium text-sage-600 dark:text-sage-400 hover:text-sage-700"
+                      >
+                        {t("viewDetails")}
+                      </button>
+                      {pins.length > 0 && (
+                        <>
+                          <span className="text-zinc-200 dark:text-zinc-700">|</span>
+                          <button
+                            onClick={() => {
+                              setRoutePanelListingId(routePanelListingId === l.id ? null : l.id);
+                              if (routePanelListingId !== l.id) setRoute(null);
+                            }}
+                            className="text-xs font-medium text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 flex items-center gap-1"
+                          >
+                            <svg
+                              width="13"
+                              height="13"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="6" cy="19" r="3" />
+                              <circle cx="18" cy="5" r="3" />
+                              <path d="M12 19h4.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H12" />
+                            </svg>
+                            {t("commute")}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
+        </MapContainer>
 
-    </div>
-    <div className="flex items-center justify-between px-1 pt-1 text-[10px] text-zinc-300">
-      <span>
-        {geocoded.length < listings.length
-          ? t("showingCount", {
-              shown: geocoded.length,
-              total: listings.length,
-              missing: listings.length - geocoded.length,
-            })
-          : null}
-      </span>
-      <span>
-        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400">OSM</a>
-        {" · "}
-        <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400">CARTO</a>
-      </span>
-    </div>
+        {/* Empty pins nudge */}
+        {pins.length === 0 && geocoded.length > 0 && !routePanelListingId && (
+          <div className="absolute top-3 left-3 right-3 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-800 px-3 py-2 flex items-center gap-2">
+            <span className="text-sage-600 dark:text-sage-500 flex-shrink-0">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
+                <circle cx="8" cy="6" r="1.5" />
+              </svg>
+            </span>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">{t("addPinNudge")}</p>
+          </div>
+        )}
+
+        {/* Floating route panel */}
+        {routePanelListing && pins.length > 0 && (
+          <div
+            ref={routePanelRef}
+            className="absolute bottom-2 left-2 right-2 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-xl shadow-lg border border-zinc-100 dark:border-zinc-800 p-3"
+          >
+            {/* Header: listing name + mode tabs + close */}
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-200 truncate flex-1">
+                {routePanelListing.title}
+              </p>
+              <div className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5">
+                {(["walking", "cycling", "transit"] as TransportMode[]).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => {
+                      setTransportMode(m);
+                      // Re-fetch active route with new mode
+                      if (activePinId && routePanelListing) {
+                        const pin = pins.find((p) => p.id === activePinId);
+                        if (pin) {
+                          fetchRoute(
+                            routePanelListing.id,
+                            routePanelListing.latitude,
+                            routePanelListing.longitude,
+                            pin,
+                            m,
+                          );
+                        }
+                      }
+                    }}
+                    className={`p-1.5 rounded-md transition-all ${
+                      transportMode === m
+                        ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-700 dark:text-zinc-200"
+                        : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
+                    }`}
+                    title={t(`mode_${m}`)}
+                  >
+                    <ModeIcon mode={m} size={14} />
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={closeRoutePanel}
+                className="p-1 text-zinc-300 hover:text-zinc-500 transition-colors"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <path d="M4 4L12 12M12 4L4 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Pin rows */}
+            <div className="space-y-1">
+              {pins.map((p) => {
+                const cacheKey = routeCacheKey(routePanelListing.id, p.id, transportMode);
+                const cached = routeCache[cacheKey];
+                const isActive = route?.pinId === p.id && route?.listingId === routePanelListing.id;
+                const isLoading = routeLoading === p.id;
+
+                // If transit is slower than walking, show a hint instead
+                const walkCacheKey = routeCacheKey(routePanelListing.id, p.id, "walking");
+                const walkCached = routeCache[walkCacheKey];
+                const transitSlowerThanWalk =
+                  transportMode === "transit" &&
+                  cached &&
+                  walkCached &&
+                  cached.duration >= walkCached.duration;
+
+                return (
+                  <button
+                    key={p.id}
+                    disabled={isLoading || transitSlowerThanWalk}
+                    onClick={() =>
+                      fetchRoute(
+                        routePanelListing.id,
+                        routePanelListing.latitude,
+                        routePanelListing.longitude,
+                        p,
+                        transportMode,
+                      )
+                    }
+                    className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all ${
+                      transitSlowerThanWalk
+                        ? "opacity-50 border border-transparent"
+                        : isActive
+                          ? "bg-sage-50 dark:bg-sage-950/40 border border-sage-200 dark:border-sage-800"
+                          : "hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-transparent"
+                    }`}
+                  >
+                    <span className="text-sage-600 text-xs flex-shrink-0">★</span>
+                    <span className="text-xs text-zinc-600 dark:text-zinc-300 flex-1 truncate">
+                      {p.name}
+                    </span>
+                    <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex-shrink-0">
+                      {isLoading ? (
+                        <span className="inline-block w-3 h-3 border-2 border-zinc-300 border-t-sage-500 rounded-full animate-spin" />
+                      ) : transitSlowerThanWalk ? (
+                        <span className="text-zinc-400">{t("fasterToWalk")}</span>
+                      ) : cached ? (
+                        <span
+                          className="inline-flex items-center gap-1.5"
+                          style={{ color: ROUTE_COLORS[transportMode] }}
+                        >
+                          {cached.transitLegs && cached.transitLegs.length > 0 && (
+                            <TransitLegSequence legs={cached.transitLegs} />
+                          )}
+                          {formatDuration(cached.duration)}
+                          <span className="text-zinc-300">·</span>
+                          {formatDistance(cached.distance)}
+                        </span>
+                      ) : (
+                        t("calculate")
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="flex items-center justify-between px-1 pt-1 text-[10px] text-zinc-300">
+        <span>
+          {geocoded.length < listings.length
+            ? t("showingCount", {
+                shown: geocoded.length,
+                total: listings.length,
+                missing: listings.length - geocoded.length,
+              })
+            : null}
+        </span>
+        <span>
+          <a
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-zinc-400"
+          >
+            OSM
+          </a>
+          {" · "}
+          <a
+            href="https://carto.com/attributions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-zinc-400"
+          >
+            CARTO
+          </a>
+        </span>
+      </div>
     </>
   );
 }

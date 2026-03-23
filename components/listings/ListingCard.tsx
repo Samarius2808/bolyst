@@ -161,7 +161,15 @@ export function ListingCard({
                 : "bg-white/80 backdrop-blur-sm text-transparent hover:bg-white"
             }`}
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
               <path d="M3 8.5l3 3 7-7" />
             </svg>
           </div>
@@ -178,7 +186,14 @@ export function ListingCard({
                 : "bg-white/80 backdrop-blur-sm text-zinc-400 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 hover:text-rose-500 hover:bg-white"
             }`}
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill={isFavorited ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill={isFavorited ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <path d="M8 14s-5.5-3.5-5.5-7.5C2.5 4 4.5 2 6.5 2c1.1 0 2.1.5 2.5 1.5C9.4 2.5 10.4 2 11.5 2c2 0 3.5 1.5 3.5 3.5S13.5 10.5 8 14z" />
             </svg>
           </div>
@@ -192,7 +207,14 @@ export function ListingCard({
               onClick={handlePrev}
               className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 lg:w-7 lg:h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-white shadow-md text-zinc-700"
             >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
                 <path d="M10 4l-4 4 4 4" />
               </svg>
             </div>
@@ -201,7 +223,14 @@ export function ListingCard({
               onClick={handleNext}
               className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 lg:w-7 lg:h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity hover:bg-white shadow-md text-zinc-700"
             >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
                 <path d="M6 4l4 4-4 4" />
               </svg>
             </div>
@@ -239,11 +268,16 @@ export function ListingCard({
       {/* Content */}
       <div className="px-4 py-3.5">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-[13px] text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-1 group-hover:text-sage-600 transition-colors flex-1 min-w-0" title={title}>
+          <h3
+            className="font-semibold text-[13px] text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-1 group-hover:text-sage-600 transition-colors flex-1 min-w-0"
+            title={title}
+          >
             {title}
           </h3>
           {status && status !== "NEW" && (
-            <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full flex-shrink-0 ${statusColors[status]}`}>
+            <span
+              className={`px-2 py-0.5 text-[10px] font-semibold rounded-full flex-shrink-0 ${statusColors[status]}`}
+            >
               {t(`status.${status}`)}
             </span>
           )}
@@ -253,7 +287,14 @@ export function ListingCard({
           {size != null && <span>{size} m&sup2;</span>}
           {location && (
             <span className="truncate flex items-center gap-1">
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <svg
+                width="11"
+                height="11"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
                 <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
               </svg>
               {location}
@@ -317,21 +358,42 @@ export function ListingCard({
                 onClick={(e) => e.stopPropagation()}
                 className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-sage-400 hover:bg-sage-50 hover:text-sage-600 transition-colors text-[11px] font-medium"
               >
-                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
                   <path d="M6 10l4-4M7 4h-3a2 2 0 00-2 2v3M9 12h3a2 2 0 002-2V7" />
                 </svg>
                 {t("link")}
               </a>
             ) : (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[11px] font-medium text-zinc-300">{t("manual")}</span>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[11px] font-medium text-zinc-300">
+                {t("manual")}
+              </span>
             )}
             {showCommute && (
               <span
                 role="button"
-                onClick={(e) => { e.stopPropagation(); onCommute?.(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCommute?.();
+                }}
                 className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-sage-400 hover:bg-sage-50 hover:text-sage-600 transition-colors text-[11px] font-medium"
               >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <circle cx="6" cy="19" r="3" />
                   <circle cx="18" cy="5" r="3" />
                   <path d="M12 19h4.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H12" />
@@ -342,13 +404,23 @@ export function ListingCard({
           </div>
           <div className="flex items-center gap-2">
             {displayName && (
-              <span className="text-zinc-300 truncate max-w-[80px] text-[11px]" title={addedBy?.name || addedBy?.email || ""}>
+              <span
+                className="text-zinc-300 truncate max-w-[80px] text-[11px]"
+                title={addedBy?.name || addedBy?.email || ""}
+              >
                 {displayName}
               </span>
             )}
             {commentCount > 0 && (
               <span className="inline-flex items-center gap-1 text-zinc-400">
-                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg
+                  width="11"
+                  height="11"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
                   <path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v5a2 2 0 01-2 2H6l-3 3V4z" />
                 </svg>
                 {commentCount}

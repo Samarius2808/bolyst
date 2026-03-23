@@ -8,10 +8,7 @@ export async function GET() {
 
   const boards = await prisma.board.findMany({
     where: {
-      OR: [
-        { ownerId: user.id },
-        { members: { some: { userId: user.id } } },
-      ],
+      OR: [{ ownerId: user.id }, { members: { some: { userId: user.id } } }],
     },
     include: {
       _count: { select: { listings: true, members: true } },

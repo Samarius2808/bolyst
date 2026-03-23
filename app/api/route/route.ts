@@ -22,10 +22,7 @@ export async function GET(request: NextRequest) {
   const mode = searchParams.get("mode") || "walking";
 
   if (!startLng || !startLat || !endLng || !endLat) {
-    return NextResponse.json(
-      { error: "Missing coordinates" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing coordinates" }, { status: 400 });
   }
 
   // Transit routing via Transitous (MOTIS v2)
@@ -34,23 +31,20 @@ export async function GET(request: NextRequest) {
       parseFloat(startLat),
       parseFloat(startLng),
       parseFloat(endLat),
-      parseFloat(endLng)
+      parseFloat(endLng),
     );
   }
 
   // Walking / cycling via OpenRouteService
   if (!ORS_KEY) {
-    return NextResponse.json(
-      { error: "Routing service not configured" },
-      { status: 503 }
-    );
+    return NextResponse.json({ error: "Routing service not configured" }, { status: 503 });
   }
 
   const profile = ORS_PROFILES[mode];
   if (!profile) {
     return NextResponse.json(
       { error: "Invalid mode. Use: walking, cycling, transit" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -65,24 +59,19 @@ export async function GET(request: NextRequest) {
   if (!res.ok) {
     const text = await res.text();
     console.error("ORS error:", res.status, text);
-    return NextResponse.json(
-      { error: "Routing request failed" },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: "Routing request failed" }, { status: 502 });
   }
 
   const data = await res.json();
   const feature = data.features?.[0];
   if (!feature) {
-    return NextResponse.json(
-      { error: "No route found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "No route found" }, { status: 404 });
   }
 
   const { distance, duration } = feature.properties.summary;
-  const coordinates: [number, number][] =
-    feature.geometry.coordinates.map(([lng, lat]: [number, number]) => [lat, lng]);
+  const coordinates: [number, number][] = feature.geometry.coordinates.map(
+    ([lng, lat]: [number, number]) => [lat, lng],
+  );
 
   return NextResponse.json({ distance, duration, coordinates });
 }
@@ -132,9 +121,7 @@ function haversineMeters(a: [number, number], b: [number, number]): number {
   const dLng = ((b[1] - a[1]) * Math.PI) / 180;
   const x =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos((a[0] * Math.PI) / 180) *
-      Math.cos((b[0] * Math.PI) / 180) *
-      Math.sin(dLng / 2) ** 2;
+    Math.cos((a[0] * Math.PI) / 180) * Math.cos((b[0] * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
 }
 
@@ -151,7 +138,7 @@ async function fetchWalkingGeometry(
   fromLat: number,
   fromLng: number,
   toLat: number,
-  toLng: number
+  toLng: number,
 ): Promise<{ coordinates: [number, number][]; distance: number; duration: number } | null> {
   if (!ORS_KEY) return null;
 
@@ -165,8 +152,9 @@ async function fetchWalkingGeometry(
     if (!feature) return null;
 
     const { distance, duration } = feature.properties.summary;
-    const coordinates: [number, number][] =
-      feature.geometry.coordinates.map(([lng, lat]: [number, number]) => [lat, lng]);
+    const coordinates: [number, number][] = feature.geometry.coordinates.map(
+      ([lng, lat]: [number, number]) => [lat, lng],
+    );
 
     return { coordinates, distance, duration };
   } catch {
@@ -174,12 +162,7 @@ async function fetchWalkingGeometry(
   }
 }
 
-async function handleTransit(
-  startLat: number,
-  startLng: number,
-  endLat: number,
-  endLng: number
-) {
+async function handleTransit(startLat: number, startLng: number, endLat: number, endLng: number) {
   const params = new URLSearchParams({
     fromPlace: `${startLat},${startLng}`,
     toPlace: `${endLat},${endLng}`,
@@ -197,10 +180,7 @@ async function handleTransit(
     if (!res.ok) {
       const text = await res.text();
       console.error("Transitous error:", res.status, text);
-      return NextResponse.json(
-        { error: "Transit routing failed" },
-        { status: 502 }
-      );
+      return NextResponse.json({ error: "Transit routing failed" }, { status: 502 });
     }
 
     const data = await res.json();
@@ -208,10 +188,7 @@ async function handleTransit(
     const itineraries = [...(data.itineraries || []), ...(data.direct || [])];
 
     if (itineraries.length === 0) {
-      return NextResponse.json(
-        { error: "No transit route found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "No transit route found" }, { status: 404 });
     }
 
     // Use the first itinerary
@@ -219,7 +196,6 @@ async function handleTransit(
     const legs: TransitLeg[] = itin.legs || [];
 
     const coordinates: [number, number][] = [];
-    let walkingDistance = 0;
     let walkingDuration = 0;
 
     // Process legs — fetch real walking geometry for WALK legs with no polyline
@@ -236,11 +212,10 @@ async function handleTransit(
           leg.from.lat,
           leg.from.lon,
           leg.to.lat,
-          leg.to.lon
+          leg.to.lon,
         );
         if (walkRoute) {
           coordinates.push(...walkRoute.coordinates);
-          walkingDistance += walkRoute.distance;
           walkingDuration += walkRoute.duration;
         } else {
           // ORS failed — fall back to straight line
@@ -298,9 +273,6 @@ async function handleTransit(
     });
   } catch (err) {
     console.error("Transitous fetch error:", err);
-    return NextResponse.json(
-      { error: "Transit routing failed" },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: "Transit routing failed" }, { status: 502 });
   }
 }

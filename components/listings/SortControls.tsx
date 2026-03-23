@@ -42,47 +42,125 @@ interface SortGroup {
 
 const icons = {
   clock: (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <circle cx="8" cy="8" r="6.5" /><path d="M8 4.5V8l2.5 1.5" />
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
+      <circle cx="8" cy="8" r="6.5" />
+      <path d="M8 4.5V8l2.5 1.5" />
     </svg>
   ),
   price: (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
       <path d="M8 1v14M11 3.5H6.5a2.5 2.5 0 000 5h3a2.5 2.5 0 010 5H5" />
     </svg>
   ),
   ruler: (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <rect x="1" y="6" width="14" height="4" rx="1" /><path d="M4 6v2M7 6v2M10 6v2M13 6v2" />
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
+      <rect x="1" y="6" width="14" height="4" rx="1" />
+      <path d="M4 6v2M7 6v2M10 6v2M13 6v2" />
     </svg>
   ),
   pin: (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5z" /><circle cx="8" cy="6" r="1.5" />
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
+      <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5z" />
+      <circle cx="8" cy="6" r="1.5" />
     </svg>
   ),
   status: (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <circle cx="8" cy="8" r="6.5" /><path d="M5.5 8h5" /><path d="M8 5.5v5" />
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
+      <circle cx="8" cy="8" r="6.5" />
+      <path d="M5.5 8h5" />
+      <path d="M8 5.5v5" />
     </svg>
   ),
   person: (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <circle cx="8" cy="5" r="3" /><path d="M2.5 14.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
+      <circle cx="8" cy="5" r="3" />
+      <path d="M2.5 14.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
     </svg>
   ),
   tag: (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M1.5 9.2V2.5a1 1 0 011-1h6.7a1 1 0 01.7.3l5.3 5.3a1 1 0 010 1.4l-5.6 5.6a1 1 0 01-1.4 0L1.8 9.9a1 1 0 01-.3-.7z" /><circle cx="5" cy="5" r="1" fill="currentColor" />
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    >
+      <path d="M1.5 9.2V2.5a1 1 0 011-1h6.7a1 1 0 01.7.3l5.3 5.3a1 1 0 010 1.4l-5.6 5.6a1 1 0 01-1.4 0L1.8 9.9a1 1 0 01-.3-.7z" />
+      <circle cx="5" cy="5" r="1" fill="currentColor" />
     </svg>
   ),
   check: (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    >
       <path d="M3 8.5l3 3 7-7" />
     </svg>
   ),
   chevron: (
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M6 4l4 4-4 4" />
     </svg>
   ),
@@ -248,7 +326,14 @@ export function SortControls({
             : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
         }`}
       >
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        >
           <path d="M2 4h12M4 8h8M6 12h4" />
         </svg>
         {activeLabel}

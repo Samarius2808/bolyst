@@ -11,7 +11,11 @@ import { IsometricCity } from "@/components/landing/IsometricCity";
 
 const CDN = "https://bolyst-cdn.bolyst-team.workers.dev";
 
-export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const params = await searchParams;
   const isBrowsing = params.browse !== undefined;
   const { userId } = await auth();
@@ -73,9 +77,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
         {/* Fade center so hero text stays readable, both sides even */}
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_#faf9f7cc_0%,_#faf9f700_70%)] dark:bg-[radial-gradient(ellipse_at_center,_#1c1c1acc_0%,_#1c1c1a00_70%)]" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <p className="text-sm font-medium text-sage-600 mb-8">
-            {t("hero.subtitle")}
-          </p>
+          <p className="text-sm font-medium text-sage-600 mb-8">{t("hero.subtitle")}</p>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.08]">
             {t("hero.titleLine1")}
             <br />
@@ -97,11 +99,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
 
       {/* Hero video — scroll-locked reveal */}
       <ContainerScroll className="bg-[#faf9f7] dark:bg-[#1c1c1a]">
-        <ContainerInset roundednessRange={[24, 0]} className="shadow-2xl shadow-sage-900/10 border border-sage-200/60 dark:border-zinc-700/60 bg-white dark:bg-zinc-900">
-          <HeroVideo
-            src={`${CDN}/videos/hero.mp4`}
-            poster={`${CDN}/images/hero-screenshot.png`}
-          />
+        <ContainerInset
+          roundednessRange={[24, 0]}
+          className="shadow-2xl shadow-sage-900/10 border border-sage-200/60 dark:border-zinc-700/60 bg-white dark:bg-zinc-900"
+        >
+          <HeroVideo src={`${CDN}/videos/hero.mp4`} poster={`${CDN}/images/hero-screenshot.png`} />
         </ContainerInset>
       </ContainerScroll>
 
@@ -125,7 +127,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               videoSrc={`${CDN}/videos/feature-share.mp4`}
               videoPoster={`${CDN}/images/feature-share.png`}
               icon={
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-sage-600">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  className="text-sage-600"
+                >
                   <circle cx="18" cy="5" r="3" />
                   <circle cx="6" cy="12" r="3" />
                   <circle cx="18" cy="19" r="3" />
@@ -139,7 +150,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               videoSrc={`${CDN}/videos/feature-map.mp4`}
               videoPoster={`${CDN}/images/feature-map.png`}
               icon={
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-sage-600">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  className="text-sage-600"
+                >
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
                   <circle cx="12" cy="9" r="2.5" />
                 </svg>
@@ -151,7 +171,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               videoSrc={`${CDN}/videos/feature-compare.mp4`}
               videoPoster={`${CDN}/images/feature-compare.png`}
               icon={
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-sage-600">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  className="text-sage-600"
+                >
                   <rect x="2" y="4" width="7" height="16" rx="1.5" />
                   <rect x="15" y="4" width="7" height="16" rx="1.5" />
                 </svg>
@@ -221,7 +250,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
                 {t("details.pasteUrl.description")}
               </p>
               <div className="flex items-center gap-2 text-xs text-sage-600 dark:text-sage-400 font-medium">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                >
                   <path d="M3 8.5l3 3 7-7" />
                 </svg>
                 {t("details.pasteUrl.check")}
@@ -285,12 +322,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
             {t("cta.titleLine1")}
             <br />
-            {t("cta.titleLine2")}{" "}
-            <span className="text-sage-600">{t("cta.titleAccent")}</span>.
+            {t("cta.titleLine2")} <span className="text-sage-600">{t("cta.titleAccent")}</span>.
           </h2>
-          <p className="mt-5 text-base text-zinc-500 dark:text-zinc-400">
-            {t("cta.description")}
-          </p>
+          <p className="mt-5 text-base text-zinc-500 dark:text-zinc-400">{t("cta.description")}</p>
           <div className="mt-8">
             <Link
               href="/sign-up"
@@ -312,13 +346,14 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
                 <span className="w-7 h-7 bg-sage-600 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shadow-sm">
                   B
                 </span>
-                <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                  Bolyst
-                </span>
+                <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">Bolyst</span>
               </a>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 {t("footer.description")}{" "}
-                <span className="text-sage-600 dark:text-sage-400 font-medium">{t("footer.descriptionAccent")}</span>.
+                <span className="text-sage-600 dark:text-sage-400 font-medium">
+                  {t("footer.descriptionAccent")}
+                </span>
+                .
               </p>
             </div>
 
@@ -329,12 +364,18 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               </h4>
               <ul className="space-y-2.5">
                 <li>
-                  <Link href="/sign-up" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
+                  <Link
+                    href="/sign-up"
+                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
+                  >
                     {t("footer.getStarted")}
                   </Link>
                 </li>
                 <li>
-                  <a href="#features" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
+                  <a
+                    href="#features"
+                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
+                  >
                     {t("footer.features")}
                   </a>
                 </li>
@@ -348,17 +389,26 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               </h4>
               <ul className="space-y-2.5">
                 <li>
-                  <a href="mailto:hello@bolyst.eu" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
+                  <a
+                    href="mailto:hello@bolyst.eu"
+                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
+                  >
                     {t("footer.contact")}
                   </a>
                 </li>
                 <li>
-                  <Link href="/impressum" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
+                  <Link
+                    href="/impressum"
+                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
+                  >
                     {t("footer.impressum")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
+                  <Link
+                    href="/privacy"
+                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
+                  >
                     {t("footer.privacy")}
                   </Link>
                 </li>
@@ -371,7 +421,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
               &copy; {new Date().getFullYear()} Bolyst
             </p>
             <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              {t("footer.tagline")} <span className="text-sage-500 dark:text-sage-400">{t("footer.taglineAccent")}</span>.
+              {t("footer.tagline")}{" "}
+              <span className="text-sage-500 dark:text-sage-400">{t("footer.taglineAccent")}</span>.
             </p>
           </div>
         </div>

@@ -106,8 +106,7 @@ export function BoardSettings({
   }
 
   async function handleDelete() {
-    if (!confirm(t("deleteConfirm")))
-      return;
+    if (!confirm(t("deleteConfirm"))) return;
     await fetch(`/api/boards/${boardId}`, { method: "DELETE" });
     router.push("/boards");
   }
@@ -126,14 +125,20 @@ export function BoardSettings({
       >
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              {t("title")}
-            </h2>
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{t("title")}</h2>
             <button
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 transition-colors"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              >
                 <path d="M4 4l8 8M12 4l-8 8" />
               </svg>
             </button>
@@ -198,9 +203,7 @@ export function BoardSettings({
                           {displayName}
                         </p>
                         {m.user.name && (
-                          <p className="text-xs text-zinc-400 truncate">
-                            {m.user.email}
-                          </p>
+                          <p className="text-xs text-zinc-400 truncate">{m.user.email}</p>
                         )}
                       </div>
                     </div>
@@ -238,9 +241,7 @@ export function BoardSettings({
                   >
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                      <p className="text-sm text-amber-700 truncate">
-                        {inviteEmail}
-                      </p>
+                      <p className="text-sm text-amber-700 truncate">{inviteEmail}</p>
                     </div>
                     <span className="text-[11px] font-medium text-amber-500 ml-3 shrink-0 px-2 py-0.5 bg-amber-100 rounded-full">
                       {t("pending")}
@@ -272,9 +273,7 @@ export function BoardSettings({
                     {inviting ? "…" : t("invite")}
                   </button>
                 </form>
-                {error && (
-                  <p className="text-xs text-red-500 mt-2">{error}</p>
-                )}
+                {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
               </>
             )}
           </div>

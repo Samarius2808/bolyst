@@ -1,39 +1,25 @@
 "use client";
 
 import * as React from "react";
-import {
-  MotionValue,
-  motion,
-  useMotionTemplate,
-  useScroll,
-  useTransform,
-} from "motion/react";
+import { MotionValue, motion, useMotionTemplate, useScroll, useTransform } from "motion/react";
 
 interface ContainerScrollValue {
   scrollYProgress: MotionValue<number>;
 }
 
-const ContainerScrollContext = React.createContext<
-  ContainerScrollValue | undefined
->(undefined);
+const ContainerScrollContext = React.createContext<ContainerScrollValue | undefined>(undefined);
 
 function useContainerScrollContext() {
   const context = React.useContext(ContainerScrollContext);
   if (!context) {
-    throw new Error(
-      "useContainerScrollContext must be used within <ContainerScroll>"
-    );
+    throw new Error("useContainerScrollContext must be used within <ContainerScroll>");
   }
   return context;
 }
 
-interface ContainerScrollProps extends React.HTMLAttributes<HTMLDivElement> {}
+type ContainerScrollProps = React.HTMLAttributes<HTMLDivElement>;
 
-const ContainerScroll = ({
-  children,
-  className,
-  ...props
-}: ContainerScrollProps) => {
+const ContainerScroll = ({ children, className, ...props }: ContainerScrollProps) => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: scrollRef,
@@ -48,9 +34,7 @@ const ContainerScroll = ({
         ref={scrollRef}
       >
         {/* Sticky wrapper keeps the video pinned in the viewport while the section scrolls */}
-        <div className="sticky top-0 h-screen overflow-hidden">
-          {children}
-        </div>
+        <div className="sticky top-0 h-screen overflow-hidden">{children}</div>
       </section>
     </ContainerScrollContext.Provider>
   );

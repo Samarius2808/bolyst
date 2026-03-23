@@ -52,11 +52,9 @@ export default async function RootLayout({
           footerBranding: "opacity-40 hover:opacity-70 transition-opacity",
           headerTitle: "text-zinc-900 font-bold",
           headerSubtitle: "text-zinc-500",
-          socialButtonsBlockButton:
-            "border-sage-200 hover:bg-sage-50 transition-colors rounded-xl",
+          socialButtonsBlockButton: "border-sage-200 hover:bg-sage-50 transition-colors rounded-xl",
           socialButtonsBlockButtonText: "text-zinc-700 font-medium",
-          formFieldInput:
-            "border-sage-200 focus:border-sage-400 focus:ring-sage-400/20 rounded-xl",
+          formFieldInput: "border-sage-200 focus:border-sage-400 focus:ring-sage-400/20 rounded-xl",
           formFieldLabel: "text-zinc-700 font-medium",
           formButtonPrimary:
             "bg-sage-600 hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20 rounded-xl font-semibold",
@@ -73,13 +71,9 @@ export default async function RootLayout({
       }}
     >
       <html lang={locale} suppressHydrationWarning>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
-        >
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}>
           <ThemeProvider>
-            <NextIntlClientProvider messages={messages}>
-              {children}
-            </NextIntlClientProvider>
+            <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
           </ThemeProvider>
           <Analytics />
         </body>

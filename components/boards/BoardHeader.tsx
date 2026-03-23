@@ -67,7 +67,15 @@ export function BoardHeader({
             href="/boards"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-sage-600 transition-colors mb-1.5"
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
               <path d="M10 3L5 8l5 5" />
             </svg>
             {t("boards")}
@@ -120,7 +128,14 @@ export function BoardHeader({
               href={`/boards/${board.id}/compare`}
               className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-sage-200 hover:text-sage-600 transition-all"
             >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
                 <rect x="1" y="2" width="5" height="12" rx="1" />
                 <rect x="10" y="2" width="5" height="12" rx="1" />
               </svg>
@@ -131,7 +146,14 @@ export function BoardHeader({
             onClick={() => setShowSettings(true)}
             className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-sage-200 hover:text-sage-600 transition-all"
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <circle cx="8" cy="8" r="2.5" />
               <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4" />
             </svg>
@@ -145,7 +167,15 @@ export function BoardHeader({
             onClick={() => setShowAdd(true)}
             className="inline-flex items-center justify-center w-10 h-10 bg-sage-600 text-white rounded-xl active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
           >
-            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M8 3v10M3 8h10" />
             </svg>
           </button>
@@ -168,7 +198,14 @@ export function BoardHeader({
                     className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-2.5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                     onClick={() => setShowMobileMenu(false)}
                   >
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
                       <rect x="1" y="2" width="5" height="12" rx="1" />
                       <rect x="10" y="2" width="5" height="12" rx="1" />
                     </svg>
@@ -176,10 +213,20 @@ export function BoardHeader({
                   </Link>
                 )}
                 <button
-                  onClick={() => { setShowSettings(true); setShowMobileMenu(false); }}
+                  onClick={() => {
+                    setShowSettings(true);
+                    setShowMobileMenu(false);
+                  }}
                   className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-2.5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                 >
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
                     <circle cx="8" cy="8" r="2.5" />
                     <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4" />
                   </svg>

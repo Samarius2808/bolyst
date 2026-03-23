@@ -24,39 +24,27 @@ export default function ImpressumPage() {
 
         <div className="prose prose-zinc prose-sm max-w-none space-y-6">
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("infoTitle")}
-            </h2>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("infoTitle")}</h2>
             <p className="text-sm text-zinc-600 leading-relaxed whitespace-pre-line">
               {t("infoBody")}
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("contactTitle")}
-            </h2>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("contactTitle")}</h2>
             <p className="text-sm text-zinc-600 leading-relaxed whitespace-pre-line">
               {t("contactBody")}
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("disclaimerTitle")}
-            </h2>
-            <p className="text-sm text-zinc-600 leading-relaxed">
-              {t("disclaimerBody")}
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("disclaimerTitle")}</h2>
+            <p className="text-sm text-zinc-600 leading-relaxed">{t("disclaimerBody")}</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-zinc-800 mb-2">
-              {t("linksTitle")}
-            </h2>
-            <p className="text-sm text-zinc-600 leading-relaxed">
-              {t("linksBody")}
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-800 mb-2">{t("linksTitle")}</h2>
+            <p className="text-sm text-zinc-600 leading-relaxed">{t("linksBody")}</p>
           </section>
         </div>
       </main>

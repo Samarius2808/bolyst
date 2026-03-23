@@ -53,8 +53,8 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ email }),
-            })
-          )
+            }),
+          ),
         );
       }
 
@@ -76,19 +76,23 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
       >
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-zinc-900">
-              {t("title")}
-            </h2>
-            <p className="text-sm text-zinc-400 mt-0.5">
-              {t("subtitle")}
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-900">{t("title")}</h2>
+            <p className="text-sm text-zinc-400 mt-0.5">{t("subtitle")}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
               <path d="M4 4l8 8M12 4l-8 8" />
             </svg>
           </button>
@@ -104,12 +108,8 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
 
         {/* Invite collaborators */}
         <div className="mt-4">
-          <label className="text-sm font-medium text-zinc-700">
-            {t("invitePeople")}
-          </label>
-          <p className="text-xs text-zinc-400 mt-0.5 mb-2">
-            {t("inviteDescription")}
-          </p>
+          <label className="text-sm font-medium text-zinc-700">{t("invitePeople")}</label>
+          <p className="text-xs text-zinc-400 mt-0.5 mb-2">{t("inviteDescription")}</p>
           <div className="flex gap-2">
             <input
               type="email"
@@ -128,9 +128,7 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
               {t("add")}
             </button>
           </div>
-          <p className="text-xs text-zinc-400 mt-1.5">
-            {t("inviteLater")}
-          </p>
+          <p className="text-xs text-zinc-400 mt-1.5">{t("inviteLater")}</p>
           {emails.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
               {emails.map((email) => (
@@ -144,7 +142,15 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
                     onClick={() => removeEmail(email)}
                     className="hover:text-sage-900 transition-colors"
                   >
-                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
                       <path d="M4 4l8 8M12 4l-8 8" />
                     </svg>
                   </button>

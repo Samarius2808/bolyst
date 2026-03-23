@@ -44,9 +44,7 @@ export async function POST(req: Request) {
       imageUrls: imageUrls || [],
       latitude: coords?.lat ?? null,
       longitude: coords?.lng ?? null,
-      tags: tagIds?.length
-        ? { create: tagIds.map((tagId: string) => ({ tagId })) }
-        : undefined,
+      tags: tagIds?.length ? { create: tagIds.map((tagId: string) => ({ tagId })) } : undefined,
     },
   });
 

@@ -9,9 +9,7 @@ export async function getOrCreateUser() {
   if (!clerkUser) return null;
 
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
-  const name = [clerkUser.firstName, clerkUser.lastName]
-    .filter(Boolean)
-    .join(" ") || null;
+  const name = [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || null;
 
   let existing = await prisma.user.findUnique({ where: { clerkId: userId } });
 
@@ -27,9 +25,11 @@ export async function getOrCreateUser() {
     }
   }
 
-  const user = existing ?? await prisma.user.create({
-    data: { clerkId: userId, email, name },
-  });
+  const user =
+    existing ??
+    (await prisma.user.create({
+      data: { clerkId: userId, email, name },
+    }));
 
   // On first login, process any pending board invites
   if (!existing) {

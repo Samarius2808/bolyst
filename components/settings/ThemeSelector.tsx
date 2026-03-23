@@ -4,7 +4,13 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { SkyToggle } from "@/components/ui/sky-toggle";
 
-export function ThemeSelector({ compact = false, toggleSize }: { compact?: boolean; toggleSize?: number }) {
+export function ThemeSelector({
+  compact = false,
+  toggleSize,
+}: {
+  compact?: boolean;
+  toggleSize?: number;
+}) {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 

@@ -15,7 +15,12 @@ const statusColors: Record<ListingStatus, string> = {
 };
 
 const statusOrder: Record<string, number> = {
-  NEW: 0, VIEWING: 1, APPLIED: 2, ACCEPTED: 3, REJECTED: 4, DELISTED: 5,
+  NEW: 0,
+  VIEWING: 1,
+  APPLIED: 2,
+  ACCEPTED: 3,
+  REJECTED: 4,
+  DELISTED: 5,
 };
 
 interface Listing {
@@ -91,9 +96,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
           fill="none"
           stroke="currentColor"
           strokeWidth="2.5"
-          className={`transition-transform ${
-            active && sortDir === "desc" ? "rotate-180" : ""
-          }`}
+          className={`transition-transform ${active && sortDir === "desc" ? "rotate-180" : ""}`}
         >
           <path d="M4 10l4-4 4 4" />
         </svg>
@@ -113,9 +116,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
       sortable: "price",
       render: (l) =>
         l.price != null ? (
-          <span className="font-semibold text-zinc-900">
-            &euro;{l.price.toLocaleString()}/mo
-          </span>
+          <span className="font-semibold text-zinc-900">&euro;{l.price.toLocaleString()}/mo</span>
         ) : (
           dash
         ),
@@ -131,9 +132,7 @@ export function CompareTable({ listings }: { listings: Listing[] }) {
       label: t("pricePerM2"),
       sortable: "pricePerM2",
       render: (l) =>
-        l.price != null && l.size
-          ? `€${Math.round(l.price / l.size).toLocaleString()}`
-          : dash,
+        l.price != null && l.size ? `€${Math.round(l.price / l.size).toLocaleString()}` : dash,
     },
     {
       key: "location",

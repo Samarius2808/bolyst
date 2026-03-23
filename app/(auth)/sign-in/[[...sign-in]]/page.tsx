@@ -17,9 +17,7 @@ export default async function SignInPage() {
             <span className="w-9 h-9 bg-sage-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md shadow-sage-600/20">
               B
             </span>
-            <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900">
-              Bolyst
-            </h1>
+            <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900">Bolyst</h1>
           </Link>
           <p className="text-sm text-zinc-500">
             {t("tagline")} <span className="text-sage-600">{t("taglineAccent")}</span>.

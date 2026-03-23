@@ -25,14 +25,7 @@ export function FeatureVideo({
   }, [playing]);
 
   return (
-    <video
-      ref={ref}
-      muted
-      loop
-      playsInline
-      poster={poster}
-      className="w-full"
-    >
+    <video ref={ref} muted loop playsInline poster={poster} className="w-full">
       <source src={src} type="video/mp4" />
       <img src={poster} alt="" className="w-full" />
     </video>
