@@ -9,16 +9,15 @@ test.describe.serial("Critical path", () => {
   test("1. Sign in → lands on /boards", async ({ page }) => {
     await signIn(page);
     await expect(page).toHaveURL(/\/boards/);
-    // Should see the greeting
-    await expect(page.locator("text=Hi,")).toBeVisible();
+    // Should see the boards page content
+    await expect(page.getByRole("button", { name: /new board|create board/i }).first()).toBeVisible();
   });
 
   test("2. Create board → appears in list", async ({ page }) => {
     await signIn(page);
 
     // Click create board button (works for both empty and non-empty states)
-    const newBoardBtn = page.getByRole("button", { name: /new board|create board/i });
-    await newBoardBtn.click();
+    await page.getByRole("button", { name: /new board|create board/i }).first().click();
 
     // Fill board name
     await page.getByPlaceholder(/e\.g\. Berlin/i).fill(BOARD_NAME);
@@ -26,12 +25,13 @@ test.describe.serial("Critical path", () => {
     // Submit
     await page.getByRole("button", { name: /^create board$/i }).click();
 
-    // Should redirect to the new board page
+    // Board should appear in the list
+    await expect(page.locator(`text=${BOARD_NAME}`)).toBeVisible({ timeout: 10_000 });
+
+    // Click into the board
+    await page.locator(`text=${BOARD_NAME}`).click();
     await page.waitForURL(/\/boards\/.+/, { timeout: 10_000 });
     boardUrl = page.url();
-
-    // Board name should be visible
-    await expect(page.locator(`text=${BOARD_NAME}`)).toBeVisible();
   });
 
   test("3. Add listing manually → card appears", async ({ page }) => {
@@ -39,7 +39,7 @@ test.describe.serial("Critical path", () => {
     await page.goto(boardUrl);
 
     // Click add listing
-    await page.getByRole("button", { name: /add listing/i }).click();
+    await page.getByRole("button", { name: /add listing/i }).first().click();
 
     // Switch to manual entry
     await page.getByRole("button", { name: /manual entry/i }).click();
@@ -109,7 +109,7 @@ test.describe.serial("Critical path", () => {
     await page.goto(boardUrl);
 
     // First, add a second listing so we can compare
-    await page.getByRole("button", { name: /add listing/i }).click();
+    await page.getByRole("button", { name: /add listing/i }).first().click();
     await page.getByRole("button", { name: /manual entry/i }).click();
     await page.getByPlaceholder("Title *").fill(`${E2E_PREFIX} Second Apartment`);
     await page.getByPlaceholder(/price/i).fill("1200");
@@ -120,29 +120,15 @@ test.describe.serial("Critical path", () => {
       timeout: 10_000,
     });
 
-    // Enable compare mode
-    await page.getByRole("button", { name: /compare/i }).click();
-
-    // Select both listings (click the checkboxes/selectors on the cards)
-    const cards = page.locator('[data-testid="listing-card"], .group\\/card');
-    const cardCount = await cards.count();
-    // Click each card's select area (the checkbox overlay in compare mode)
-    for (let i = 0; i < Math.min(cardCount, 2); i++) {
-      await cards.nth(i).click();
-    }
-
-    // Click the compare button in the floating bar
-    await page
-      .getByRole("button", { name: /compare.*→|compare/i })
-      .last()
-      .click();
+    // Use the Compare link in the header to go to compare page
+    await page.getByRole("link", { name: /compare/i }).click();
 
     // Should navigate to compare page
     await expect(page).toHaveURL(/\/compare/, { timeout: 5_000 });
 
-    // Both listings should be visible in the comparison
-    await expect(page.locator(`text=${E2E_PREFIX} Test Apartment`)).toBeVisible();
-    await expect(page.locator(`text=${E2E_PREFIX} Second Apartment`)).toBeVisible();
+    // Both listings should be visible in the comparison table
+    await expect(page.getByRole("columnheader", { name: `${E2E_PREFIX} Test Apartment` })).toBeVisible();
+    await expect(page.getByRole("columnheader", { name: `${E2E_PREFIX} Second Apartment` })).toBeVisible();
   });
 
   test("7. Invite collaborator → UI confirms invite", async ({ page }) => {

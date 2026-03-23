@@ -28,14 +28,11 @@ export async function cleanupTestBoards(page: Page) {
     // Open settings
     await page.getByRole("button", { name: /settings/i }).click();
 
-    // Click delete board
-    await page.getByRole("button", { name: /delete this board/i }).click();
+    // Accept the native confirm dialog when it appears
+    page.once("dialog", (dialog) => dialog.accept());
 
-    // Confirm deletion
-    await page
-      .getByRole("button", { name: /delete/i })
-      .last()
-      .click();
+    // Click delete board (triggers window.confirm)
+    await page.getByRole("button", { name: /delete this board/i }).click();
 
     // Wait for redirect back to boards
     await page.waitForURL("**/boards", { timeout: 10_000 });
