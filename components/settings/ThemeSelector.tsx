@@ -1,8 +1,12 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { SkyToggle } from "@/components/ui/sky-toggle";
+
+const emptySubscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export function ThemeSelector({
   compact = false,
@@ -12,9 +16,7 @@ export function ThemeSelector({
   toggleSize?: number;
 }) {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
 
   if (!mounted) {
     return <div className={compact ? "w-[79px] h-[28px]" : "h-[35px]"} />;

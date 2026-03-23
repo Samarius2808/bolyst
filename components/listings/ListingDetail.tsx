@@ -114,17 +114,20 @@ export function ListingDetail({
   const ts = useTranslations("listingCard.status");
   const tt = useTranslations("time");
 
-  function timeAgo(dateStr: string): string {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return tt("justNow");
-    if (mins < 60) return tt("minutesAgo", { count: mins });
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return tt("hoursAgo", { count: hours });
-    const days = Math.floor(hours / 24);
-    if (days < 7) return tt("daysAgo", { count: days });
-    return new Date(dateStr).toLocaleDateString();
-  }
+  const timeAgo = useCallback(
+    (dateStr: string): string => {
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return tt("justNow");
+      if (mins < 60) return tt("minutesAgo", { count: mins });
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return tt("hoursAgo", { count: hours });
+      const days = Math.floor(hours / 24);
+      if (days < 7) return tt("daysAgo", { count: days });
+      return new Date(dateStr).toLocaleDateString();
+    },
+    [tt],
+  );
 
   const loadData = useCallback(async () => {
     const [listingRes, commentsRes, tagsRes] = await Promise.all([
@@ -138,7 +141,7 @@ export function ListingDetail({
   }, [listingId, boardId]);
 
   useEffect(() => {
-    loadData();
+    loadData(); // eslint-disable-line react-hooks/set-state-in-effect -- data fetching is the intended pattern
   }, [loadData]);
 
   function startEditing() {

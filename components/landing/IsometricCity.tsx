@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, startTransition } from "react";
 import { useTheme } from "next-themes";
 
 // ── Isometric projection ─────────────────────────────────────────────────────
@@ -337,7 +337,9 @@ function ArchWinL({
 export function IsometricCity({ className }: { className?: string }) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    startTransition(() => setMounted(true));
+  }, []);
   const isDark = mounted && resolvedTheme === "dark";
 
   // Fill helpers — map light-mode fill to dark-mode equivalent

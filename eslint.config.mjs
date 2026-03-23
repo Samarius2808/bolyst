@@ -17,6 +17,7 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "import-x/no-cycle": "error",
+      "@next/next/no-img-element": "off",
     },
   },
 ]);

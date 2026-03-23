@@ -10,14 +10,19 @@ test.describe.serial("Critical path", () => {
     await signIn(page);
     await expect(page).toHaveURL(/\/boards/);
     // Should see the boards page content
-    await expect(page.getByRole("button", { name: /new board|create board/i }).first()).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /new board|create board/i }).first(),
+    ).toBeVisible();
   });
 
   test("2. Create board → appears in list", async ({ page }) => {
     await signIn(page);
 
     // Click create board button (works for both empty and non-empty states)
-    await page.getByRole("button", { name: /new board|create board/i }).first().click();
+    await page
+      .getByRole("button", { name: /new board|create board/i })
+      .first()
+      .click();
 
     // Fill board name
     await page.getByPlaceholder(/e\.g\. Berlin/i).fill(BOARD_NAME);
@@ -39,7 +44,10 @@ test.describe.serial("Critical path", () => {
     await page.goto(boardUrl);
 
     // Click add listing
-    await page.getByRole("button", { name: /add listing/i }).first().click();
+    await page
+      .getByRole("button", { name: /add listing/i })
+      .first()
+      .click();
 
     // Switch to manual entry
     await page.getByRole("button", { name: /manual entry/i }).click();
@@ -109,7 +117,10 @@ test.describe.serial("Critical path", () => {
     await page.goto(boardUrl);
 
     // First, add a second listing so we can compare
-    await page.getByRole("button", { name: /add listing/i }).first().click();
+    await page
+      .getByRole("button", { name: /add listing/i })
+      .first()
+      .click();
     await page.getByRole("button", { name: /manual entry/i }).click();
     await page.getByPlaceholder("Title *").fill(`${E2E_PREFIX} Second Apartment`);
     await page.getByPlaceholder(/price/i).fill("1200");
@@ -127,8 +138,12 @@ test.describe.serial("Critical path", () => {
     await expect(page).toHaveURL(/\/compare/, { timeout: 5_000 });
 
     // Both listings should be visible in the comparison table
-    await expect(page.getByRole("columnheader", { name: `${E2E_PREFIX} Test Apartment` })).toBeVisible();
-    await expect(page.getByRole("columnheader", { name: `${E2E_PREFIX} Second Apartment` })).toBeVisible();
+    await expect(
+      page.getByRole("columnheader", { name: `${E2E_PREFIX} Test Apartment` }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("columnheader", { name: `${E2E_PREFIX} Second Apartment` }),
+    ).toBeVisible();
   });
 
   test("7. Invite collaborator → UI confirms invite", async ({ page }) => {

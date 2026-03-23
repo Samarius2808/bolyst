@@ -151,14 +151,16 @@ function ConfettiCanvas({ ox, oy }: { ox: number; oy: number }) {
 // ─── Mode 3: Apartment icons ──────────────────────────────────────────────────
 
 function ApartmentIcons() {
-  const icons = Array.from({ length: 26 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 90 + 5,
-    y: Math.random() * 85 + 5,
-    size: 16 + Math.random() * 22,
-    delay: Math.random() * 1.8,
-    color: [SAGE, "#6b8f5e", "#8aad79"][Math.floor(Math.random() * 3)],
-  }));
+  const [icons] = useState(() =>
+    Array.from({ length: 26 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 90 + 5,
+      y: Math.random() * 85 + 5,
+      size: 16 + Math.random() * 22,
+      delay: Math.random() * 1.8,
+      color: [SAGE, "#6b8f5e", "#8aad79"][Math.floor(Math.random() * 3)],
+    })),
+  );
 
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none overflow-hidden">

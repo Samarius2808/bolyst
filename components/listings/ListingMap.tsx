@@ -549,7 +549,7 @@ export function ListingMap({
     } else {
       setRoutePanelHeight(0);
     }
-  });
+  }, []);
 
   if (geocoded.length === 0 && pins.length === 0) {
     return (
