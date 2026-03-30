@@ -46,13 +46,10 @@ export function LocationInput({
         limit: "5",
         addressdetails: "1",
       });
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?${params}`,
-        {
-          headers: { "User-Agent": "Bolyst/1.0 (https://bolyst.eu)" },
-          signal: AbortSignal.timeout(5000),
-        },
-      );
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
+        headers: { "User-Agent": "Bolyst/1.0 (https://bolyst.eu)" },
+        signal: AbortSignal.timeout(5000),
+      });
       if (!res.ok) return;
       const data = await res.json();
       setSuggestions(data);

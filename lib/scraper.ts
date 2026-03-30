@@ -371,13 +371,9 @@ function isComingHome(url: string): boolean {
  *   ...
  * The og:image gives us image 01. We probe 02–05 with HEAD requests.
  */
-async function probeComingHomeImages(
-  existing: string[],
-  sourceUrl: string,
-): Promise<string[]> {
+async function probeComingHomeImages(existing: string[], sourceUrl: string): Promise<string[]> {
   // Extract listing ID from the URL path: /en/living/{ID}/...
-  const idMatch = sourceUrl.match(/\/living\/(\d+)\//i)
-    ?? sourceUrl.match(/\/wohnen\/(\d+)\//i);
+  const idMatch = sourceUrl.match(/\/living\/(\d+)\//i) ?? sourceUrl.match(/\/wohnen\/(\d+)\//i);
   if (!idMatch) return existing;
   const id = idMatch[1];
 
