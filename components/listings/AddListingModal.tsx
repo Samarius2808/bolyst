@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { LocationInput } from "@/components/ui/LocationInput";
 
 interface BoardTag {
   id: string;
@@ -255,10 +256,9 @@ export function AddListingModal({
                     className={inputClass}
                   />
                 </div>
-                <input
-                  type="text"
+                <LocationInput
                   value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  onChange={setLocation}
                   placeholder={t("locationPlaceholder")}
                   className={inputClass}
                 />

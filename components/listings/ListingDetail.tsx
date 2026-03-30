@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { LocationInput } from "@/components/ui/LocationInput";
 
 interface Tag {
   id: string;
@@ -364,13 +365,12 @@ export function ListingDetail({
                         className={inputClass}
                       />
                     </div>
-                    <input
-                      type="text"
+                    <LocationInput
                       value={editForm.location}
-                      onChange={(e) =>
+                      onChange={(val) =>
                         setEditForm((f) => ({
                           ...f,
-                          location: e.target.value,
+                          location: val,
                         }))
                       }
                       placeholder={t("locationPlaceholder")}

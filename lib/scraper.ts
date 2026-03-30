@@ -23,13 +23,27 @@ export async function scrapeListing(url: string): Promise<ScrapedListing> {
 
   const html = await res.text();
 
+  let images = extractImages(html, url);
+  let location = extractLocation(html);
+
+  // coming-home.com: gallery images are loaded client-side via a private API,
+  // but follow a predictable sequential naming pattern on their CDN.
+  if (isComingHome(url)) {
+    if (images.length < 5) {
+      images = await probeComingHomeImages(images, url);
+    }
+    if (!location) {
+      location = extractComingHomeLocation(url);
+    }
+  }
+
   return {
     title: extractTitle(html),
     price: extractPrice(html),
     size: extractSize(html),
-    location: extractLocation(html),
+    location,
     description: extractDescription(html),
-    imageUrls: extractImages(html, url),
+    imageUrls: images,
     sourceUrl: url,
   };
 }
@@ -335,5 +349,81 @@ function resolveUrl(src: string, base: string): string {
     return new URL(src, base).href;
   } catch {
     return src;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// coming-home.com helpers
+// ---------------------------------------------------------------------------
+
+function isComingHome(url: string): boolean {
+  try {
+    return new URL(url).hostname.endsWith("coming-home.com");
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * coming-home.com gallery images follow a predictable CDN pattern:
+ *   https://media3.coming-home.com/tr:n-seo_image/web/{ID}/gallery/{ID}-01.jpg
+ *   https://media3.coming-home.com/tr:n-seo_image/web/{ID}/gallery/{ID}-02.jpg
+ *   ...
+ * The og:image gives us image 01. We probe 02–05 with HEAD requests.
+ */
+async function probeComingHomeImages(
+  existing: string[],
+  sourceUrl: string,
+): Promise<string[]> {
+  // Extract listing ID from the URL path: /en/living/{ID}/...
+  const idMatch = sourceUrl.match(/\/living\/(\d+)\//i)
+    ?? sourceUrl.match(/\/wohnen\/(\d+)\//i);
+  if (!idMatch) return existing;
+  const id = idMatch[1];
+
+  const basePattern = `https://media3.coming-home.com/tr:n-seo_image/web/${id}/gallery/${id}-`;
+  const images = [...existing];
+  const seen = new Set(images.map((u) => normalizeImageUrl(u)));
+
+  for (let i = 2; i <= 10 && images.length < 5; i++) {
+    const imgUrl = `${basePattern}${String(i).padStart(2, "0")}.jpg`;
+    const key = normalizeImageUrl(imgUrl);
+    if (seen.has(key)) continue;
+    try {
+      const head = await fetch(imgUrl, {
+        method: "HEAD",
+        signal: AbortSignal.timeout(3000),
+      });
+      if (head.ok) {
+        seen.add(key);
+        images.push(imgUrl);
+      } else {
+        break; // sequential numbering — first 404 means no more images
+      }
+    } catch {
+      break;
+    }
+  }
+
+  return images;
+}
+
+/**
+ * coming-home.com doesn't include location in meta tags.
+ * The URL path contains the city: /en/living/{city} for search pages,
+ * and navigation links reference /en/living/berlin etc.
+ * For individual listings we can extract the city from the slug
+ * (e.g. "near-kurfuerstendamm" → Berlin) or fall back to "Berlin"
+ * since coming-home.com currently operates only in Berlin/Potsdam.
+ */
+function extractComingHomeLocation(url: string): string | null {
+  try {
+    const path = new URL(url).pathname.toLowerCase();
+    if (path.includes("potsdam")) return "Potsdam";
+    // coming-home.com is Berlin-focused — all /living/ and /wohnen/ listings are Berlin area
+    if (path.includes("/living/") || path.includes("/wohnen/")) return "Berlin";
+    return null;
+  } catch {
+    return null;
   }
 }
