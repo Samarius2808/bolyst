@@ -434,6 +434,7 @@ export function ListingMap({
   members = [],
   hoveredId = null,
   commuteListingId = null,
+  hidePinNudge = false,
   onListingClick,
   onCommuteClose,
 }: {
@@ -443,6 +444,7 @@ export function ListingMap({
   members?: MapMember[];
   hoveredId?: string | null;
   commuteListingId?: string | null;
+  hidePinNudge?: boolean;
   onListingClick: (id: string) => void;
   onCommuteClose?: () => void;
 }) {
@@ -708,7 +710,7 @@ export function ListingMap({
         </MapContainer>
 
         {/* Empty pins nudge */}
-        {pins.length === 0 && geocoded.length > 0 && !routePanelListingId && (
+        {pins.length === 0 && geocoded.length > 0 && !routePanelListingId && !hidePinNudge && (
           <div className="absolute top-3 left-3 right-3 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-800 px-3 py-2 flex items-center gap-2">
             <span className="text-sage-600 dark:text-sage-500 flex-shrink-0">
               <svg

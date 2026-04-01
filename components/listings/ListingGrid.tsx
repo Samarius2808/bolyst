@@ -87,6 +87,7 @@ export function ListingGrid({
   const [compareSet, setCompareSet] = useState<Set<string>>(new Set());
   const [commuteListingId, setCommuteListingId] = useState<string | null>(null);
   const [showMobileMap, setShowMobileMap] = useState(false);
+  const [pinManagerExpanded, setPinManagerExpanded] = useState(false);
 
   const hasGeocodedListings = listings.some((l) => l.latitude != null && l.longitude != null);
 
@@ -363,6 +364,7 @@ export function ListingGrid({
                     pins={boardPins}
                     onPinsChange={setBoardPins}
                     geoCenter={geoCenter}
+                    onExpandedChange={setPinManagerExpanded}
                   />
                 </div>
                 <div className="h-[calc(100vh-16rem)] mt-4">
@@ -373,6 +375,7 @@ export function ListingGrid({
                     members={members}
                     hoveredId={hoveredId}
                     commuteListingId={commuteListingId}
+                    hidePinNudge={pinManagerExpanded}
                     onListingClick={(id) => setSelectedId(id)}
                     onCommuteClose={() => setCommuteListingId(null)}
                   />

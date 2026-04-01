@@ -21,11 +21,13 @@ export function PinManager({
   pins,
   onPinsChange,
   geoCenter,
+  onExpandedChange,
 }: {
   boardId: string;
   pins: Pin[];
   onPinsChange: (pins: Pin[]) => void;
   geoCenter?: GeoCenter | null;
+  onExpandedChange?: (expanded: boolean) => void;
 }) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -161,7 +163,11 @@ export function PinManager({
   return (
     <div className="relative bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl">
       <button
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => {
+          const next = !expanded;
+          setExpanded(next);
+          onExpandedChange?.(next);
+        }}
         className={`w-full flex items-center justify-between px-4 py-2.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors ${expanded ? "rounded-t-2xl" : "rounded-2xl"}`}
       >
         <span className="flex items-center gap-1.5">
