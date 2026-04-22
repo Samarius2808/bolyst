@@ -50,12 +50,13 @@ export default async function RootLayout({
         elements: {
           card: "!bg-white/80 backdrop-blur-md !shadow-xl !shadow-sage-900/5 !ring-1 !ring-sage-200/50",
           footerBranding: "opacity-40 hover:opacity-70 transition-opacity",
-          headerTitle: "text-zinc-900 font-bold",
-          headerSubtitle: "text-zinc-500",
+          headerTitle: "!text-zinc-900 font-bold",
+          headerSubtitle: "!text-zinc-500",
           socialButtonsBlockButton: "border-sage-200 hover:bg-sage-50 transition-colors rounded-xl",
-          socialButtonsBlockButtonText: "text-zinc-700 font-medium",
-          formFieldInput: "border-sage-200 focus:border-sage-400 focus:ring-sage-400/20 rounded-xl",
-          formFieldLabel: "text-zinc-700 font-medium",
+          socialButtonsBlockButtonText: "!text-zinc-700 font-medium",
+          formFieldInput:
+            "!bg-white !text-zinc-900 placeholder:!text-zinc-400 border-sage-200 focus:border-sage-400 focus:ring-sage-400/20 rounded-xl",
+          formFieldLabel: "!text-zinc-700 font-medium",
           formButtonPrimary:
             "bg-sage-600 hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20 rounded-xl font-semibold",
           footerActionLink: "text-sage-600 hover:text-sage-700 font-medium",

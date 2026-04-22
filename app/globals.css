@@ -130,6 +130,22 @@ textarea::placeholder {
   }
 }
 
+/* Auth pages always render in light theme — overrides .dark inheritance */
+.auth-scope,
+.auth-scope * {
+  color-scheme: light;
+}
+.auth-scope input,
+.auth-scope textarea,
+.auth-scope select {
+  background-color: #ffffff;
+  color: #18181b;
+}
+.auth-scope input::placeholder,
+.auth-scope textarea::placeholder {
+  color: #a1a1aa;
+}
+
 /* Hide Leaflet attribution watermark */
 .leaflet-container .leaflet-control-attribution {
   display: none !important;
