@@ -1,6 +1,7 @@
 {
   "landing": {
     "nav": {
+      "about": "Über Bolyst",
       "signIn": "Anmelden",
       "getStarted": "Loslegen",
       "goToBoards": "Zu den Boards"
@@ -30,6 +31,7 @@
       }
     },
     "howItWorks": {
+      "eyebrow": "So funktioniert’s",
       "heading": "In unter einer Minute startklar",
       "step1": {
         "title": "Board erstellen",
@@ -45,7 +47,23 @@
         "accent": "Gemeinsam"
       }
     },
+    "origin": {
+      "provenance": "Norwegisch",
+      "phonetic": "/ˈbuː.lyst/",
+      "listen": "Anhören",
+      "intro": "Bolyst ist ein norwegisches Wort, das sich nicht direkt übersetzen lässt. Es beschreibt die Anziehungskraft eines Ortes: die Lust, irgendwo anzukommen und sich dort zu Hause zu fühlen.",
+      "planning": "Sogar in der norwegischen Stadtplanung wird das Wort verwendet. Dort steht es für alles, was Menschen dazu bringt, an einem Ort Wurzeln zu schlagen.",
+      "bo": "bo",
+      "boType": "Verb",
+      "boGloss": "wohnen, leben",
+      "lyst": "lyst",
+      "lystType": "Substantiv",
+      "lystGloss": "Lust, Freude, Verlangen",
+      "outro": "Zusammen ergibt das die Freude, seinen Platz zu finden. Genau das wünschen wir euch hier,",
+      "outroAccent": "gemeinsam"
+    },
     "details": {
+      "eyebrow": "Und mehr",
       "pasteUrl": {
         "title": "Einfach den Link einf\u00fcgen",
         "description": "Funktioniert mit jeder Immobilienseite \u2013 Immobilienscout, Finn.no, Hemnet, Funda, egal. Wir \u00fcbernehmen, was geht. Den Rest gebt ihr manuell ein.",
@@ -293,6 +311,7 @@
     "fasterToWalk": "Zu Fuß schneller"
   },
   "metadata": {
+    "aboutTitle": "Über Bolyst",
     "title": "Bolyst",
     "description": "Gemeinsame Wohnungssuche"
   },

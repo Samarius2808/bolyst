@@ -130,6 +130,28 @@ textarea::placeholder {
   }
 }
 
+@keyframes bolyst-wave {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes bolyst-bump {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* Auth pages always render in light theme — overrides .dark inheritance */
 .auth-scope,
 .auth-scope * {
