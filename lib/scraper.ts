@@ -6,6 +6,26 @@ export interface ScrapedListing {
   description: string | null;
   imageUrls: string[];
   sourceUrl: string;
+  /** Site refused automated access (bot protection) — nothing to extract, fall back to manual entry */
+  blocked?: boolean;
+}
+
+// Titles served by bot-protection challenge pages instead of the listing
+// (AWS WAF on immobilienscout24.de, Cloudflare, Imperva, etc.)
+const CHALLENGE_TITLE =
+  /kein roboter|not a robot|just a moment|attention required|access denied|captcha/i;
+
+function blockedResult(url: string): ScrapedListing {
+  return {
+    title: null,
+    price: null,
+    size: null,
+    location: null,
+    description: null,
+    imageUrls: [],
+    sourceUrl: url,
+    blocked: true,
+  };
 }
 
 export async function scrapeListing(url: string): Promise<ScrapedListing> {
@@ -18,10 +38,20 @@ export async function scrapeListing(url: string): Promise<ScrapedListing> {
   });
 
   if (!res.ok) {
+    // 401/403 from a listing page means bot protection turned us away
+    // (e.g. immobilienscout24.de answers 401 with an AWS WAF challenge)
+    if (res.status === 401 || res.status === 403) {
+      return blockedResult(url);
+    }
     throw new Error(`Failed to fetch URL: ${res.status}`);
   }
 
   const html = await res.text();
+
+  const title = extractTitle(html);
+  if (title && CHALLENGE_TITLE.test(title)) {
+    return blockedResult(url);
+  }
 
   let images = extractImages(html, url);
   let location = extractLocation(html);
@@ -38,7 +68,7 @@ export async function scrapeListing(url: string): Promise<ScrapedListing> {
   }
 
   return {
-    title: extractTitle(html),
+    title,
     price: extractPrice(html),
     size: extractSize(html),
     location,

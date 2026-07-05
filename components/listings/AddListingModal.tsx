@@ -33,6 +33,7 @@ export function AddListingModal({
   const [scraping, setScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState("");
   const [scraped, setScraped] = useState(false);
+  const [scrapeBlocked, setScrapeBlocked] = useState(false);
   const router = useRouter();
   const t = useTranslations("addListing");
 
@@ -42,6 +43,8 @@ export function AddListingModal({
 
     setScraping(true);
     setScrapeError("");
+    setScraped(false);
+    setScrapeBlocked(false);
 
     const res = await fetch("/api/scrape", {
       method: "POST",
@@ -51,15 +54,23 @@ export function AddListingModal({
 
     if (res.ok) {
       const data = await res.json();
-      setTitle(data.title || "");
-      setSourceUrl(data.sourceUrl || url);
-      setPrice(data.price != null ? String(data.price) : "");
-      setSize(data.size != null ? String(data.size) : "");
-      setLocation(data.location || "");
-      setDescription(data.description || "");
-      setImageUrls(data.imageUrls || []);
-      setScraped(true);
-      setMode("manual");
+      if (data.blocked) {
+        // Site refuses automated access (e.g. ImmoScout bot protection) —
+        // keep the link and let the user fill in the rest
+        setSourceUrl(data.sourceUrl || url);
+        setScrapeBlocked(true);
+        setMode("manual");
+      } else {
+        setTitle(data.title || "");
+        setSourceUrl(data.sourceUrl || url);
+        setPrice(data.price != null ? String(data.price) : "");
+        setSize(data.size != null ? String(data.size) : "");
+        setLocation(data.location || "");
+        setDescription(data.description || "");
+        setImageUrls(data.imageUrls || []);
+        setScraped(true);
+        setMode("manual");
+      }
     } else {
       const data = await res.json();
       setScrapeError(data.error || "Could not extract data from this URL.");
@@ -219,6 +230,24 @@ export function AddListingModal({
                   <path d="M3 8.5l3 3 7-7" />
                 </svg>
                 {t("dataExtracted")}
+              </p>
+            )}
+            {scrapeBlocked && (
+              <p className="text-xs text-amber-600 mb-3 inline-flex items-center gap-1.5">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  className="shrink-0"
+                >
+                  <circle cx="8" cy="8" r="6.5" />
+                  <path d="M8 5v3.5M8 11h.01" />
+                </svg>
+                {t("siteBlocked")}
               </p>
             )}
 
