@@ -1,13 +1,13 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { HeroVideo } from "@/components/landing/HeroVideo";
 import { ContainerScroll, ContainerInset } from "@/components/landing/VideoScroll";
 import { FeatureCard } from "@/components/landing/FeatureCard";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { ThemeSelector } from "@/components/settings/ThemeSelector";
 import { IsometricCity } from "@/components/landing/IsometricCity";
+import { LandingNav } from "@/components/landing/LandingNav";
+import { LandingFooter } from "@/components/landing/LandingFooter";
 
 const CDN = "https://bolyst-cdn.bolyst-team.workers.dev";
 
@@ -25,50 +25,10 @@ export default async function Home({
 
   const t = await getTranslations("landing");
   const tStatus = await getTranslations("statusLabels");
-  const locale = await getLocale();
 
   return (
     <div className="min-h-screen bg-[#faf9f7] dark:bg-[#1c1c1a]">
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf9f7]/80 dark:bg-[#1c1c1a]/80 backdrop-blur-lg border-b border-sage-100/60 dark:border-zinc-800/60">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-2.5">
-            <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
-              B
-            </span>
-            <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-              Bolyst
-            </span>
-          </a>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageSwitcher locale={locale} variant="landing" />
-            <ThemeSelector compact toggleSize={11} />
-            {isLoggedIn ? (
-              <Link
-                href="/boards"
-                className="px-4 sm:px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
-              >
-                {t("nav.goToBoards")}
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/sign-in"
-                  className="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                >
-                  {t("nav.signIn")}
-                </Link>
-                <Link
-                  href="/sign-up"
-                  className="px-4 sm:px-5 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
-                >
-                  {t("nav.getStarted")}
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <LandingNav isLoggedIn={isLoggedIn} />
 
       {/* Hero tagline */}
       <section className="min-h-screen relative flex items-center justify-center px-6 overflow-hidden">
@@ -77,16 +37,18 @@ export default async function Home({
         {/* Fade center so hero text stays readable, both sides even */}
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_#faf9f7cc_0%,_#faf9f700_70%)] dark:bg-[radial-gradient(ellipse_at_center,_#1c1c1acc_0%,_#1c1c1a00_70%)]" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <p className="text-sm font-medium text-sage-600 mb-8">{t("hero.subtitle")}</p>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.08]">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sage-600 mb-8 [animation:slideUp_0.6s_ease-out_both]">
+            {t("hero.subtitle")}
+          </p>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 leading-[1.08] [animation:slideUp_0.6s_ease-out_both] [animation-delay:120ms]">
             {t("hero.titleLine1")}
             <br />
             <span className="text-sage-600">{t("hero.titleLine2")}</span>.
           </h1>
-          <p className="mt-6 text-lg sm:text-xl text-zinc-700 dark:text-zinc-200 max-w-2xl mx-auto leading-relaxed font-medium">
+          <p className="mt-6 text-lg sm:text-xl text-zinc-700 dark:text-zinc-200 max-w-2xl mx-auto leading-relaxed font-medium text-balance [animation:slideUp_0.6s_ease-out_both] [animation-delay:240ms]">
             {t("hero.description")}
           </p>
-          <div className="mt-10 flex items-center justify-center gap-4">
+          <div className="mt-10 flex items-center justify-center gap-4 [animation:slideUp_0.6s_ease-out_both] [animation-delay:360ms]">
             <Link
               href="/sign-up"
               className="px-8 py-3.5 text-sm font-semibold bg-sage-600 text-white rounded-2xl hover:bg-sage-700 active:scale-[0.98] transition-all shadow-lg shadow-sage-600/25"
@@ -94,6 +56,24 @@ export default async function Home({
               {t("hero.cta")}
             </Link>
           </div>
+        </div>
+
+        {/* scroll cue */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-zinc-300 dark:text-zinc-600 [animation:slideUp_0.6s_ease-out_both] [animation-delay:600ms]">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="animate-bounce [animation-duration:2.5s]"
+            aria-hidden
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
         </div>
       </section>
 
@@ -108,14 +88,17 @@ export default async function Home({
       </ContainerScroll>
 
       {/* Features */}
-      <section className="py-24 px-6" id="features">
+      <section className="py-24 sm:py-32 px-6" id="features">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sage-600 mb-4">
+              {t("footer.features")}
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 text-balance">
               {t("features.heading")}{" "}
               <span className="text-sage-600">{t("features.headingAccent")}</span>.
             </h2>
-            <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto">
+            <p className="mt-4 text-base text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto text-balance">
               {t("features.subheading")}
             </p>
           </div>
@@ -191,17 +174,25 @@ export default async function Home({
       </section>
 
       {/* How it works */}
-      <section className="py-24 px-6">
+      <section className="py-24 sm:py-32 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sage-600 mb-4">
+              {t("howItWorks.eyebrow")}
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 text-balance">
               {t("howItWorks.heading")}
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="relative grid grid-cols-1 md:grid-cols-3 gap-10">
+            {/* hairline connecting the steps */}
+            <div
+              className="hidden md:block absolute top-6 left-[16%] right-[16%] h-px bg-gradient-to-r from-transparent via-sage-300/70 dark:via-zinc-700 to-transparent"
+              aria-hidden
+            />
             <div className="text-center">
-              <div className="w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
+              <div className="relative w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
                 1
               </div>
               <h3 className="text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mb-2">
@@ -212,7 +203,7 @@ export default async function Home({
               </p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
+              <div className="relative w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
                 2
               </div>
               <h3 className="text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mb-2">
@@ -223,7 +214,7 @@ export default async function Home({
               </p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
+              <div className="relative w-12 h-12 rounded-2xl bg-sage-600 text-white text-lg font-bold flex items-center justify-center mx-auto mb-5 shadow-md shadow-sage-600/20">
                 3
               </div>
               <h3 className="text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mb-2">
@@ -239,10 +230,15 @@ export default async function Home({
       </section>
 
       {/* Extra details */}
-      <section className="py-24 px-6">
+      <section className="py-24 sm:py-32 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8">
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sage-600">
+              {t("details.eyebrow")}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
               <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {t("details.pasteUrl.title")}
               </h3>
@@ -264,7 +260,7 @@ export default async function Home({
                 {t("details.pasteUrl.check")}
               </div>
             </div>
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
               <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {t("details.referencePoints.title")}
               </h3>
@@ -276,7 +272,7 @@ export default async function Home({
                 {t("details.referencePoints.check")}
               </div>
             </div>
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
               <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {t("details.trackProgress.title")}
               </h3>
@@ -294,7 +290,7 @@ export default async function Home({
                 ))}
               </div>
             </div>
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-8 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
               <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
                 {t("details.tagsFavorites.title")}
               </h3>
@@ -317,14 +313,18 @@ export default async function Home({
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
+      <section className="relative py-28 sm:py-36 px-6 overflow-hidden">
+        {/* soft sage glow */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[420px] w-[640px] max-w-full pointer-events-none bg-[radial-gradient(ellipse_at_center,_#55704a1f_0%,_transparent_65%)]" />
+        <div className="max-w-2xl mx-auto text-center relative">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 text-balance">
             {t("cta.titleLine1")}
             <br />
             {t("cta.titleLine2")} <span className="text-sage-600">{t("cta.titleAccent")}</span>.
           </h2>
-          <p className="mt-5 text-base text-zinc-500 dark:text-zinc-400">{t("cta.description")}</p>
+          <p className="mt-5 text-base text-zinc-500 dark:text-zinc-400 text-balance">
+            {t("cta.description")}
+          </p>
           <div className="mt-8">
             <Link
               href="/sign-up"
@@ -336,97 +336,7 @@ export default async function Home({
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-[#1c1c1a]">
-        <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
-            {/* Brand */}
-            <div>
-              <a href="#" className="flex items-center gap-2.5 mb-4">
-                <span className="w-7 h-7 bg-sage-600 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shadow-sm">
-                  B
-                </span>
-                <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">Bolyst</span>
-              </a>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                {t("footer.description")}{" "}
-                <span className="text-sage-600 dark:text-sage-400 font-medium">
-                  {t("footer.descriptionAccent")}
-                </span>
-                .
-              </p>
-            </div>
-
-            {/* Product */}
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-4">
-                {t("footer.product")}
-              </h4>
-              <ul className="space-y-2.5">
-                <li>
-                  <Link
-                    href="/sign-up"
-                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
-                  >
-                    {t("footer.getStarted")}
-                  </Link>
-                </li>
-                <li>
-                  <a
-                    href="#features"
-                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
-                  >
-                    {t("footer.features")}
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-4">
-                {t("footer.company")}
-              </h4>
-              <ul className="space-y-2.5">
-                <li>
-                  <a
-                    href="mailto:hello@bolyst.eu"
-                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
-                  >
-                    {t("footer.contact")}
-                  </a>
-                </li>
-                <li>
-                  <Link
-                    href="/impressum"
-                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
-                  >
-                    {t("footer.impressum")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/privacy"
-                    className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
-                  >
-                    {t("footer.privacy")}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-10 pt-6 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-            <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              &copy; {new Date().getFullYear()} Bolyst
-            </p>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              {t("footer.tagline")}{" "}
-              <span className="text-sage-500 dark:text-sage-400">{t("footer.taglineAccent")}</span>.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <LandingFooter />
     </div>
   );
 }

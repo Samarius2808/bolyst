@@ -1,6 +1,7 @@
 {
   "landing": {
     "nav": {
+      "about": "About Bolyst",
       "signIn": "Sign in",
       "getStarted": "Get started",
       "goToBoards": "Go to boards"
@@ -30,6 +31,7 @@
       }
     },
     "howItWorks": {
+      "eyebrow": "How it works",
       "heading": "Up and running in under a minute",
       "step1": {
         "title": "Create a board",
@@ -45,7 +47,23 @@
         "accent": "Together"
       }
     },
+    "origin": {
+      "provenance": "Norwegian",
+      "phonetic": "/ˈbuː.lyst/",
+      "listen": "Hear it",
+      "intro": "Bolyst is a Norwegian word that has no direct English translation. It describes the pull a place can have on you: the wish to settle somewhere and feel at home there.",
+      "planning": "The word is even used in Norwegian urban planning, where it stands for whatever makes people want to put down roots in a town.",
+      "bo": "bo",
+      "boType": "verb",
+      "boGloss": "to live, to dwell",
+      "lyst": "lyst",
+      "lystType": "noun",
+      "lystGloss": "joy, desire, delight",
+      "outro": "Put together, it means the joy of finding where you belong. That is what we hope you find here,",
+      "outroAccent": "together"
+    },
     "details": {
+      "eyebrow": "And more",
       "pasteUrl": {
         "title": "Paste any listing URL",
         "description": "Works with any apartment site. Finn.no, Immobilienscout, Hemnet, Funda, you name it. We extract what we can and you fill in the rest.",
@@ -293,6 +311,7 @@
     "fasterToWalk": "Faster to walk"
   },
   "metadata": {
+    "aboutTitle": "About Bolyst",
     "title": "Bolyst",
     "description": "Collaborative apartment search"
   },
