@@ -231,6 +231,9 @@
     "comments": "Kommentare",
     "noComments": "Noch keine Kommentare.",
     "addComment": "Kommentar hinzufügen…",
+    "addReply": "Antwort schreiben…",
+    "reply": "Antworten",
+    "replyingTo": "Antwort an {name}",
     "deleteListing": "Inserat löschen",
     "deleteConfirm": "Dieses Inserat löschen?"
   },

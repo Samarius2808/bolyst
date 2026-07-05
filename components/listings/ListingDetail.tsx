@@ -10,10 +10,18 @@ interface Tag {
   name: string;
 }
 
+interface CommentParent {
+  id: string;
+  content: string;
+  user: { id: string; name: string | null; email: string };
+}
+
 interface Comment {
   id: string;
   content: string;
   createdAt: string;
+  parentId?: string | null;
+  parent?: CommentParent | null;
   user: { id: string; name: string | null; email: string };
 }
 
@@ -97,6 +105,7 @@ export function ListingDetail({
   const [comments, setComments] = useState<Comment[]>([]);
   const [boardTags, setBoardTags] = useState<Tag[]>([]);
   const [newComment, setNewComment] = useState("");
+  const [replyTo, setReplyTo] = useState<Comment | null>(null);
   const [newTagName, setNewTagName] = useState("");
   const [posting, setPosting] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -189,12 +198,13 @@ export function ListingDetail({
     const res = await fetch(`/api/listings/${listingId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: newComment }),
+      body: JSON.stringify({ content: newComment, parentId: replyTo?.id ?? null }),
     });
     if (res.ok) {
       const comment = await res.json();
       setComments((prev) => [...prev, comment]);
       setNewComment("");
+      setReplyTo(null);
       router.refresh();
     }
     setPosting(false);
@@ -611,10 +621,29 @@ export function ListingDetail({
                             {timeAgo(c.createdAt)}
                           </span>
                         </div>
+                        {c.parent && (
+                          <div className="mt-1.5 mb-1 border-l-2 border-sage-400 pl-2 py-0.5">
+                            <span className="block text-[11px] font-medium text-sage-600 dark:text-sage-400">
+                              {t("replyingTo", {
+                                name: c.parent.user.name || c.parent.user.email,
+                              })}
+                            </span>
+                            <span className="block text-xs text-zinc-400 dark:text-zinc-500 truncate">
+                              {c.parent.content}
+                            </span>
+                          </div>
+                        )}
                         <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
                           {c.content}
                         </p>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => setReplyTo(c)}
+                        className="mt-1 ml-1 text-[11px] font-medium text-zinc-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
+                      >
+                        {t("reply")}
+                      </button>
                     </div>
                   </div>
                 );
@@ -624,12 +653,40 @@ export function ListingDetail({
               )}
             </div>
 
+            {replyTo && (
+              <div className="flex items-center justify-between gap-2 mb-2 px-3 py-2 rounded-xl bg-sage-50 dark:bg-sage-950/30 border-l-2 border-sage-400">
+                <div className="min-w-0">
+                  <span className="block text-[11px] font-medium text-sage-600 dark:text-sage-400">
+                    {t("replyingTo", { name: replyTo.user.name || replyTo.user.email })}
+                  </span>
+                  <span className="block text-xs text-zinc-400 dark:text-zinc-500 truncate">
+                    {replyTo.content}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setReplyTo(null)}
+                  aria-label={t("cancel")}
+                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M3 3l6 6M9 3l-6 6"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            )}
+
             <form onSubmit={handleAddComment} className="relative">
               <input
                 type="text"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder={t("addComment")}
+                placeholder={replyTo ? t("addReply") : t("addComment")}
                 className="w-full bg-zinc-50 dark:bg-zinc-800 border-0 rounded-2xl px-4 py-3 pr-12 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:bg-white dark:focus:bg-zinc-700 focus:ring-2 focus:ring-sage-500 transition-colors"
               />
               <button

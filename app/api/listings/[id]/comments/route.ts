@@ -19,6 +19,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     where: { listingId },
     include: {
       user: { select: { id: true, name: true, email: true } },
+      parent: {
+        select: {
+          id: true,
+          content: true,
+          user: { select: { id: true, name: true, email: true } },
+        },
+      },
     },
     orderBy: { createdAt: "asc" },
   });
@@ -39,9 +46,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { content } = await req.json();
+  const { content, parentId } = await req.json();
   if (!content?.trim()) {
     return NextResponse.json({ error: "Content required" }, { status: 400 });
+  }
+
+  // If replying, the parent must exist and belong to the same listing.
+  if (parentId) {
+    const parent = await prisma.comment.findUnique({ where: { id: parentId } });
+    if (!parent || parent.listingId !== listingId) {
+      return NextResponse.json({ error: "Invalid parent comment" }, { status: 400 });
+    }
   }
 
   const comment = await prisma.comment.create({
@@ -49,9 +64,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       listingId,
       userId: user.id,
       content: content.trim(),
+      parentId: parentId || null,
     },
     include: {
       user: { select: { id: true, name: true, email: true } },
+      parent: {
+        select: {
+          id: true,
+          content: true,
+          user: { select: { id: true, name: true, email: true } },
+        },
+      },
     },
   });
 

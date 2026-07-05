@@ -141,8 +141,11 @@ model Comment {
   listingId String
   userId    String
   content   String
+  parentId  String?
   createdAt DateTime @default(now())
 
-  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  user    User    @relation(fields: [userId], references: [id])
+  listing Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user    User      @relation(fields: [userId], references: [id])
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("CommentReplies")
 }
