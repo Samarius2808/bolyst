@@ -212,6 +212,9 @@
     "comments": "Comments",
     "noComments": "No comments yet.",
     "addComment": "Add a comment\u2026",
+    "addReply": "Write a reply\u2026",
+    "reply": "Reply",
+    "replyingTo": "Replying to {name}",
     "deleteListing": "Delete listing",
     "deleteConfirm": "Delete this listing?"
   },

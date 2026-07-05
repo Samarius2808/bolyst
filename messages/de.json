@@ -212,6 +212,9 @@
     "comments": "Kommentare",
     "noComments": "Noch keine Kommentare.",
     "addComment": "Kommentar hinzuf\u00fcgen\u2026",
+    "addReply": "Antwort schreiben\u2026",
+    "reply": "Antworten",
+    "replyingTo": "Antwort an {name}",
     "deleteListing": "Inserat l\u00f6schen",
     "deleteConfirm": "Dieses Inserat l\u00f6schen?"
   },
