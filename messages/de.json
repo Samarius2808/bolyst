@@ -10,7 +10,7 @@
       "titleLine1": "Findet euer Zuhause,",
       "titleLine2": "gemeinsam",
       "description": "Schluss mit verlorenen Links im Gruppenchat. Mit Bolyst habt ihr ein gemeinsames Board zum Speichern, Vergleichen und Entscheiden.",
-      "cta": "Board erstellen \u2013 kostenlos"
+      "cta": "Board erstellen – kostenlos"
     },
     "features": {
       "heading": "Alles, was ihr braucht, um",
@@ -18,15 +18,15 @@
       "subheading": "zu entscheiden. Keine verstreuten Links, verlorenen Screenshots oder \"Welche war das nochmal?\"-Momente.",
       "share": {
         "title": "Gemeinsam suchen",
-        "description": "Ladet Mitbewohner oder Partner per E-Mail ein. Alle k\u00f6nnen Inserate hinzuf\u00fcgen, kommentieren, taggen und favorisieren \u2013 alles an einem Ort."
+        "description": "Ladet Mitbewohner oder Partner per E-Mail ein. Alle können Inserate hinzufügen, kommentieren, taggen und favorisieren – alles an einem Ort."
       },
       "map": {
         "title": "Kartenansicht",
-        "description": "Alle Inserate auf einer Karte \u2013 mit Pins f\u00fcr Arbeit, Uni oder andere wichtige Orte. Entfernungen werden automatisch berechnet."
+        "description": "Alle Inserate auf einer Karte – mit Pins für Arbeit, Uni oder andere wichtige Orte. Entfernungen werden automatisch berechnet."
       },
       "compare": {
         "title": "Direkt vergleichen",
-        "description": "W\u00e4hlt Inserate aus und vergleicht Preis, Gr\u00f6\u00dfe, Preis pro m\u00b2, Lage und Tags in einer \u00fcbersichtlichen Tabelle."
+        "description": "Wählt Inserate aus und vergleicht Preis, Größe, Preis pro m², Lage und Tags in einer übersichtlichen Tabelle."
       }
     },
     "howItWorks": {
@@ -36,25 +36,25 @@
         "description": "Gebt eurem Board einen Namen wie \"Berlin Q2\" oder \"Hamburg Sommer\" und ladet eure Mitsuchenden ein."
       },
       "step2": {
-        "title": "Link einf\u00fcgen",
-        "description": "F\u00fcgt eine URL ein und Bolyst \u00fcbernimmt automatisch Titel, Preis, Bilder und Standort."
+        "title": "Link einfügen",
+        "description": "Fügt eine URL ein und Bolyst übernimmt automatisch Titel, Preis, Bilder und Standort."
       },
       "step3": {
         "title": "Vergleichen & entscheiden",
-        "description": "Taggt, kommentiert, favorisiert und vergleicht Inserate \u2013 bis ihr die richtige findet.",
+        "description": "Taggt, kommentiert, favorisiert und vergleicht Inserate – bis ihr die richtige findet.",
         "accent": "Gemeinsam"
       }
     },
     "details": {
       "pasteUrl": {
-        "title": "Einfach den Link einf\u00fcgen",
-        "description": "Funktioniert mit jeder Immobilienseite \u2013 Immobilienscout, Finn.no, Hemnet, Funda, egal. Wir \u00fcbernehmen, was geht. Den Rest gebt ihr manuell ein.",
-        "check": "Titel, Preis, Bilder und Standort werden automatisch \u00fcbernommen"
+        "title": "Einfach den Link einfügen",
+        "description": "Funktioniert mit jeder Immobilienseite – Immobilienscout, Finn.no, Hemnet, Funda, egal. Wir übernehmen, was geht. Den Rest gebt ihr manuell ein.",
+        "check": "Titel, Preis, Bilder und Standort werden automatisch übernommen"
       },
       "referencePoints": {
         "title": "Referenzpunkte auf der Karte",
-        "description": "Markiert euren Arbeitsplatz, die Uni, das Fitnessstudio oder euer Lieblingscaf\u00e9. Jedes Inserat zeigt die Entfernung zum n\u00e4chsten Pin.",
-        "check": "Entfernung zum n\u00e4chsten Pin auf jeder Karte"
+        "description": "Markiert euren Arbeitsplatz, die Uni, das Fitnessstudio oder euer Lieblingscafé. Jedes Inserat zeigt die Entfernung zum nächsten Pin.",
+        "check": "Entfernung zum nächsten Pin auf jeder Karte"
       },
       "trackProgress": {
         "title": "Status im Blick behalten",
@@ -62,19 +62,19 @@
       },
       "tagsFavorites": {
         "title": "Tags & Favoriten",
-        "description": "Erstellt eigene Tags pro Board wie \"Balkon\", \"Haustierfreundlich\" oder \"Nahe U-Bahn\" und filtert danach. Markiert eure Favoriten und seht, wem was gef\u00e4llt.",
+        "description": "Erstellt eigene Tags pro Board wie \"Balkon\", \"Haustierfreundlich\" oder \"Nahe U-Bahn\" und filtert danach. Markiert eure Favoriten und seht, wem was gefällt.",
         "exampleTags": ["Balkon", "Haustierfreundlich", "Nahe U-Bahn"]
       }
     },
     "cta": {
-      "titleLine1": "Euer n\u00e4chstes Zuhause ist da drau\u00dfen.",
+      "titleLine1": "Euer nächstes Zuhause ist da draußen.",
       "titleLine2": "Findet es,",
       "titleAccent": "gemeinsam",
       "description": "Kostenlos nutzbar. Board in Sekunden erstellen. Einfach einladen, mit wem ihr sucht.",
       "button": "Kostenlos loslegen"
     },
     "footer": {
-      "description": "Die gemeinsame Plattform f\u00fcr die Wohnungssuche. Inserate speichern, vergleichen und",
+      "description": "Die gemeinsame Plattform für die Wohnungssuche. Inserate speichern, vergleichen und",
       "descriptionAccent": "gemeinsam",
       "product": "Produkt",
       "getStarted": "Loslegen",
@@ -114,42 +114,42 @@
   "boardSettings": {
     "title": "Board-Einstellungen",
     "boardName": "Board-Name",
-    "saving": "Speichern\u2026",
+    "saving": "Speichern…",
     "rename": "Umbenennen",
     "members": "Mitglieder",
-    "owner": "Eigent\u00fcmer",
+    "owner": "Eigentümer",
     "member": "Mitglied",
     "remove": "Entfernen",
     "removeMember": "Dieses Mitglied entfernen?",
     "pending": "Ausstehend",
-    "invitePlaceholder": "Per E-Mail einladen\u2026",
+    "invitePlaceholder": "Per E-Mail einladen…",
     "invite": "Einladen",
     "inviteError": "Einladung fehlgeschlagen",
     "dangerZone": "Gefahrenzone",
-    "deleteBoard": "Dieses Board l\u00f6schen",
-    "deleteConfirm": "Dieses Board und alle Inserate l\u00f6schen? Dies kann nicht r\u00fcckg\u00e4ngig gemacht werden."
+    "deleteBoard": "Dieses Board löschen",
+    "deleteConfirm": "Dieses Board und alle Inserate löschen? Dies kann nicht rückgängig gemacht werden."
   },
   "createBoard": {
     "title": "Board erstellen",
     "subtitle": "Ein gemeinsamer Ort zum Speichern und Vergleichen von Wohnungen.",
     "placeholder": "z.B. Berlin Wohnungen Q2",
     "invitePeople": "Leute einladen",
-    "inviteDescription": "F\u00fcge E-Mails von Mitsuchenden hinzu (optional)",
+    "inviteDescription": "Füge E-Mails von Mitsuchenden hinzu (optional)",
     "emailPlaceholder": "mitbewohner@email.com",
-    "add": "Hinzuf\u00fcgen",
-    "inviteLater": "Du kannst sp\u00e4ter noch mehr Leute \u00fcber die Einstellungen hinzuf\u00fcgen",
+    "add": "Hinzufügen",
+    "inviteLater": "Du kannst später noch mehr Leute über die Einstellungen hinzufügen",
     "cancel": "Abbrechen",
-    "creating": "Wird erstellt\u2026",
+    "creating": "Wird erstellt…",
     "createBoard": "Board erstellen"
   },
   "listings": {
-    "addListing": "+ Inserat hinzuf\u00fcgen",
+    "addListing": "+ Inserat hinzufügen",
     "noListingsTitle": "Noch keine Inserate",
-    "noListingsDescription": "F\u00fcge eine URL ein oder gib Details manuell ein, um deine erste Wohnung zu speichern.",
+    "noListingsDescription": "Füge eine URL ein oder gib Details manuell ein, um deine erste Wohnung zu speichern.",
     "favorites": "Favoriten",
     "compare": "Vergleichen",
-    "selected": "{count} ausgew\u00e4hlt",
-    "compareArrow": "Vergleichen \u2192",
+    "selected": "{count} ausgewählt",
+    "compareArrow": "Vergleichen →",
     "noFavorites": "Noch keine Favoriten. Klicke auf das Herz, um ein Inserat zu speichern.",
     "favoriteCount": "{count} Favorit",
     "favoriteCountPlural": "{count} Favoriten",
@@ -170,50 +170,51 @@
     "commute": "Pendelweg"
   },
   "addListing": {
-    "title": "Inserat hinzuf\u00fcgen",
-    "pasteUrl": "URL einf\u00fcgen",
+    "title": "Inserat hinzufügen",
+    "pasteUrl": "URL einfügen",
     "manualEntry": "Manuell eingeben",
-    "urlHint": "F\u00fcge eine Inserats-URL ein, um Details automatisch auszuf\u00fcllen.",
+    "urlHint": "Füge eine Inserats-URL ein, um Details automatisch auszufüllen.",
     "urlPlaceholder": "https://...",
     "cancel": "Abbrechen",
-    "extracting": "Wird ausgelesen\u2026",
+    "extracting": "Wird ausgelesen…",
     "extract": "Extrahieren",
-    "dataExtracted": "Daten aus URL \u00fcbernommen",
+    "dataExtracted": "Daten aus URL übernommen",
+    "siteBlocked": "Diese Seite blockiert den automatischen Import. Trag die Details einfach manuell ein – der Link ist schon ausgefüllt.",
     "titlePlaceholder": "Titel *",
     "urlOptionalPlaceholder": "URL (optional)",
-    "pricePlaceholder": "Preis (\u20ac/Monat)",
-    "sizePlaceholder": "Gr\u00f6\u00dfe (m\u00b2)",
+    "pricePlaceholder": "Preis (€/Monat)",
+    "sizePlaceholder": "Größe (m²)",
     "locationPlaceholder": "Standort",
     "descriptionPlaceholder": "Notizen oder Beschreibung",
     "tags": "Tags",
-    "adding": "Wird hinzugef\u00fcgt\u2026",
-    "addListing": "Inserat hinzuf\u00fcgen"
+    "adding": "Wird hinzugefügt…",
+    "addListing": "Inserat hinzufügen"
   },
   "listingDetail": {
     "viewOriginal": "Original ansehen",
-    "addedBy": "Hinzugef\u00fcgt von {name}",
+    "addedBy": "Hinzugefügt von {name}",
     "edit": "Bearbeiten",
     "titlePlaceholder": "Titel *",
     "urlPlaceholder": "URL",
-    "pricePlaceholder": "Preis (\u20ac/Monat)",
-    "sizePlaceholder": "Gr\u00f6\u00dfe (m\u00b2)",
+    "pricePlaceholder": "Preis (€/Monat)",
+    "sizePlaceholder": "Größe (m²)",
     "locationPlaceholder": "Standort",
     "descriptionPlaceholder": "Notizen oder Beschreibung",
-    "saving": "Speichern\u2026",
+    "saving": "Speichern…",
     "save": "Speichern",
     "cancel": "Abbrechen",
     "price": "Preis",
-    "size": "Gr\u00f6\u00dfe",
+    "size": "Größe",
     "location": "Standort",
     "status": "Status",
     "tags": "Tags",
-    "newTagPlaceholder": "Neuer Tag\u2026",
-    "add": "Hinzuf\u00fcgen",
+    "newTagPlaceholder": "Neuer Tag…",
+    "add": "Hinzufügen",
     "comments": "Kommentare",
     "noComments": "Noch keine Kommentare.",
-    "addComment": "Kommentar hinzuf\u00fcgen\u2026",
-    "deleteListing": "Inserat l\u00f6schen",
-    "deleteConfirm": "Dieses Inserat l\u00f6schen?"
+    "addComment": "Kommentar hinzufügen…",
+    "deleteListing": "Inserat löschen",
+    "deleteConfirm": "Dieses Inserat löschen?"
   },
   "compareTable": {
     "title": "Inserate vergleichen",
@@ -221,43 +222,43 @@
     "noListings": "Noch keine Inserate zum Vergleichen.",
     "field": "Feld",
     "price": "Preis",
-    "size": "Gr\u00f6\u00dfe",
-    "pricePerM2": "Preis/m\u00b2",
+    "size": "Größe",
+    "pricePerM2": "Preis/m²",
     "location": "Standort",
     "status": "Status",
     "tags": "Tags",
-    "addedBy": "Hinzugef\u00fcgt von",
+    "addedBy": "Hinzugefügt von",
     "link": "Link",
-    "view": "Ansehen \u2192"
+    "view": "Ansehen →"
   },
   "sortControls": {
     "newest": "Neueste",
     "newestFirst": "Neueste zuerst",
     "price": "Preis",
-    "priceLowHigh": "Niedrig \u2192 Hoch",
-    "priceHighLow": "Hoch \u2192 Niedrig",
-    "pricePerM2": "Preis/m\u00b2",
-    "size": "Gr\u00f6\u00dfe",
-    "largestFirst": "Gr\u00f6\u00dfte zuerst",
+    "priceLowHigh": "Niedrig → Hoch",
+    "priceHighLow": "Hoch → Niedrig",
+    "pricePerM2": "Preis/m²",
+    "size": "Größe",
+    "largestFirst": "Größte zuerst",
     "smallestFirst": "Kleinste zuerst",
     "distance": "Entfernung",
-    "nearestAnyPin": "N\u00e4chster (beliebiger Pin)",
+    "nearestAnyPin": "Nächster (beliebiger Pin)",
     "status": "Status",
     "byWorkflowStage": "Nach Bearbeitungsphase",
-    "addedBy": "Hinzugef\u00fcgt von",
+    "addedBy": "Hinzugefügt von",
     "hasTag": "Hat Tag",
     "sort": "Sortieren",
     "byPrefix": "Von: {name}",
     "tagPrefix": "Tag: {name}",
-    "nearPrefix": "N\u00e4he: {name}"
+    "nearPrefix": "Nähe: {name}"
   },
   "pinManager": {
     "referencePoints": "Referenzpunkte",
     "namePlaceholder": "Name (z.B. Arbeit, Uni)",
     "addressPlaceholder": "Adresse oder Standort",
-    "adding": "Wird hinzugef\u00fcgt...",
-    "addPin": "Pin hinzuf\u00fcgen",
-    "failedToAdd": "Pin konnte nicht hinzugef\u00fcgt werden"
+    "adding": "Wird hinzugefügt...",
+    "addPin": "Pin hinzufügen",
+    "failedToAdd": "Pin konnte nicht hinzugefügt werden"
   },
   "statusLabels": {
     "New": "Neu",
@@ -279,11 +280,11 @@
   "map": {
     "noListings": "Keine Inserate mit Standort auf der Karte.",
     "referencePoint": "Referenzpunkt",
-    "fromNearestPin": "{distance} zum n\u00e4chsten Pin",
-    "viewDetails": "Details ansehen \u2192",
+    "fromNearestPin": "{distance} zum nächsten Pin",
+    "viewDetails": "Details ansehen →",
     "showingCount": "{shown} von {total} Inseraten auf der Karte. {missing} ohne Standortdaten.",
     "routeTo": "Route zu {name}",
-    "calculatingRoute": "Berechne\u2026",
+    "calculatingRoute": "Berechne…",
     "mode_walking": "Fuß",
     "mode_cycling": "Rad",
     "mode_transit": "ÖPNV",
@@ -298,48 +299,48 @@
   },
   "impressum": {
     "title": "Impressum",
-    "infoTitle": "Angaben gem\u00e4\u00df \u00a7 5 DDG",
-    "infoBody": "Sam Wallmeier\nRingofenstra\u00dfe 87\n63773 Goldbach\nDeutschland",
+    "infoTitle": "Angaben gemäß § 5 DDG",
+    "infoBody": "Sam Wallmeier\nRingofenstraße 87\n63773 Goldbach\nDeutschland",
     "contactTitle": "Kontakt",
     "contactBody": "E-Mail: hello@bolyst.eu\nTelefon: +49 152 32165473",
     "disclaimerTitle": "Haftungsausschluss",
-    "disclaimerBody": "Die Inhalte dieser Website wurden mit gr\u00f6\u00dfter Sorgfalt erstellt. F\u00fcr die Richtigkeit, Vollst\u00e4ndigkeit und Aktualit\u00e4t der Inhalte k\u00f6nnen wir jedoch keine Gew\u00e4hr \u00fcbernehmen. Als Diensteanbieter sind wir f\u00fcr eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Wir sind jedoch nicht verpflichtet, \u00fcbermittelte oder gespeicherte fremde Informationen zu \u00fcberwachen oder nach Umst\u00e4nden zu forschen, die auf eine rechtswidrige T\u00e4tigkeit hinweisen.",
-    "linksTitle": "Haftung f\u00fcr Links",
-    "linksBody": "Unsere Website enth\u00e4lt Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb k\u00f6nnen wir f\u00fcr diese fremden Inhalte auch keine Gew\u00e4hr \u00fcbernehmen. F\u00fcr die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich."
+    "disclaimerBody": "Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Wir sind jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.",
+    "linksTitle": "Haftung für Links",
+    "linksBody": "Unsere Website enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich."
   },
   "privacy": {
-    "title": "Datenschutzerkl\u00e4rung",
-    "lastUpdated": "Zuletzt aktualisiert: M\u00e4rz 2026",
+    "title": "Datenschutzerklärung",
+    "lastUpdated": "Zuletzt aktualisiert: März 2026",
     "responsibleTitle": "1. Verantwortlicher",
-    "responsibleBody": "Sam Wallmeier\nRingofenstra\u00dfe 87\n63773 Goldbach\nDeutschland\nE-Mail: hello@bolyst.eu",
+    "responsibleBody": "Sam Wallmeier\nRingofenstraße 87\n63773 Goldbach\nDeutschland\nE-Mail: hello@bolyst.eu",
     "dataCollectedTitle": "2. Erhobene Daten",
     "dataCollectedIntro": "Wir erheben und verarbeiten folgende Daten bei der Nutzung von Bolyst:",
-    "dataAccount": "Kontodaten: Name, E-Mail-Adresse (\u00fcber Clerk-Authentifizierung bereitgestellt)",
+    "dataAccount": "Kontodaten: Name, E-Mail-Adresse (über Clerk-Authentifizierung bereitgestellt)",
     "dataUsage": "Nutzungsdaten: anonymisierte Seitenaufrufe und Interaktionen (via Vercel Analytics)",
     "dataContent": "Inhaltsdaten: Inserate, Kommentare, Tags und Board-Inhalte, die Sie erstellen",
     "purposeTitle": "3. Zweck der Verarbeitung",
-    "purposeService": "Bereitstellung und Betrieb des Bolyst-Dienstes (Art. 6 Abs. 1 lit. b DSGVO \u2014 Vertragserf\u00fcllung)",
-    "purposeAuth": "Benutzerauthentifizierung und Kontoverwaltung \u00fcber Clerk (Art. 6 Abs. 1 lit. b DSGVO)",
-    "purposeEmail": "Versand transaktionaler E-Mails wie Board-Einladungen \u00fcber Brevo (Art. 6 Abs. 1 lit. b DSGVO)",
-    "purposeAnalytics": "Anonymisierte Nutzungsanalyse \u00fcber Vercel Analytics (Art. 6 Abs. 1 lit. f DSGVO \u2014 berechtigtes Interesse)",
+    "purposeService": "Bereitstellung und Betrieb des Bolyst-Dienstes (Art. 6 Abs. 1 lit. b DSGVO — Vertragserfüllung)",
+    "purposeAuth": "Benutzerauthentifizierung und Kontoverwaltung über Clerk (Art. 6 Abs. 1 lit. b DSGVO)",
+    "purposeEmail": "Versand transaktionaler E-Mails wie Board-Einladungen über Brevo (Art. 6 Abs. 1 lit. b DSGVO)",
+    "purposeAnalytics": "Anonymisierte Nutzungsanalyse über Vercel Analytics (Art. 6 Abs. 1 lit. f DSGVO — berechtigtes Interesse)",
     "thirdPartyTitle": "4. Drittanbieter / Auftragsverarbeiter",
     "thirdClerk": "Authentifizierung und Benutzerverwaltung (USA, mit EU-Standardvertragsklauseln)",
-    "thirdSupabase": "Datenbank-Hosting und Dateispeicherung (EU \u2014 Frankfurt, eu-central-1)",
+    "thirdSupabase": "Datenbank-Hosting und Dateispeicherung (EU — Frankfurt, eu-central-1)",
     "thirdVercel": "Website-Hosting und anonymisierte Analytik (globales CDN, Unternehmen in USA mit EU-SCCs)",
-    "thirdBrevo": "Transaktionaler E-Mail-Versand (EU \u2014 Frankreich)",
+    "thirdBrevo": "Transaktionaler E-Mail-Versand (EU — Frankreich)",
     "cookiesTitle": "5. Cookies",
-    "cookiesBody": "Bolyst verwendet ausschlie\u00dflich essenzielle Cookies, die f\u00fcr den Betrieb des Dienstes erforderlich sind: Authentifizierungs-Session-Cookies (Clerk) und ein Spracheinstellungs-Cookie (NEXT_LOCALE). Wir verwenden keine Werbe- oder Tracking-Cookies. Ein Cookie-Banner ist nicht erforderlich, da es sich um technisch notwendige Cookies handelt, die gem\u00e4\u00df Art. 5 Abs. 3 der ePrivacy-Richtlinie ausgenommen sind.",
+    "cookiesBody": "Bolyst verwendet ausschließlich essenzielle Cookies, die für den Betrieb des Dienstes erforderlich sind: Authentifizierungs-Session-Cookies (Clerk) und ein Spracheinstellungs-Cookie (NEXT_LOCALE). Wir verwenden keine Werbe- oder Tracking-Cookies. Ein Cookie-Banner ist nicht erforderlich, da es sich um technisch notwendige Cookies handelt, die gemäß Art. 5 Abs. 3 der ePrivacy-Richtlinie ausgenommen sind.",
     "rightsTitle": "6. Ihre Rechte nach DSGVO",
-    "rightsIntro": "Sie haben folgende Rechte bez\u00fcglich Ihrer personenbezogenen Daten:",
+    "rightsIntro": "Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten:",
     "rightsAccess": "Auskunftsrecht (Art. 15 DSGVO)",
     "rightsCorrection": "Recht auf Berichtigung (Art. 16 DSGVO)",
-    "rightsDeletion": "Recht auf L\u00f6schung (Art. 17 DSGVO)",
-    "rightsPortability": "Recht auf Daten\u00fcbertragbarkeit (Art. 20 DSGVO)",
+    "rightsDeletion": "Recht auf Löschung (Art. 17 DSGVO)",
+    "rightsPortability": "Recht auf Datenübertragbarkeit (Art. 20 DSGVO)",
     "rightsObjection": "Widerspruchsrecht (Art. 21 DSGVO)",
-    "rightsContact": "Zur Aus\u00fcbung dieser Rechte kontaktieren Sie uns unter hello@bolyst.eu.",
+    "rightsContact": "Zur Ausübung dieser Rechte kontaktieren Sie uns unter hello@bolyst.eu.",
     "retentionTitle": "7. Speicherdauer",
-    "retentionBody": "Wir speichern Ihre Daten, solange Ihr Konto aktiv ist. Wenn Sie Ihr Konto l\u00f6schen, werden alle personenbezogenen Daten und von Ihnen erstellten Inhalte innerhalb von 30 Tagen gel\u00f6scht. Anonymisierte Analysedaten sind nicht mit Ihrer Identit\u00e4t verkn\u00fcpft und k\u00f6nnen unbegrenzt gespeichert werden.",
-    "authorityTitle": "8. Aufsichtsbeh\u00f6rde",
-    "authorityBody": "Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbeh\u00f6rde zu beschweren. Die zust\u00e4ndige Beh\u00f6rde richtet sich nach Ihrem Wohnsitz. Eine Liste der Beh\u00f6rden finden Sie unter: https://www.bfdi.bund.de"
+    "retentionBody": "Wir speichern Ihre Daten, solange Ihr Konto aktiv ist. Wenn Sie Ihr Konto löschen, werden alle personenbezogenen Daten und von Ihnen erstellten Inhalte innerhalb von 30 Tagen gelöscht. Anonymisierte Analysedaten sind nicht mit Ihrer Identität verknüpft und können unbegrenzt gespeichert werden.",
+    "authorityTitle": "8. Aufsichtsbehörde",
+    "authorityBody": "Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Die zuständige Behörde richtet sich nach Ihrem Wohnsitz. Eine Liste der Behörden finden Sie unter: https://www.bfdi.bund.de"
   }
 }
