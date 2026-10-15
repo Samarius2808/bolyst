@@ -25,7 +25,14 @@ interface Comment {
   user: { id: string; name: string | null; email: string };
 }
 
-type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+type ListingStatus =
+  | "NEW"
+  | "VIEWING"
+  | "APPLIED"
+  | "REJECTED"
+  | "ACCEPTED"
+  | "UNAVAILABLE_TIMEFRAME"
+  | "DELISTED";
 
 interface ListingData {
   id: string;
@@ -52,6 +59,8 @@ const statusColorMap: Record<ListingStatus, string> = {
     "bg-red-50 dark:bg-red-950/40 text-red-500 dark:text-red-400 border-red-200 dark:border-red-800",
   ACCEPTED:
     "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+  UNAVAILABLE_TIMEFRAME:
+    "bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 border-zinc-300 dark:border-zinc-600",
   DELISTED:
     "bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 border-zinc-300 dark:border-zinc-600",
 };
@@ -256,6 +265,7 @@ export function ListingDetail({
     "APPLIED",
     "REJECTED",
     "ACCEPTED",
+    "UNAVAILABLE_TIMEFRAME",
     "DELISTED",
   ];
 

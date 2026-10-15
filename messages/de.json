@@ -180,6 +180,7 @@
       "APPLIED": "Beworben",
       "REJECTED": "Abgelehnt",
       "ACCEPTED": "Zugesagt",
+      "UNAVAILABLE_TIMEFRAME": "Zeitraum passt nicht",
       "DELISTED": "Entfernt"
     },
     "link": "Link",
@@ -312,7 +313,10 @@
     "commute": "Pendelweg",
     "calculate": "Berechnen",
     "addPinNudge": "Referenzpunkt hinzufügen (Arbeit, Uni, Gym), um Entfernungen und Pendelzeiten zu sehen.",
-    "fasterToWalk": "Zu Fuß schneller"
+    "fasterToWalk": "Zu Fuß schneller",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern",
+    "credits": "Kartennachweis"
   },
   "metadata": {
     "aboutTitle": "Über Bolyst",

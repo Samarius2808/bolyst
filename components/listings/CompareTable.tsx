@@ -3,7 +3,14 @@
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
-type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+type ListingStatus =
+  | "NEW"
+  | "VIEWING"
+  | "APPLIED"
+  | "REJECTED"
+  | "ACCEPTED"
+  | "UNAVAILABLE_TIMEFRAME"
+  | "DELISTED";
 
 const statusColors: Record<ListingStatus, string> = {
   NEW: "bg-zinc-100 text-zinc-500",
@@ -11,6 +18,7 @@ const statusColors: Record<ListingStatus, string> = {
   APPLIED: "bg-amber-50 text-amber-600",
   REJECTED: "bg-red-50 text-red-500",
   ACCEPTED: "bg-emerald-50 text-emerald-600",
+  UNAVAILABLE_TIMEFRAME: "bg-zinc-200 text-zinc-500",
   DELISTED: "bg-zinc-200 text-zinc-500",
 };
 
@@ -20,7 +28,8 @@ const statusOrder: Record<string, number> = {
   APPLIED: 2,
   ACCEPTED: 3,
   REJECTED: 4,
-  DELISTED: 5,
+  UNAVAILABLE_TIMEFRAME: 5,
+  DELISTED: 6,
 };
 
 interface Listing {

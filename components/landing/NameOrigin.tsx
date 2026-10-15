@@ -9,11 +9,36 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * fails to load, it falls back to the Web Speech API (SpeechSynthesis),
  * preferring a Norwegian voice (the word is Scandinavian), then other Nordic
  * voices, then the platform default.
+ *
+ * A press while the word is still playing is ignored instead of restarting
+ * it: seeking a short MP3 mid-playback stutters audibly, and cancelling an
+ * in-flight SpeechSynthesis utterance is unreliable in Chrome. The clip is
+ * preloaded on mount so the first press starts without buffering.
  */
+
+/**
+ * Upper bound on how long a single playback may hold the control. Chrome
+ * sometimes never fires `end` for an utterance, and a stalled media element
+ * would otherwise keep the press lock forever.
+ */
+const SAFETY_MS = 4000;
+
 function usePronunciation(src?: string) {
   const [speaking, setSpeaking] = useState(false);
   const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  /** Set between a press and the moment the clip actually starts (or fails). */
+  const requestedRef = useRef(false);
+  /** The utterance currently in flight; also keeps it from being GC'd mid-speech. */
+  const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const safetyTimerRef = useRef<number | null>(null);
+
+  const clearSafetyTimer = useCallback(() => {
+    if (safetyTimerRef.current !== null) {
+      window.clearTimeout(safetyTimerRef.current);
+      safetyTimerRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
@@ -34,8 +59,10 @@ function usePronunciation(src?: string) {
 
   const synth = useCallback(() => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
+    // Still speaking: let it finish rather than cut it off.
+    if (utterRef.current) return;
 
+    const ss = window.speechSynthesis;
     const utter = new SpeechSynthesisUtterance("Bolyst");
     if (voiceRef.current) {
       utter.voice = voiceRef.current;
@@ -45,36 +72,108 @@ function usePronunciation(src?: string) {
     }
     utter.rate = 0.8;
     utter.pitch = 1;
-    utter.onstart = () => setSpeaking(true);
-    utter.onend = () => setSpeaking(false);
-    utter.onerror = () => setSpeaking(false);
 
-    window.speechSynthesis.speak(utter);
-  }, []);
+    const finish = () => {
+      // Ignore late events from an utterance we already moved on from.
+      if (utterRef.current !== utter) return;
+      utterRef.current = null;
+      clearSafetyTimer();
+      setSpeaking(false);
+    };
+    utter.onstart = () => {
+      if (utterRef.current === utter) setSpeaking(true);
+    };
+    utter.onend = finish;
+    utter.onerror = finish;
+
+    utterRef.current = utter;
+    safetyTimerRef.current = window.setTimeout(finish, SAFETY_MS);
+    // Only clear the queue when something is actually stuck in it: calling
+    // cancel() right before speak() can silently drop the new utterance.
+    if (ss.speaking || ss.pending) ss.cancel();
+    ss.speak(utter);
+  }, [clearSafetyTimer]);
+
+  /** Lazily creates (and starts preloading) the clip element. */
+  const getAudio = useCallback(() => {
+    if (!src || typeof window === "undefined") return null;
+    if (audioRef.current) return audioRef.current;
+
+    const audio = new Audio(src);
+    audio.preload = "auto";
+    audio.onplaying = () => {
+      requestedRef.current = false;
+      setSpeaking(true);
+    };
+    audio.onended = () => {
+      clearSafetyTimer();
+      setSpeaking(false);
+    };
+    audio.onpause = () => setSpeaking(false);
+    audio.onerror = () => {
+      // The clip can't be loaded or decoded. Drop it so the next press retries,
+      // and only speak instead if someone is actually waiting to hear it.
+      const wasRequested = requestedRef.current;
+      requestedRef.current = false;
+      clearSafetyTimer();
+      setSpeaking(false);
+      if (audioRef.current === audio) audioRef.current = null;
+      if (wasRequested) synth();
+    };
+    audioRef.current = audio;
+    return audio;
+  }, [src, synth, clearSafetyTimer]);
+
+  useEffect(() => {
+    getAudio();
+    return () => {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.onplaying = null;
+        audio.onended = null;
+        audio.onpause = null;
+        audio.onerror = null;
+        audio.pause();
+        audioRef.current = null;
+      }
+      requestedRef.current = false;
+      utterRef.current = null;
+      clearSafetyTimer();
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    };
+  }, [getAudio, clearSafetyTimer]);
 
   const play = useCallback(() => {
-    if (src) {
-      let audio = audioRef.current;
-      if (!audio) {
-        audio = new Audio(src);
-        audio.onplay = () => setSpeaking(true);
-        audio.onended = () => setSpeaking(false);
-        audio.onerror = () => {
-          setSpeaking(false);
-          audioRef.current = null;
-          synth();
-        };
-        audioRef.current = audio;
-      }
-      audio.currentTime = 0;
-      audio.play().catch(() => {
-        audioRef.current = null;
-        synth();
-      });
+    const audio = getAudio();
+    if (!audio) {
+      synth();
       return;
     }
-    synth();
-  }, [src, synth]);
+    // Already playing (or waiting to start): ignore the press. `paused` flips
+    // to false synchronously inside play(), so this also covers buffering.
+    if (!audio.paused && !audio.ended) return;
+
+    requestedRef.current = true;
+    // play() restarts from the beginning once the clip has ended, so no seek needed.
+    audio.play().catch((err: unknown) => {
+      requestedRef.current = false;
+      clearSafetyTimer();
+      // Interrupted (e.g. unmount) — nothing to fall back from.
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      if (audioRef.current === audio) audioRef.current = null;
+      synth();
+    });
+    // If playback stalls and never ends, stop it so the control doesn't stay locked.
+    clearSafetyTimer();
+    safetyTimerRef.current = window.setTimeout(() => {
+      safetyTimerRef.current = null;
+      if (!audio.paused && !audio.ended) {
+        requestedRef.current = false;
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    }, SAFETY_MS);
+  }, [getAudio, synth, clearSafetyTimer]);
 
   return { speaking, play };
 }

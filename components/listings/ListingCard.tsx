@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
-type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+type ListingStatus =
+  | "NEW"
+  | "VIEWING"
+  | "APPLIED"
+  | "REJECTED"
+  | "ACCEPTED"
+  | "UNAVAILABLE_TIMEFRAME"
+  | "DELISTED";
 
 interface ListingCardProps {
   id: string;
@@ -38,6 +45,7 @@ const statusColors: Record<ListingStatus, string> = {
   APPLIED: "bg-amber-50 text-amber-600",
   REJECTED: "bg-red-50 text-red-500",
   ACCEPTED: "bg-emerald-50 text-emerald-600",
+  UNAVAILABLE_TIMEFRAME: "bg-zinc-200 text-zinc-500",
   DELISTED: "bg-zinc-200 text-zinc-500",
 };
 
@@ -248,11 +256,11 @@ export function ListingCard({
           </>
         )}
 
-        {/* Delisted overlay */}
-        {status === "DELISTED" && (
+        {/* Inactive overlay (delisted / unavailable in time frame) */}
+        {(status === "DELISTED" || status === "UNAVAILABLE_TIMEFRAME") && (
           <div className="absolute inset-0 bg-zinc-900/40 flex items-center justify-center">
-            <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-xs font-bold text-zinc-600 uppercase tracking-wide">
-              {t("status.DELISTED")}
+            <span className="px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-xs font-bold text-zinc-600 uppercase tracking-wide text-center">
+              {t(`status.${status}`)}
             </span>
           </div>
         )}

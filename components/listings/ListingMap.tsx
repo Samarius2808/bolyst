@@ -1,10 +1,19 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { MapContainer, Marker, Popup, Polyline, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTranslations } from "next-intl";
+import {
+  PIN_SIZE,
+  REF_PIN_SIZE,
+  dropDelays,
+  listingPinHtml,
+  referencePinHtml,
+} from "@/lib/map-style";
+import { BrandedBasemap, FallbackBasemap, supportsWebGL } from "./BrandedBasemap";
+import { CompactAttribution, ZoomControl } from "./MapControls";
 
 type TransportMode = "walking" | "cycling" | "transit";
 
@@ -221,7 +230,20 @@ function RouteLayer({ route }: { route: RouteInfo }) {
   );
 }
 
-type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+type ListingStatus =
+  | "NEW"
+  | "VIEWING"
+  | "APPLIED"
+  | "REJECTED"
+  | "ACCEPTED"
+  | "UNAVAILABLE_TIMEFRAME"
+  | "DELISTED";
+
+// Statuses that are no longer live options — rendered as muted grey pins
+const INACTIVE_STATUSES: ReadonlySet<ListingStatus> = new Set([
+  "DELISTED",
+  "UNAVAILABLE_TIMEFRAME",
+]);
 
 interface MapListing {
   id: string;
@@ -243,14 +265,19 @@ interface MapPin {
   longitude: number;
 }
 
-// Reference point icon (teal circle with star)
-const pinIcon = L.divIcon({
-  className: "",
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
-  popupAnchor: [0, -10],
-  html: '<div style="width:20px;height:20px;border-radius:50%;background:#55704a;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:bold;line-height:1;">★</div>',
-});
+const PIN_COLOR = "#55704a"; // sage-600
+const DELISTED_COLOR = "#a1a1aa"; // zinc-400
+
+// Reference point: sage disc with a star (see referencePinHtml for the markup)
+function makeRefIcon(delayMs: number) {
+  return L.divIcon({
+    className: "bmap-pin-wrap",
+    iconSize: REF_PIN_SIZE,
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12],
+    html: referencePinHtml(PIN_COLOR, delayMs),
+  });
+}
 
 function FitBounds({ points }: { points: { latitude: number; longitude: number }[] }) {
   const map = useMap();
@@ -271,44 +298,6 @@ function FitBounds({ points }: { points: { latitude: number; longitude: number }
   return null;
 }
 
-// Sage drop pin for regular listings
-const defaultIcon = L.divIcon({
-  className: "",
-  iconSize: [30, 40],
-  iconAnchor: [15, 40],
-  popupAnchor: [0, -40],
-  html: `<div style="position:relative;width:30px;height:40px;">
-    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#55704a;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;">
-      <div style="width:10px;height:10px;border-radius:50%;background:white;position:absolute;top:8px;left:8px;"></div>
-    </div>
-  </div>`,
-});
-
-// Rose drop pin for favorited listings
-const favoriteIcon = L.divIcon({
-  className: "",
-  iconSize: [30, 40],
-  iconAnchor: [15, 40],
-  popupAnchor: [0, -40],
-  html: `<div style="position:relative;width:30px;height:40px;">
-    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#e11d48;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;"></div>
-    <div style="position:absolute;top:3px;left:0;width:30px;height:26px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;line-height:1;">♥</div>
-  </div>`,
-});
-
-// Grey pin for delisted listings
-const delistedIcon = L.divIcon({
-  className: "",
-  iconSize: [30, 40],
-  iconAnchor: [15, 40],
-  popupAnchor: [0, -40],
-  html: `<div style="position:relative;width:30px;height:40px;opacity:0.6;">
-    <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:#a1a1aa;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.2);transform:rotate(-45deg);position:absolute;top:0;left:0;">
-      <div style="width:10px;height:10px;border-radius:50%;background:white;position:absolute;top:8px;left:8px;"></div>
-    </div>
-  </div>`,
-});
-
 // Member colors for color-coded pins
 const memberColors = [
   "#55704a", // sage
@@ -321,53 +310,10 @@ const memberColors = [
   "#c026d3", // fuchsia
 ];
 
-function makeMemberIcon(color: string) {
-  return L.divIcon({
-    className: "",
-    iconSize: [30, 40],
-    iconAnchor: [15, 40],
-    popupAnchor: [0, -40],
-    html: `<div style="position:relative;width:30px;height:40px;">
-      <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:${color};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;">
-        <div style="width:10px;height:10px;border-radius:50%;background:white;position:absolute;top:8px;left:8px;"></div>
-      </div>
-    </div>`,
-  });
-}
-
-function makeMemberFavIcon(color: string) {
-  return L.divIcon({
-    className: "",
-    iconSize: [30, 40],
-    iconAnchor: [15, 40],
-    popupAnchor: [0, -40],
-    html: `<div style="position:relative;width:30px;height:40px;">
-      <div style="width:30px;height:30px;border-radius:50% 50% 50% 0;background:${color};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);transform:rotate(-45deg);position:absolute;top:0;left:0;"></div>
-      <div style="position:absolute;top:3px;left:0;width:30px;height:26px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;line-height:1;">♥</div>
-    </div>`,
-  });
-}
-
-// Cache icons by color to avoid recreating
-const iconCache = new Map<string, L.DivIcon>();
-function getCachedIcon(color: string, isFav: boolean) {
-  const key = `${color}-${isFav}`;
-  if (!iconCache.has(key)) {
-    iconCache.set(key, isFav ? makeMemberFavIcon(color) : makeMemberIcon(color));
-  }
-  return iconCache.get(key)!;
-}
-
-function getListingIcon(
-  listing: MapListing,
-  favoritedIds: Set<string>,
-  memberColorMap: Map<string, string>,
-) {
-  if (listing.status === "DELISTED") return delistedIcon;
-  const isFav = favoritedIds.has(listing.id);
+function pinColorFor(listing: MapListing, memberColorMap: Map<string, string>) {
+  if (INACTIVE_STATUSES.has(listing.status)) return DELISTED_COLOR;
   const memberColor = listing.addedBy ? memberColorMap.get(listing.addedBy.id) : undefined;
-  if (memberColor) return getCachedIcon(memberColor, isFav);
-  return isFav ? favoriteIcon : defaultIcon;
+  return memberColor ?? PIN_COLOR;
 }
 
 interface MapMember {
@@ -376,48 +322,48 @@ interface MapMember {
   email: string;
 }
 
-// Highlighted (hovered) icon factories — larger with glow
-function makeHoveredDefaultIcon(color: string) {
-  return L.divIcon({
-    className: "",
-    iconSize: [36, 48],
-    iconAnchor: [18, 48],
-    popupAnchor: [0, -48],
-    html: `<div style="position:relative;width:36px;height:48px;filter:drop-shadow(0 4px 8px rgba(85,112,74,0.5));">
-      <div style="width:36px;height:36px;border-radius:50% 50% 50% 0;background:${color};border:3px solid white;box-shadow:0 0 0 3px ${color}44;transform:rotate(-45deg);position:absolute;top:0;left:0;">
-        <div style="width:12px;height:12px;border-radius:50%;background:white;position:absolute;top:9px;left:9px;"></div>
-      </div>
-    </div>`,
-  });
-}
-
-function makeHoveredFavIcon(color: string) {
-  return L.divIcon({
-    className: "",
-    iconSize: [36, 48],
-    iconAnchor: [18, 48],
-    popupAnchor: [0, -48],
-    html: `<div style="position:relative;width:36px;height:48px;filter:drop-shadow(0 4px 8px rgba(85,112,74,0.5));">
-      <div style="width:36px;height:36px;border-radius:50% 50% 50% 0;background:${color};border:3px solid white;box-shadow:0 0 0 3px ${color}44;transform:rotate(-45deg);position:absolute;top:0;left:0;"></div>
-      <div style="position:absolute;top:4px;left:0;width:36px;height:32px;display:flex;align-items:center;justify-content:center;color:white;font-size:19px;line-height:1;">♥</div>
-    </div>`,
-  });
-}
-
-const hoveredIconCache = new Map<string, L.DivIcon>();
-function getHoveredIcon(
-  listing: MapListing,
-  favoritedIds: Set<string>,
-  memberColorMap: Map<string, string>,
-) {
-  const isFav = favoritedIds.has(listing.id);
-  const memberColor = listing.addedBy ? memberColorMap.get(listing.addedBy.id) : undefined;
-  const color = listing.status === "DELISTED" ? "#a1a1aa" : memberColor || "#55704a";
-  const key = `hover-${color}-${isFav}`;
-  if (!hoveredIconCache.has(key)) {
-    hoveredIconCache.set(key, isFav ? makeHoveredFavIcon(color) : makeHoveredDefaultIcon(color));
-  }
-  return hoveredIconCache.get(key)!;
+// Listing pin. The divIcon is stable per (colour, favourite, muted, delay);
+// the hovered state is a class toggled on the existing marker element rather
+// than a swapped icon, so the CSS scale transition actually runs. Leaflet
+// resets the element's className whenever the icon changes, hence `icon` in
+// the effect deps.
+function ListingMarker({
+  position,
+  color,
+  favorite,
+  muted,
+  delayMs,
+  active,
+  children,
+}: {
+  position: [number, number];
+  color: string;
+  favorite: boolean;
+  muted: boolean;
+  delayMs: number;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<L.Marker>(null);
+  const icon = useMemo(
+    () =>
+      L.divIcon({
+        className: `bmap-pin-wrap${muted ? " bmap-pin-wrap--muted" : ""}`,
+        iconSize: PIN_SIZE,
+        iconAnchor: [15, 40],
+        popupAnchor: [0, -36],
+        html: listingPinHtml({ color, favorite, delayMs }),
+      }),
+    [color, favorite, muted, delayMs],
+  );
+  useEffect(() => {
+    ref.current?.getElement()?.classList.toggle("bmap-pin-wrap--active", active);
+  }, [active, icon]);
+  return (
+    <Marker ref={ref} position={position} icon={icon} zIndexOffset={active ? 1000 : 0}>
+      {children}
+    </Marker>
+  );
 }
 
 // Cache route results so switching modes doesn't re-fetch
@@ -457,6 +403,9 @@ export function ListingMap({
   const [activePinId, setActivePinId] = useState<string | null>(null);
   const routePanelRef = useRef<HTMLDivElement>(null);
   const [routePanelHeight, setRoutePanelHeight] = useState(0);
+  const [leafletMap, setLeafletMap] = useState<L.Map | null>(null);
+  // The branded vector basemap needs WebGL; without it, use raster tiles.
+  const [vectorBasemap, setVectorBasemap] = useState(supportsWebGL);
 
   // Allow parent to open the route panel for a specific listing
   useEffect(() => {
@@ -553,6 +502,21 @@ export function ListingMap({
     }
   }, []);
 
+  // Pins drop in west-to-east on mount; once the entrance has played the
+  // container is marked settled so later icon changes (favourite, hover,
+  // new listings) appear instantly instead of re-animating.
+  const delays = dropDelays(geocoded);
+  const refIcons = useMemo(() => {
+    const refDelays = dropDelays(pins);
+    return pins.map((_, i) => makeRefIcon(refDelays[i]));
+  }, [pins]);
+  const [settled, setSettled] = useState(false);
+  const entranceMs = delays.length > 0 ? Math.max(...delays) + 500 : 0;
+  useEffect(() => {
+    const id = window.setTimeout(() => setSettled(true), entranceMs);
+    return () => window.clearTimeout(id);
+  }, [entranceMs]);
+
   if (geocoded.length === 0 && pins.length === 0) {
     return (
       <div className="flex items-center justify-center h-[500px] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl">
@@ -573,25 +537,33 @@ export function ListingMap({
 
   return (
     <>
-      <div className="rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-full relative">
+      <div
+        className={`bmap${settled ? " pins-settled" : ""} rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 h-full relative`}
+      >
         <MapContainer
+          ref={setLeafletMap}
           center={center}
           zoom={13}
+          maxZoom={19}
           className="h-full w-full"
           style={{ minHeight: "400px" }}
           scrollWheelZoom={true}
           attributionControl={false}
           zoomControl={false}
         >
-          <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
+          {vectorBasemap ? (
+            <BrandedBasemap onUnavailable={() => setVectorBasemap(false)} />
+          ) : (
+            <FallbackBasemap />
+          )}
           <FitBounds points={allPoints} />
           <ClosePopups active={routePanelListingId !== null} />
           {route && <RouteLayer route={route} />}
           {route && <FitRoute coordinates={route.coordinates} bottomPadding={routePanelHeight} />}
 
           {/* Reference pins */}
-          {pins.map((p) => (
-            <Marker key={`pin-${p.id}`} position={[p.latitude, p.longitude]} icon={pinIcon}>
+          {pins.map((p, i) => (
+            <Marker key={`pin-${p.id}`} position={[p.latitude, p.longitude]} icon={refIcons[i]}>
               <Popup>
                 <div className="min-w-[140px]">
                   <p className="font-semibold text-sm text-sage-700 dark:text-sage-400 flex items-center gap-1">
@@ -606,7 +578,7 @@ export function ListingMap({
           ))}
 
           {/* Listing markers */}
-          {geocoded.map((l) => {
+          {geocoded.map((l, i) => {
             const dist =
               pins.length > 0
                 ? Math.min(
@@ -630,14 +602,14 @@ export function ListingMap({
                   : `${dist.toFixed(1)} km`
                 : null;
             return (
-              <Marker
+              <ListingMarker
                 key={l.id}
                 position={[l.latitude, l.longitude]}
-                icon={
-                  hoveredId === l.id
-                    ? getHoveredIcon(l, favoritedIds, memberColorMap)
-                    : getListingIcon(l, favoritedIds, memberColorMap)
-                }
+                color={pinColorFor(l, memberColorMap)}
+                favorite={favoritedIds.has(l.id)}
+                muted={INACTIVE_STATUSES.has(l.status)}
+                delayMs={delays[i]}
+                active={hoveredId === l.id}
               >
                 <Popup>
                   <div className="min-w-[180px]">
@@ -704,14 +676,16 @@ export function ListingMap({
                     </div>
                   </div>
                 </Popup>
-              </Marker>
+              </ListingMarker>
             );
           })}
         </MapContainer>
+        <ZoomControl map={leafletMap} />
+        <CompactAttribution raster={!vectorBasemap} />
 
         {/* Empty pins nudge */}
         {pins.length === 0 && geocoded.length > 0 && !routePanelListingId && !hidePinNudge && (
-          <div className="absolute top-3 left-3 right-3 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-800 px-3 py-2 flex items-center gap-2">
+          <div className="absolute top-3 left-3 right-14 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-800 px-3 py-2 flex items-center gap-2">
             <span className="text-sage-600 dark:text-sage-500 flex-shrink-0">
               <svg
                 width="16"
@@ -859,36 +833,15 @@ export function ListingMap({
           </div>
         )}
       </div>
-      <div className="flex items-center justify-between px-1 pt-1 text-[10px] text-zinc-300">
-        <span>
-          {geocoded.length < listings.length
-            ? t("showingCount", {
-                shown: geocoded.length,
-                total: listings.length,
-                missing: listings.length - geocoded.length,
-              })
-            : null}
-        </span>
-        <span>
-          <a
-            href="https://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-zinc-400"
-          >
-            OSM
-          </a>
-          {" · "}
-          <a
-            href="https://carto.com/attributions"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-zinc-400"
-          >
-            CARTO
-          </a>
-        </span>
-      </div>
+      {geocoded.length < listings.length && (
+        <p className="px-1 pt-1 text-[10px] text-zinc-300">
+          {t("showingCount", {
+            shown: geocoded.length,
+            total: listings.length,
+            missing: listings.length - geocoded.length,
+          })}
+        </p>
+      )}
     </>
   );
 }

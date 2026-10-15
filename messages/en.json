@@ -180,6 +180,7 @@
       "APPLIED": "Applied",
       "REJECTED": "Rejected",
       "ACCEPTED": "Accepted",
+      "UNAVAILABLE_TIMEFRAME": "Unavailable in time frame",
       "DELISTED": "Delisted"
     },
     "link": "Link",
@@ -312,7 +313,10 @@
     "commute": "Commute",
     "calculate": "Calculate",
     "addPinNudge": "Add a reference point (work, uni, gym) to see distances and commute times.",
-    "fasterToWalk": "Faster to walk"
+    "fasterToWalk": "Faster to walk",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "credits": "Map credits"
   },
   "metadata": {
     "aboutTitle": "About Bolyst",
