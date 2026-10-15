@@ -168,21 +168,207 @@ textarea::placeholder {
   color: #a1a1aa;
 }
 
-/* Hide Leaflet attribution watermark */
+/* ---------- Board map (`.bmap`) -------------------------------------------
+   Leaflet chrome and pin styling for the branded vector basemap
+   (lib/map-style.ts, components/listings/BrandedBasemap.tsx). These rules
+   target elements Leaflet injects at runtime, so they live here globally.
+   Mirrors the LevelUp website's locmap.css, in the sage palette. */
+.bmap {
+  --bmap-land: #f4f2ed; /* keep in sync with PALETTES.light.land */
+  --bmap-ink: 24 24 27; /* zinc-900 as rgb triplet, for rgb(... / a) shadows */
+  background: var(--bmap-land);
+}
+.dark .bmap {
+  --bmap-land: #1b1b19; /* PALETTES.dark.land */
+  --bmap-ink: 0 0 0;
+}
+.bmap .leaflet-container {
+  background: var(--bmap-land);
+  font-family: inherit;
+}
+/* The credit line sits below the map, outside the frame. */
+.bmap .leaflet-control-attribution,
 .leaflet-container .leaflet-control-attribution {
-  display: none !important;
+  display: none;
 }
 
-/* Leaflet popup dark mode */
-.dark .leaflet-popup-content-wrapper {
-  background: #252523 !important;
-  color: #f0efe9 !important;
-  border: 1px solid #3a3a36 !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+/* ---------- Pins ----------------------------------------------------------
+   Three layers (see listingPinHtml in lib/map-style.ts): wrap = Leaflet's
+   `.leaflet-marker-icon`, positioned by an inline transform — never animate
+   it, or the pins pile up at the container origin; drop = the one-shot
+   drop-in; pin = hover/active transforms. */
+.bmap .bmap-pin-wrap {
+  cursor: pointer;
+  outline-offset: 4px;
 }
-.dark .leaflet-popup-tip {
-  background: #252523 !important;
+.bmap .bmap-pin-drop {
+  animation: bmap-drop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+  animation-delay: var(--pin-delay, 0ms);
 }
-.dark .leaflet-popup-close-button {
-  color: #71717a !important;
+/* After the entrance the map marks itself settled, so later icon changes
+   (favourite toggled, new listing, hover) are instant — no re-animation. */
+.bmap.pins-settled .bmap-pin-drop {
+  animation: none;
+  opacity: 1;
+}
+@keyframes bmap-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.bmap .bmap-pin {
+  position: relative;
+  width: 30px;
+  height: 40px;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+  transform-origin: bottom center;
+}
+/* Touch target: the teardrop tapers to a point, so widen the hit area on
+   coarse pointers only — on a mouse the wider box makes neighbours fight. */
+@media (pointer: coarse) {
+  .bmap .bmap-pin::after {
+    content: "";
+    position: absolute;
+    inset: -2px -7px;
+  }
+}
+.bmap .bmap-pin svg {
+  position: relative;
+  display: block;
+  filter: drop-shadow(0 2px 3px rgb(var(--bmap-ink) / 0.35));
+  transition: filter 0.2s ease;
+}
+.bmap .bmap-pin__shadow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 14px;
+  height: 5px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgb(var(--bmap-ink) / 0.25);
+  filter: blur(2px);
+}
+.bmap .bmap-pin-wrap:hover .bmap-pin,
+.bmap .bmap-pin-wrap:focus-visible .bmap-pin {
+  transform: scale(1.12);
+}
+/* Active = the card being hovered in the grid: bigger, with a glow in the
+   pin's own colour (`--pin-color`, set inline by listingPinHtml). */
+.bmap .bmap-pin-wrap--active .bmap-pin {
+  transform: scale(1.18);
+}
+.bmap .bmap-pin-wrap--active .bmap-pin svg {
+  filter: drop-shadow(0 3px 5px rgb(var(--bmap-ink) / 0.35))
+    drop-shadow(0 0 5px var(--pin-color, #55704a));
+}
+/* Delisted listings: faded, flatter. */
+.bmap .bmap-pin-wrap--muted .bmap-pin {
+  opacity: 0.55;
+}
+.bmap .bmap-pin-wrap--muted .bmap-pin svg {
+  filter: drop-shadow(0 1px 2px rgb(var(--bmap-ink) / 0.2));
+}
+
+/* Reference points (work, uni, gym): a sage disc with a star. */
+.bmap .bmap-ref {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+.bmap .bmap-ref svg {
+  position: relative;
+  display: block;
+  filter: drop-shadow(0 2px 3px rgb(var(--bmap-ink) / 0.3));
+}
+.bmap .bmap-ref__shadow {
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  width: 14px;
+  height: 5px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgb(var(--bmap-ink) / 0.2);
+  filter: blur(2px);
+}
+.bmap .bmap-pin-wrap:hover .bmap-ref,
+.bmap .bmap-pin-wrap:focus-visible .bmap-ref {
+  transform: scale(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bmap .bmap-pin-drop {
+    animation: none;
+    opacity: 1;
+  }
+  .bmap .bmap-pin,
+  .bmap .bmap-pin svg,
+  .bmap .bmap-ref {
+    transition: none;
+  }
+}
+
+/* ---------- Popups --------------------------------------------------------- */
+.bmap .leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  padding: 0;
+  background: #ffffff;
+  color: #18181b;
+  box-shadow: 0 8px 24px rgb(var(--bmap-ink) / 0.18);
+}
+.bmap .leaflet-popup-content {
+  margin: 12px 14px 13px;
+  line-height: 1.35;
+}
+.bmap .leaflet-popup-tip {
+  background: #ffffff;
+  box-shadow: 0 3px 6px rgb(var(--bmap-ink) / 0.12);
+}
+.bmap .leaflet-container a.leaflet-popup-close-button {
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 18px;
+  line-height: 22px;
+  color: #71717a;
+  background: rgba(255, 255, 255, 0.85); /* stays legible over a listing photo */
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+.bmap .leaflet-container a.leaflet-popup-close-button:hover {
+  background: #e4ebe0; /* sage-100 */
+  color: #18181b;
+}
+.dark .bmap .leaflet-popup-content-wrapper {
+  background: #252523;
+  color: #f0efe9;
+  border: 1px solid #3a3a36;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.dark .bmap .leaflet-popup-tip {
+  background: #252523;
+}
+.dark .bmap .leaflet-container a.leaflet-popup-close-button {
+  color: #a1a1aa;
+  background: rgba(37, 37, 35, 0.85);
+}
+.dark .bmap .leaflet-container a.leaflet-popup-close-button:hover {
+  background: #374832; /* sage-800 */
+  color: #f0efe9;
 }
