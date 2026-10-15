@@ -221,7 +221,20 @@ function RouteLayer({ route }: { route: RouteInfo }) {
   );
 }
 
-type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+type ListingStatus =
+  | "NEW"
+  | "VIEWING"
+  | "APPLIED"
+  | "REJECTED"
+  | "ACCEPTED"
+  | "UNAVAILABLE_TIMEFRAME"
+  | "DELISTED";
+
+// Statuses that are no longer live options — rendered as muted grey pins
+const INACTIVE_STATUSES: ReadonlySet<ListingStatus> = new Set([
+  "DELISTED",
+  "UNAVAILABLE_TIMEFRAME",
+]);
 
 interface MapListing {
   id: string;
@@ -296,8 +309,8 @@ const favoriteIcon = L.divIcon({
   </div>`,
 });
 
-// Grey pin for delisted listings
-const delistedIcon = L.divIcon({
+// Grey pin for inactive (delisted / unavailable in time frame) listings
+const inactiveIcon = L.divIcon({
   className: "",
   iconSize: [30, 40],
   iconAnchor: [15, 40],
@@ -363,7 +376,7 @@ function getListingIcon(
   favoritedIds: Set<string>,
   memberColorMap: Map<string, string>,
 ) {
-  if (listing.status === "DELISTED") return delistedIcon;
+  if (INACTIVE_STATUSES.has(listing.status)) return inactiveIcon;
   const isFav = favoritedIds.has(listing.id);
   const memberColor = listing.addedBy ? memberColorMap.get(listing.addedBy.id) : undefined;
   if (memberColor) return getCachedIcon(memberColor, isFav);
@@ -412,7 +425,7 @@ function getHoveredIcon(
 ) {
   const isFav = favoritedIds.has(listing.id);
   const memberColor = listing.addedBy ? memberColorMap.get(listing.addedBy.id) : undefined;
-  const color = listing.status === "DELISTED" ? "#a1a1aa" : memberColor || "#55704a";
+  const color = INACTIVE_STATUSES.has(listing.status) ? "#a1a1aa" : memberColor || "#55704a";
   const key = `hover-${color}-${isFav}`;
   if (!hoveredIconCache.has(key)) {
     hoveredIconCache.set(key, isFav ? makeHoveredFavIcon(color) : makeHoveredDefaultIcon(color));

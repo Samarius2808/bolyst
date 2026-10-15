@@ -11,7 +11,14 @@ import { PinManager } from "./PinManager";
 import { SortControls, type SortKey } from "./SortControls";
 import { nearestPinDistance } from "@/lib/haversine";
 
-type ListingStatus = "NEW" | "VIEWING" | "APPLIED" | "REJECTED" | "ACCEPTED" | "DELISTED";
+type ListingStatus =
+  | "NEW"
+  | "VIEWING"
+  | "APPLIED"
+  | "REJECTED"
+  | "ACCEPTED"
+  | "UNAVAILABLE_TIMEFRAME"
+  | "DELISTED";
 
 interface Listing {
   id: string;
@@ -164,7 +171,8 @@ export function ListingGrid({
           APPLIED: 2,
           ACCEPTED: 3,
           REJECTED: 4,
-          DELISTED: 5,
+          UNAVAILABLE_TIMEFRAME: 5,
+          DELISTED: 6,
         };
         sorted.sort((a, b) => (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99));
         break;

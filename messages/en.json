@@ -180,6 +180,7 @@
       "APPLIED": "Applied",
       "REJECTED": "Rejected",
       "ACCEPTED": "Accepted",
+      "UNAVAILABLE_TIMEFRAME": "Unavailable in time frame",
       "DELISTED": "Delisted"
     },
     "link": "Link",
