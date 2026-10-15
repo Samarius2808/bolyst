@@ -12,7 +12,7 @@ import {
   listingPinHtml,
   referencePinHtml,
 } from "@/lib/map-style";
-import { BrandedBasemap } from "./BrandedBasemap";
+import { BrandedBasemap, FallbackBasemap, supportsWebGL } from "./BrandedBasemap";
 import { CompactAttribution, ZoomControl } from "./MapControls";
 
 type TransportMode = "walking" | "cycling" | "transit";
@@ -404,6 +404,8 @@ export function ListingMap({
   const routePanelRef = useRef<HTMLDivElement>(null);
   const [routePanelHeight, setRoutePanelHeight] = useState(0);
   const [leafletMap, setLeafletMap] = useState<L.Map | null>(null);
+  // The branded vector basemap needs WebGL; without it, use raster tiles.
+  const [vectorBasemap, setVectorBasemap] = useState(supportsWebGL);
 
   // Allow parent to open the route panel for a specific listing
   useEffect(() => {
@@ -549,7 +551,11 @@ export function ListingMap({
           attributionControl={false}
           zoomControl={false}
         >
-          <BrandedBasemap />
+          {vectorBasemap ? (
+            <BrandedBasemap onUnavailable={() => setVectorBasemap(false)} />
+          ) : (
+            <FallbackBasemap />
+          )}
           <FitBounds points={allPoints} />
           <ClosePopups active={routePanelListingId !== null} />
           {route && <RouteLayer route={route} />}
@@ -675,7 +681,7 @@ export function ListingMap({
           })}
         </MapContainer>
         <ZoomControl map={leafletMap} />
-        <CompactAttribution />
+        <CompactAttribution raster={!vectorBasemap} />
 
         {/* Empty pins nudge */}
         {pins.length === 0 && geocoded.length > 0 && !routePanelListingId && !hidePinNudge && (

@@ -89,12 +89,17 @@ const CREDITS = [
   { label: "OpenFreeMap", href: "https://openfreemap.org/" },
 ];
 
+// Credits for the raster fallback basemap (no WebGL): tiles served by OSM itself.
+const RASTER_CREDITS = [
+  { label: "© OpenStreetMap contributors", href: "https://www.openstreetmap.org/copyright" },
+];
+
 /**
  * Compact attribution, bottom-left: a small ⓘ disc that expands into a pill
  * with the required OSM / OpenMapTiles / OpenFreeMap credit on hover, focus or
  * tap — the same pattern as MapLibre's compact control on the LevelUp map.
  */
-export function CompactAttribution() {
+export function CompactAttribution({ raster = false }: { raster?: boolean }) {
   const t = useTranslations("map");
   const [open, setOpen] = useState(false);
 
@@ -130,7 +135,7 @@ export function CompactAttribution() {
           open ? "" : "hidden group-hover:inline group-focus-within:inline"
         }`}
       >
-        {CREDITS.map((c, i) => (
+        {(raster ? RASTER_CREDITS : CREDITS).map((c, i) => (
           <span key={c.href}>
             {i > 0 && " · "}
             <a

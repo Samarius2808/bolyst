@@ -186,6 +186,14 @@ textarea::placeholder {
   background: var(--bmap-land);
   font-family: inherit;
 }
+/* Raster fallback (no WebGL, see FallbackBasemap): standard OSM tiles,
+   desaturated toward the calm vector palette; inverted for dark mode. */
+.bmap .bmap-raster {
+  filter: grayscale(1) sepia(0.1) brightness(1.03) contrast(0.9);
+}
+.dark .bmap .bmap-raster {
+  filter: grayscale(1) invert(1) brightness(0.85) contrast(0.85);
+}
 /* The credit line sits below the map, outside the frame. */
 .bmap .leaflet-control-attribution,
 .leaflet-container .leaflet-control-attribution {
