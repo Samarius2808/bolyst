@@ -11,6 +11,9 @@ interface Board {
   _count: { listings: number; members: number };
   members: { user: { name: string | null; email: string } }[];
   listings: { imageUrls: string[] }[];
+  coverImageUrl: string | null;
+  startDate: Date | string | null;
+  endDate: Date | string | null;
 }
 
 export function BoardList({ boards }: { boards: Board[] }) {
@@ -72,6 +75,9 @@ export function BoardList({ boards }: { boards: Board[] }) {
               listingCount={b._count.listings}
               memberCount={b._count.members}
               members={b.members}
+              coverImageUrl={b.coverImageUrl}
+              startDate={b.startDate}
+              endDate={b.endDate}
               previewImages={b.listings
                 .map((l) => l.imageUrls[0])
                 .filter((u): u is string => Boolean(u))}

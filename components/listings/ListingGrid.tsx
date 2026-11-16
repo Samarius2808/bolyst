@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ListingCard } from "./ListingCard";
@@ -10,6 +10,19 @@ import { ListingMapWrapper } from "./ListingMapWrapper";
 import { PinManager } from "./PinManager";
 import { SortControls, LISTING_STATUSES, type SortKey } from "./SortControls";
 import { nearestPinDistance } from "@/lib/haversine";
+
+// Statuses that usually mean "no longer an option"
+const INACTIVE: ListingStatus[] = ["REJECTED", "UNAVAILABLE_TIMEFRAME", "DELISTED"];
+
+const statusDot: Record<ListingStatus, string> = {
+  NEW: "bg-zinc-400",
+  VIEWING: "bg-blue-500",
+  APPLIED: "bg-amber-500",
+  ACCEPTED: "bg-emerald-500",
+  REJECTED: "bg-red-500",
+  UNAVAILABLE_TIMEFRAME: "bg-zinc-300 dark:bg-zinc-600",
+  DELISTED: "bg-zinc-300 dark:bg-zinc-600",
+};
 
 type ListingStatus =
   | "NEW"
@@ -96,6 +109,33 @@ export function ListingGrid({
   const [sortKey, setSortKey] = useState<SortKey>("newest");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
+  const [hiddenStatuses, setHiddenStatuses] = useState<Set<ListingStatus>>(new Set());
+  const tStatus = useTranslations("listingCard.status");
+  const hiddenStorageKey = `bolyst:hiddenStatuses:${boardId}`;
+
+  // Remember hidden statuses per board in this browser
+  useEffect(() => {
+    try {
+      const saved: unknown = JSON.parse(localStorage.getItem(hiddenStorageKey) ?? "[]");
+      if (Array.isArray(saved)) {
+        const valid = saved.filter((v): v is ListingStatus =>
+          (LISTING_STATUSES as readonly string[]).includes(v),
+        );
+        if (valid.length > 0) setHiddenStatuses(new Set(valid)); // eslint-disable-line react-hooks/set-state-in-effect -- restoring a saved preference after hydration
+      }
+    } catch {
+      // storage unavailable — keep defaults
+    }
+  }, [hiddenStorageKey]);
+
+  function updateHiddenStatuses(next: Set<ListingStatus>) {
+    setHiddenStatuses(next);
+    try {
+      localStorage.setItem(hiddenStorageKey, JSON.stringify(Array.from(next)));
+    } catch {
+      // storage unavailable — preference just won't persist
+    }
+  }
   const [favorites, setFavorites] = useState<Set<string>>(new Set(favoritedIds));
   const [compareMode, setCompareMode] = useState(false);
   const [compareSet, setCompareSet] = useState<Set<string>>(new Set());
@@ -137,7 +177,9 @@ export function ListingGrid({
   }, [listings, boardPins, sortKey]);
 
   const sortedListings = useMemo(() => {
-    const pool = listings.filter((l) => (l.archivedAt != null) === showArchived);
+    const pool = listings.filter(
+      (l) => (l.archivedAt != null) === showArchived && !hiddenStatuses.has(l.status),
+    );
     const filtered = showFavoritesOnly ? pool.filter((l) => favorites.has(l.id)) : pool;
 
     const sorted = [...filtered];
@@ -202,7 +244,20 @@ export function ListingGrid({
         }
     }
     return sorted;
-  }, [listings, sortKey, showFavoritesOnly, showArchived, favorites, distanceMap]);
+  }, [listings, sortKey, showFavoritesOnly, showArchived, hiddenStatuses, favorites, distanceMap]);
+
+  // Per-status counts for the current view (active or archived)
+  const statusCounts = useMemo(() => {
+    const counts = new Map<ListingStatus, number>();
+    for (const l of listings) {
+      if ((l.archivedAt != null) !== showArchived) continue;
+      counts.set(l.status, (counts.get(l.status) ?? 0) + 1);
+    }
+    return counts;
+  }, [listings, showArchived]);
+  const presentInactive = INACTIVE.filter((s) => statusCounts.has(s));
+  const inactiveAllHidden =
+    presentInactive.length > 0 && presentInactive.every((s) => hiddenStatuses.has(s));
 
   const archivedCount = listings.filter((l) => l.archivedAt != null).length;
 
@@ -340,6 +395,59 @@ export function ListingGrid({
               )}
             </div>
 
+            {statusCounts.size > 0 && (
+              <div className="flex items-center gap-1.5 flex-wrap mb-4">
+                {LISTING_STATUSES.filter((s) => statusCounts.has(s)).map((s) => {
+                  const hidden = hiddenStatuses.has(s);
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      aria-pressed={!hidden}
+                      title={hidden ? t("showStatus") : t("hideStatus")}
+                      onClick={() => {
+                        const next = new Set(hiddenStatuses);
+                        if (hidden) next.delete(s);
+                        else next.add(s);
+                        updateHiddenStatuses(next);
+                      }}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full border transition-all ${
+                        hidden
+                          ? "border-dashed border-zinc-200 dark:border-zinc-700 text-zinc-300 dark:text-zinc-600 line-through"
+                          : "border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300"
+                      }`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${hidden ? "bg-zinc-200 dark:bg-zinc-700" : statusDot[s]}`}
+                      />
+                      {tStatus(s)}
+                      <span className="font-semibold tabular-nums">{statusCounts.get(s)}</span>
+                    </button>
+                  );
+                })}
+                {presentInactive.length > 0 && !inactiveAllHidden && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateHiddenStatuses(new Set([...hiddenStatuses, ...presentInactive]))
+                    }
+                    className="text-xs font-medium text-sage-600 dark:text-sage-400 hover:text-sage-700 px-1.5 transition-colors"
+                  >
+                    {t("hideInactive")}
+                  </button>
+                )}
+                {hiddenStatuses.size > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => updateHiddenStatuses(new Set())}
+                    className="text-xs font-medium text-sage-600 dark:text-sage-400 hover:text-sage-700 px-1.5 transition-colors"
+                  >
+                    {t("showAllStatuses")}
+                  </button>
+                )}
+              </div>
+            )}
+
             {showArchived && (
               <p className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-lg px-3.5 py-2.5 mb-4">
                 {t("archivedHint")}
@@ -390,16 +498,17 @@ export function ListingGrid({
                   onHoverEnd={() => setHoveredId(null)}
                 />
               ))}
-              {sortedListings.length === 0 && (showFavoritesOnly || showArchived) && (
+              {sortedListings.length === 0 && (
                 <div className="text-center py-12 col-span-full">
                   <p className="text-sm text-zinc-400">
-                    {showFavoritesOnly ? t("noFavorites") : t("noArchived")}
+                    {showFavoritesOnly
+                      ? t("noFavorites")
+                      : hiddenStatuses.size > 0 && statusCounts.size > 0
+                        ? t("allStatusesHidden")
+                        : showArchived
+                          ? t("noArchived")
+                          : t("allArchived")}
                   </p>
-                </div>
-              )}
-              {sortedListings.length === 0 && !showFavoritesOnly && !showArchived && (
-                <div className="text-center py-12 col-span-full">
-                  <p className="text-sm text-zinc-400">{t("allArchived")}</p>
                 </div>
               )}
             </div>

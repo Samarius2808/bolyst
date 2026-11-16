@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { LocationInput } from "@/components/ui/LocationInput";
+import { PhotoEditor } from "@/components/ui/PhotoEditor";
 
 interface BoardTag {
   id: string;
@@ -30,6 +31,7 @@ export function AddListingModal({
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [scraping, setScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState("");
   const [scraped, setScraped] = useState(false);
@@ -298,6 +300,15 @@ export function AddListingModal({
                   rows={3}
                   className={inputClass}
                 />
+                <div className="pt-1">
+                  <p className="text-xs font-medium text-zinc-400 mb-2">{t("photos")}</p>
+                  <PhotoEditor
+                    boardId={boardId}
+                    images={imageUrls}
+                    onChange={setImageUrls}
+                    onUploadingChange={setUploadingPhotos}
+                  />
+                </div>
               </div>
 
               {boardTags.length > 0 && (
@@ -342,7 +353,7 @@ export function AddListingModal({
                 </button>
                 <button
                   type="submit"
-                  disabled={loading || !title.trim()}
+                  disabled={loading || uploadingPhotos || !title.trim()}
                   className="px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                 >
                   {loading ? t("adding") : t("addListing")}

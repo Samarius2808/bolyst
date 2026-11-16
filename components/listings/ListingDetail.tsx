@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { LocationInput } from "@/components/ui/LocationInput";
+import { PhotoEditor } from "@/components/ui/PhotoEditor";
 
 interface Tag {
   id: string;
@@ -131,8 +132,10 @@ export function ListingDetail({
     size: "",
     location: "",
     description: "",
+    imageUrls: [] as string[],
   });
   const [saving, setSaving] = useState(false);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const router = useRouter();
   const t = useTranslations("listingDetail");
   const ts = useTranslations("listingCard.status");
@@ -177,6 +180,7 @@ export function ListingDetail({
       size: listing.size != null ? String(listing.size) : "",
       location: listing.location ?? "",
       description: listing.description ?? "",
+      imageUrls: listing.imageUrls ?? [],
     });
     setEditing(true);
   }
@@ -195,9 +199,11 @@ export function ListingDetail({
         size: editForm.size || null,
         location: editForm.location || null,
         description: editForm.description || null,
+        imageUrls: editForm.imageUrls,
       }),
     });
     if (res.ok) {
+      setHeroImage(0);
       setEditing(false);
       await loadData();
       router.refresh();
@@ -470,10 +476,19 @@ export function ListingDetail({
                       rows={3}
                       className={inputClass}
                     />
+                    <div>
+                      <p className="text-xs font-medium text-zinc-400 mb-2">{t("photos")}</p>
+                      <PhotoEditor
+                        boardId={boardId}
+                        images={editForm.imageUrls}
+                        onChange={(imageUrls) => setEditForm((f) => ({ ...f, imageUrls }))}
+                        onUploadingChange={setUploadingPhotos}
+                      />
+                    </div>
                     <div className="flex gap-2">
                       <button
                         type="submit"
-                        disabled={saving || !editForm.title.trim()}
+                        disabled={saving || uploadingPhotos || !editForm.title.trim()}
                         className="px-4 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
                       >
                         {saving ? t("saving") : t("save")}

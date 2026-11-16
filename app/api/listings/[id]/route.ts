@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { parseImageUrls } from "@/lib/image-urls";
 import { geocodeLocation } from "@/lib/geocode";
 
 async function getListingWithAccess(listingId: string, userId: string) {
@@ -49,6 +50,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const body = await req.json();
   const { title, sourceUrl, price, size, location, description, imageUrls, status, archived } =
     body;
+  const images = imageUrls === undefined ? undefined : parseImageUrls(imageUrls);
+  if (images === null) return NextResponse.json({ error: "Invalid imageUrls" }, { status: 400 });
   if (archived !== undefined && typeof archived !== "boolean") {
     return NextResponse.json({ error: "archived must be a boolean" }, { status: 400 });
   }
@@ -72,7 +75,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       ...(size !== undefined && { size: size ? parseFloat(size) : null }),
       ...(location !== undefined && { location }),
       ...(description !== undefined && { description }),
-      ...(imageUrls !== undefined && { imageUrls }),
+      ...(images !== undefined && { imageUrls: images }),
       ...(status !== undefined && { status }),
       ...(archived !== undefined && { archivedAt: archived ? new Date() : null }),
       ...coordsUpdate,

@@ -1,14 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { uploadImage } from "@/lib/upload-client";
+import { CoverPhotoField, DateRangeField, isValidRange } from "./BoardFields";
 
 export function CreateBoardModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState("");
   const [emails, setEmails] = useState<string[]>([]);
   const [emailInput, setEmailInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [dates, setDates] = useState({ start: "", end: "" });
+
+  // Local preview of the chosen cover; it's uploaded once the board exists
+  useEffect(() => {
+    if (!coverFile) {
+      setCoverPreview(null); // eslint-disable-line react-hooks/set-state-in-effect -- derived object URL needs cleanup
+      return;
+    }
+    const url = URL.createObjectURL(coverFile);
+    setCoverPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [coverFile]);
   const router = useRouter();
   const t = useTranslations("createBoard");
 
@@ -46,6 +62,25 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
     if (res.ok) {
       const board = await res.json();
 
+      // Cover photo and dates need the board to exist (uploads check membership)
+      const extras: Record<string, string> = {};
+      if (dates.start) extras.startDate = dates.start;
+      if (dates.end) extras.endDate = dates.end;
+      if (coverFile) {
+        try {
+          extras.coverImageUrl = await uploadImage(board.id, coverFile);
+        } catch {
+          // Board is created either way; the cover can be added later in settings
+        }
+      }
+      if (Object.keys(extras).length > 0) {
+        await fetch(`/api/boards/${board.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(extras),
+        });
+      }
+
       if (emails.length > 0) {
         await Promise.allSettled(
           emails.map((email) =>
@@ -72,7 +107,7 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
       <form
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl shadow-2xl shadow-black/10 p-6 w-full max-w-md mx-4 modal-content"
+        className="bg-white rounded-2xl shadow-2xl shadow-black/10 p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto modal-content modal-scroll"
       >
         <div className="flex items-start justify-between mb-4">
           <div>
@@ -105,6 +140,18 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
           autoFocus
           className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
         />
+
+        <div className="mt-5">
+          <CoverPhotoField
+            previewUrl={coverPreview}
+            onFile={setCoverFile}
+            onRemove={() => setCoverFile(null)}
+          />
+        </div>
+
+        <div className="mt-5">
+          <DateRangeField start={dates.start} end={dates.end} onChange={setDates} />
+        </div>
 
         {/* Invite collaborators */}
         <div className="mt-4">
@@ -170,7 +217,7 @@ export function CreateBoardModal({ onClose }: { onClose: () => void }) {
           </button>
           <button
             type="submit"
-            disabled={loading || !name.trim()}
+            disabled={loading || !name.trim() || !isValidRange(dates.start, dates.end)}
             className="px-5 py-2.5 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
           >
             {loading ? t("creating") : t("createBoard")}

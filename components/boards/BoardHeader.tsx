@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatDateRange } from "@/lib/date-range";
 import { BoardSettings } from "./BoardSettings";
 import { AddListingModal } from "../listings/AddListingModal";
 
@@ -37,6 +38,9 @@ export function BoardHeader({
     members: Member[];
     listingCount: number;
     pendingInvites: string[];
+    coverImageUrl: string | null;
+    startDate: string | null;
+    endDate: string | null;
   };
   isOwner: boolean;
   boardTags?: { id: string; name: string }[];
@@ -45,6 +49,11 @@ export function BoardHeader({
   const [showAdd, setShowAdd] = useState(false);
   const t = useTranslations("boardHeader");
   const tb = useTranslations("boards");
+  const locale = useLocale();
+  const dateRange = formatDateRange(board.startDate, board.endDate, locale, {
+    from: t("from"),
+    until: t("until"),
+  });
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -83,7 +92,30 @@ export function BoardHeader({
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 truncate">
             {board.name}
           </h1>
-          <div className="flex items-center gap-2.5 mt-1.5">
+          <div className="flex items-center gap-2.5 mt-1.5 flex-wrap">
+            {dateRange && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setShowSettings(true)}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sage-50 dark:bg-sage-950/40 text-sage-700 dark:text-sage-400 rounded-full text-xs font-medium hover:bg-sage-100 dark:hover:bg-sage-900/40 transition-colors"
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <rect x="2" y="3" width="12" height="11" rx="1.5" />
+                    <path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" />
+                  </svg>
+                  {dateRange}
+                </button>
+                <span className="w-1 h-1 rounded-full bg-zinc-300" />
+              </>
+            )}
             <span className="px-2.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-full text-xs text-zinc-500 dark:text-zinc-400">
               {board.listingCount !== 1
                 ? tb("listingCountPlural", { count: board.listingCount })
@@ -207,6 +239,9 @@ export function BoardHeader({
           isOwner={isOwner}
           members={board.members}
           initialPendingInvites={board.pendingInvites}
+          coverImageUrl={board.coverImageUrl}
+          startDate={board.startDate}
+          endDate={board.endDate}
           onClose={() => setShowSettings(false)}
         />
       )}

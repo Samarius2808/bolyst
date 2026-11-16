@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { geocodeLocation } from "@/lib/geocode";
+import { parseImageUrls } from "@/lib/image-urls";
 
 export async function POST(req: Request) {
   const user = await getOrCreateUser();
@@ -13,6 +14,9 @@ export async function POST(req: Request) {
   if (!boardId || !title) {
     return NextResponse.json({ error: "boardId and title are required" }, { status: 400 });
   }
+
+  const images = imageUrls === undefined ? [] : parseImageUrls(imageUrls);
+  if (!images) return NextResponse.json({ error: "Invalid imageUrls" }, { status: 400 });
 
   const membership = await prisma.boardMember.findUnique({
     where: { boardId_userId: { boardId, userId: user.id } },
@@ -41,7 +45,7 @@ export async function POST(req: Request) {
       size: size ? parseFloat(size) : null,
       location: location || null,
       description: description || null,
-      imageUrls: imageUrls || [],
+      imageUrls: images,
       latitude: coords?.lat ?? null,
       longitude: coords?.lng ?? null,
       tags: tagIds?.length ? { create: tagIds.map((tagId: string) => ({ tagId })) } : undefined,

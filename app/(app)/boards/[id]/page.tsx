@@ -74,6 +74,9 @@ export default async function BoardDetailPage({ params }: { params: Promise<{ id
           members: board.members,
           listingCount: board.listings.filter((l) => !l.archivedAt).length,
           pendingInvites: board.invites.map((i) => i.email),
+          coverImageUrl: board.coverImageUrl,
+          startDate: board.startDate?.toISOString() ?? null,
+          endDate: board.endDate?.toISOString() ?? null,
         }}
         isOwner={isOwner}
         boardTags={board.tags}

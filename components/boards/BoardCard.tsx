@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { formatDateRange } from "@/lib/date-range";
 
 interface BoardCardProps {
   id: string;
@@ -9,6 +11,9 @@ interface BoardCardProps {
   memberCount: number;
   members: { user: { name: string | null; email: string } }[];
   previewImages: string[];
+  coverImageUrl?: string | null;
+  startDate?: Date | string | null;
+  endDate?: Date | string | null;
 }
 
 function getInitial(name: string | null, email: string): string {
@@ -70,17 +75,33 @@ export function BoardCard({
   memberCount,
   members,
   previewImages,
+  coverImageUrl = null,
+  startDate = null,
+  endDate = null,
 }: BoardCardProps) {
+  const locale = useLocale();
+  const t = useTranslations("boardHeader");
+  const dateRange = formatDateRange(startDate, endDate, locale, {
+    from: t("from"),
+    until: t("until"),
+  });
   return (
     <Link
       href={`/boards/${id}`}
       className="group block bg-white dark:bg-zinc-900 border border-zinc-100/80 dark:border-zinc-800 rounded-2xl overflow-hidden hover:shadow-xl hover:border-sage-200/60 dark:hover:border-sage-800/60 hover:-translate-y-0.5 transition-all duration-200"
     >
-      <ImageMosaic images={previewImages} />
+      {coverImageUrl ? (
+        <div className="h-[144px] overflow-hidden">
+          <img src={coverImageUrl} alt="" className="w-full h-full object-cover" />
+        </div>
+      ) : (
+        <ImageMosaic images={previewImages} />
+      )}
       <div className="p-5 pt-4">
         <h3 className="font-semibold text-[15px] text-zinc-900 dark:text-zinc-100 truncate group-hover:text-sage-600 transition-colors leading-snug">
           {name}
         </h3>
+        {dateRange && <p className="text-xs text-sage-700 dark:text-sage-400 mt-1">{dateRange}</p>}
 
         <div className="flex gap-3 mt-2.5">
           <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">

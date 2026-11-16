@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ThemeSelector } from "@/components/settings/ThemeSelector";
+import { toDateInputValue } from "@/lib/date-range";
+import { uploadImage, UploadError } from "@/lib/upload-client";
+import { CoverPhotoField, DateRangeField, isValidRange } from "./BoardFields";
 
 interface Member {
   id: string;
@@ -32,6 +35,9 @@ export function BoardSettings({
   isOwner,
   members,
   initialPendingInvites = [],
+  coverImageUrl = null,
+  startDate = null,
+  endDate = null,
   onClose,
 }: {
   boardId: string;
@@ -39,6 +45,9 @@ export function BoardSettings({
   isOwner: boolean;
   members: Member[];
   initialPendingInvites?: string[];
+  coverImageUrl?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
   onClose: () => void;
 }) {
   const [name, setName] = useState(boardName);
@@ -50,6 +59,61 @@ export function BoardSettings({
   const [pendingInvites, setPendingInvites] = useState(initialPendingInvites);
   const router = useRouter();
   const t = useTranslations("boardSettings");
+  const tp = useTranslations("photoEditor");
+  const [cover, setCover] = useState(coverImageUrl);
+  const [coverBusy, setCoverBusy] = useState(false);
+  const [coverError, setCoverError] = useState("");
+  const [start, setStart] = useState(toDateInputValue(startDate));
+  const [end, setEnd] = useState(toDateInputValue(endDate));
+  const [datesSaving, setDatesSaving] = useState(false);
+  const [datesSaved, setDatesSaved] = useState(false);
+  const datesChanged = start !== toDateInputValue(startDate) || end !== toDateInputValue(endDate);
+
+  async function patchBoard(data: Record<string, unknown>) {
+    return fetch(`/api/boards/${boardId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+  }
+
+  async function handleCoverFile(file: File) {
+    setCoverBusy(true);
+    setCoverError("");
+    try {
+      const url = await uploadImage(boardId, file);
+      const res = await patchBoard({ coverImageUrl: url });
+      if (!res.ok) throw new UploadError("upload_failed");
+      setCover(url);
+      router.refresh();
+    } catch (e) {
+      const code = e instanceof UploadError ? e.code : "upload_failed";
+      const known = ["unsupported_type", "too_large", "storage_not_configured"];
+      setCoverError(tp(`errors.${known.includes(code) ? code : "upload_failed"}`));
+    }
+    setCoverBusy(false);
+  }
+
+  async function handleRemoveCover() {
+    setCoverBusy(true);
+    const res = await patchBoard({ coverImageUrl: null });
+    if (res.ok) {
+      setCover(null);
+      router.refresh();
+    }
+    setCoverBusy(false);
+  }
+
+  async function handleSaveDates(e: React.FormEvent) {
+    e.preventDefault();
+    setDatesSaving(true);
+    const res = await patchBoard({ startDate: start || null, endDate: end || null });
+    if (res.ok) {
+      setDatesSaved(true);
+      router.refresh();
+    }
+    setDatesSaving(false);
+  }
 
   async function handleRename(e: React.FormEvent) {
     e.preventDefault();
@@ -183,6 +247,45 @@ export function BoardSettings({
               </div>
             </form>
           )}
+
+          {/* Cover photo */}
+          <div className="border-t border-zinc-100 dark:border-zinc-800 pt-5 mb-6">
+            <CoverPhotoField
+              previewUrl={cover}
+              busy={coverBusy}
+              error={coverError}
+              onFile={handleCoverFile}
+              onRemove={handleRemoveCover}
+            />
+          </div>
+
+          {/* Dates */}
+          <form
+            onSubmit={handleSaveDates}
+            className="border-t border-zinc-100 dark:border-zinc-800 pt-5 mb-6"
+          >
+            <DateRangeField
+              start={start}
+              end={end}
+              onChange={(r) => {
+                setStart(r.start);
+                setEnd(r.end);
+                setDatesSaved(false);
+              }}
+            />
+            <div className="flex items-center gap-3 mt-3">
+              <button
+                type="submit"
+                disabled={datesSaving || !datesChanged || !isValidRange(start, end)}
+                className="px-4 py-2 text-sm font-semibold bg-sage-600 text-white rounded-xl hover:bg-sage-700 disabled:opacity-40 active:scale-[0.98] transition-all shadow-md shadow-sage-600/20"
+              >
+                {datesSaving ? t("saving") : t("saveDates")}
+              </button>
+              {datesSaved && !datesChanged && (
+                <span className="text-xs text-sage-600">{t("saved")}</span>
+              )}
+            </div>
+          </form>
 
           {/* Appearance */}
           <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4 mb-5">

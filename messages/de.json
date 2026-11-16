@@ -129,7 +129,9 @@
     "boards": "Boards",
     "addListing": "+ Inserat hinzufügen",
     "compare": "Vergleichen",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "from": "ab",
+    "until": "bis"
   },
   "boardSettings": {
     "title": "Board-Einstellungen",
@@ -151,7 +153,20 @@
     "makeOwner": "Zum Eigentümer machen",
     "makeMember": "Zum Mitglied machen",
     "lastOwner": "Ein Board braucht mindestens einen Eigentümer",
-    "roleError": "Rolle konnte nicht geändert werden"
+    "roleError": "Rolle konnte nicht geändert werden",
+    "coverPhoto": "Titelbild",
+    "coverPhotoHint": "Wird auf der Board-Karte statt der Inseratsfotos angezeigt.",
+    "uploadCover": "Foto hochladen",
+    "changeCover": "Foto ändern",
+    "removeCover": "Entfernen",
+    "uploading": "Wird hochgeladen…",
+    "dates": "Zeitraum",
+    "datesHint": "Z. B. euer Einzugsdatum oder die Daten eines Kurzaufenthalts.",
+    "startDate": "Von",
+    "endDate": "Bis",
+    "saveDates": "Speichern",
+    "clearDates": "Zurücksetzen",
+    "saved": "Gespeichert"
   },
   "createBoard": {
     "title": "Board erstellen",
@@ -183,7 +198,12 @@
     "archivedCount": "Archiviert ({count})",
     "archivedHint": "Diese Inserate sind archiviert und auf dem Board ausgeblendet. Öffnet eins, um es wiederherzustellen.",
     "noArchived": "Keine archivierten Inserate.",
-    "allArchived": "Alle Inserate sind archiviert. Unter „Archiviert“ könnt ihr sie zurückholen."
+    "allArchived": "Alle Inserate sind archiviert. Unter „Archiviert“ könnt ihr sie zurückholen.",
+    "hideStatus": "Klicken zum Ausblenden",
+    "showStatus": "Klicken zum Einblenden",
+    "hideInactive": "Inaktive ausblenden",
+    "showAllStatuses": "Alle zeigen",
+    "allStatusesHidden": "Alle Inserate hier haben einen ausgeblendeten Status. Klickt oben auf einen Status, um ihn wieder einzublenden."
   },
   "listingCard": {
     "status": {
@@ -219,7 +239,8 @@
     "descriptionPlaceholder": "Notizen oder Beschreibung",
     "tags": "Tags",
     "adding": "Wird hinzugefügt…",
-    "addListing": "Inserat hinzufügen"
+    "addListing": "Inserat hinzufügen",
+    "photos": "Fotos"
   },
   "listingDetail": {
     "viewOriginal": "Original ansehen",
@@ -257,7 +278,8 @@
     "deleteTag": "Tag löschen",
     "archiveListing": "Archivieren",
     "restoreListing": "Wiederherstellen",
-    "archiveError": "Das Inserat konnte nicht aktualisiert werden. Bitte versucht es nochmal."
+    "archiveError": "Das Inserat konnte nicht aktualisiert werden. Bitte versucht es nochmal.",
+    "photos": "Fotos"
   },
   "compareTable": {
     "title": "Inserate vergleichen",
@@ -391,5 +413,17 @@
     "retentionBody": "Wir speichern Ihre Daten, solange Ihr Konto aktiv ist. Wenn Sie Ihr Konto löschen, werden alle personenbezogenen Daten und von Ihnen erstellten Inhalte innerhalb von 30 Tagen gelöscht. Anonymisierte Analysedaten sind nicht mit Ihrer Identität verknüpft und können unbegrenzt gespeichert werden.",
     "authorityTitle": "8. Aufsichtsbehörde",
     "authorityBody": "Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Die zuständige Behörde richtet sich nach Ihrem Wohnsitz. Eine Liste der Behörden finden Sie unter: https://www.bfdi.bund.de"
+  },
+  "photoEditor": {
+    "addPhotos": "Fotos hinzufügen",
+    "main": "Titelbild",
+    "makeMain": "Als Titelbild",
+    "remove": "Foto entfernen",
+    "errors": {
+      "unsupported_type": "Dieses Dateiformat wird nicht unterstützt. Bitte JPG, PNG, WebP oder GIF verwenden.",
+      "too_large": "Das Foto ist zu groß (max. 10 MB).",
+      "storage_not_configured": "Foto-Uploads sind noch nicht eingerichtet.",
+      "upload_failed": "Hochladen fehlgeschlagen. Bitte nochmal versuchen."
+    }
   }
 }

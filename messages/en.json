@@ -129,7 +129,9 @@
     "boards": "Boards",
     "addListing": "+ Add listing",
     "compare": "Compare",
-    "settings": "Settings"
+    "settings": "Settings",
+    "from": "from",
+    "until": "until"
   },
   "boardSettings": {
     "title": "Board settings",
@@ -151,7 +153,20 @@
     "makeOwner": "Make owner",
     "makeMember": "Make member",
     "lastOwner": "A board needs at least one owner",
-    "roleError": "Could not change role"
+    "roleError": "Could not change role",
+    "coverPhoto": "Cover photo",
+    "coverPhotoHint": "Shown on the board card instead of the listing photos.",
+    "uploadCover": "Upload photo",
+    "changeCover": "Change photo",
+    "removeCover": "Remove",
+    "uploading": "Uploading…",
+    "dates": "Dates",
+    "datesHint": "E.g. your move-in date or the dates of a short stay.",
+    "startDate": "Start",
+    "endDate": "End",
+    "saveDates": "Save dates",
+    "clearDates": "Clear",
+    "saved": "Saved"
   },
   "createBoard": {
     "title": "Create a board",
@@ -183,7 +198,12 @@
     "archivedCount": "Archived ({count})",
     "archivedHint": "These listings are archived and hidden from the board. Open one to restore it.",
     "noArchived": "No archived listings.",
-    "allArchived": "All listings are archived. Open “Archived” to bring one back."
+    "allArchived": "All listings are archived. Open “Archived” to bring one back.",
+    "hideStatus": "Click to hide",
+    "showStatus": "Click to show",
+    "hideInactive": "Hide inactive",
+    "showAllStatuses": "Show all",
+    "allStatusesHidden": "All listings here have a hidden status. Click a status above to show it again."
   },
   "listingCard": {
     "status": {
@@ -219,7 +239,8 @@
     "descriptionPlaceholder": "Notes or description",
     "tags": "Tags",
     "adding": "Adding…",
-    "addListing": "Add listing"
+    "addListing": "Add listing",
+    "photos": "Photos"
   },
   "listingDetail": {
     "viewOriginal": "View original",
@@ -257,7 +278,8 @@
     "deleteTag": "Delete tag",
     "archiveListing": "Archive",
     "restoreListing": "Restore to board",
-    "archiveError": "Couldn’t update this listing. Please try again."
+    "archiveError": "Couldn’t update this listing. Please try again.",
+    "photos": "Photos"
   },
   "compareTable": {
     "title": "Compare listings",
@@ -391,5 +413,17 @@
     "retentionBody": "We retain your data for as long as your account is active. When you delete your account, all personal data and content you created will be deleted within 30 days. Anonymized analytics data is not linked to your identity and may be retained indefinitely.",
     "authorityTitle": "8. Supervisory authority",
     "authorityBody": "You have the right to lodge a complaint with a data protection supervisory authority. The competent authority depends on your state of residence. A list of authorities can be found at: https://www.bfdi.bund.de"
+  },
+  "photoEditor": {
+    "addPhotos": "Add photos",
+    "main": "Main",
+    "makeMain": "Make main",
+    "remove": "Remove photo",
+    "errors": {
+      "unsupported_type": "That file type isn’t supported. Please use JPG, PNG, WebP or GIF.",
+      "too_large": "That photo is too large (max 10 MB).",
+      "storage_not_configured": "Photo uploads aren’t set up yet.",
+      "upload_failed": "Upload failed. Please try again."
+    }
   }
 }

@@ -21,10 +21,13 @@ model User {
 }
 
 model Board {
-  id        String   @id @default(cuid())
-  name      String
-  ownerId   String
-  createdAt DateTime @default(now())
+  id            String    @id @default(cuid())
+  name          String
+  ownerId       String
+  coverImageUrl String? // replaces the listing-photo mosaic on the board card
+  startDate     DateTime? @db.Date // when the stay / search period starts
+  endDate       DateTime? @db.Date
+  createdAt     DateTime  @default(now())
 
   owner    User          @relation(fields: [ownerId], references: [id])
   members  BoardMember[]
