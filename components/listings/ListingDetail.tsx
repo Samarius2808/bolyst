@@ -44,6 +44,7 @@ interface ListingData {
   description: string | null;
   imageUrls: string[];
   status: ListingStatus;
+  archivedAt?: string | Date | null;
   tags: { tag: Tag }[];
   addedBy: { id: string; name: string | null; email: string } | null;
   _count: { comments: number };
@@ -116,6 +117,10 @@ export function ListingDetail({
   const [newComment, setNewComment] = useState("");
   const [replyTo, setReplyTo] = useState<Comment | null>(null);
   const [newTagName, setNewTagName] = useState("");
+  const [managingTags, setManagingTags] = useState(false);
+  const [tagDrafts, setTagDrafts] = useState<Record<string, string>>({});
+  const [tagError, setTagError] = useState("");
+  const [archiveError, setArchiveError] = useState(false);
   const [posting, setPosting] = useState(false);
   const [editing, setEditing] = useState(false);
   const [heroImage, setHeroImage] = useState(0);
@@ -241,14 +246,71 @@ export function ListingDetail({
   async function handleCreateTag(e: React.FormEvent) {
     e.preventDefault();
     if (!newTagName.trim()) return;
+    setTagError("");
     const res = await fetch("/api/tags", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ boardId, name: newTagName }),
     });
     if (res.ok) {
+      // A tag created from a listing is applied to that listing right away
+      const tag: Tag = await res.json();
+      await fetch(`/api/listings/${listingId}/tags`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tagId: tag.id }),
+      });
       setNewTagName("");
       await loadData();
+      router.refresh();
+    } else if (res.status === 409) {
+      setTagError(t("tagExists"));
+    }
+  }
+
+  async function handleRenameTag(tag: Tag) {
+    const draft = (tagDrafts[tag.id] ?? tag.name).trim();
+    if (!draft || draft === tag.name) {
+      setTagDrafts((prev) => ({ ...prev, [tag.id]: tag.name }));
+      return;
+    }
+    setTagError("");
+    const res = await fetch(`/api/tags/${tag.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: draft }),
+    });
+    if (res.ok) {
+      await loadData();
+      router.refresh();
+    } else {
+      if (res.status === 409) setTagError(t("tagExists"));
+      setTagDrafts((prev) => ({ ...prev, [tag.id]: tag.name }));
+    }
+  }
+
+  async function handleDeleteTag(tag: Tag) {
+    if (!confirm(t("deleteTagConfirm", { name: tag.name }))) return;
+    setTagError("");
+    const res = await fetch(`/api/tags/${tag.id}`, { method: "DELETE" });
+    if (res.ok) {
+      await loadData();
+      router.refresh();
+    }
+  }
+
+  async function handleArchive(archived: boolean) {
+    setArchiveError(false);
+    const res = await fetch(`/api/listings/${listingId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived }),
+    });
+    if (res.ok) {
+      router.refresh();
+      onClose();
+    } else {
+      setArchiveError(true);
     }
   }
 
@@ -553,39 +615,99 @@ export function ListingDetail({
           )}
 
           <div className="mb-6">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2.5">
-              {t("tags")}
-            </h3>
+            <div className="flex items-center justify-between mb-2.5">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                {t("tags")}
+              </h3>
+              {boardTags.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setManagingTags(!managingTags);
+                    setTagDrafts({});
+                    setTagError("");
+                  }}
+                  className="text-xs font-medium text-sage-600 dark:text-sage-400 hover:text-sage-700 transition-colors"
+                >
+                  {managingTags ? t("doneManagingTags") : t("manageTags")}
+                </button>
+              )}
+            </div>
             <div className="flex flex-wrap gap-2">
-              {boardTags.map((tag) => {
-                const active = listing.tags.some((t) => t.tag.id === tag.id);
-                return (
-                  <button
+              {managingTags &&
+                boardTags.map((tag) => (
+                  <div
                     key={tag.id}
-                    onClick={() => handleToggleTag(tag)}
-                    className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-150 ${
-                      active
-                        ? "bg-sage-100 dark:bg-sage-950/40 border-sage-200 dark:border-sage-800 text-sage-700 dark:text-sage-400"
-                        : "bg-zinc-50 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:border-zinc-200 dark:hover:border-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-400"
-                    }`}
+                    className="inline-flex items-center gap-1 pl-1 pr-1.5 py-1 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 focus-within:ring-2 focus-within:ring-sage-500"
                   >
-                    {active && (
+                    <input
+                      type="text"
+                      aria-label={t("renameTag")}
+                      value={tagDrafts[tag.id] ?? tag.name}
+                      onChange={(e) =>
+                        setTagDrafts((prev) => ({ ...prev, [tag.id]: e.target.value }))
+                      }
+                      onBlur={() => handleRenameTag(tag)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") e.currentTarget.blur();
+                        if (e.key === "Escape") {
+                          setTagDrafts((prev) => ({ ...prev, [tag.id]: tag.name }));
+                        }
+                      }}
+                      size={Math.max((tagDrafts[tag.id] ?? tag.name).length, 3)}
+                      className="bg-transparent px-2 py-0.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteTag(tag)}
+                      aria-label={t("deleteTag")}
+                      title={t("deleteTag")}
+                      className="w-6 h-6 flex items-center justify-center rounded-full text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                    >
                       <svg
-                        width="12"
-                        height="12"
+                        width="10"
+                        height="10"
                         viewBox="0 0 16 16"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
                       >
-                        <path d="M3 8.5l3 3 7-7" />
+                        <path d="M4 4l8 8M12 4l-8 8" />
                       </svg>
-                    )}
-                    {tag.name}
-                  </button>
-                );
-              })}
+                    </button>
+                  </div>
+                ))}
+              {!managingTags &&
+                boardTags.map((tag) => {
+                  const active = listing.tags.some((t) => t.tag.id === tag.id);
+                  return (
+                    <button
+                      key={tag.id}
+                      onClick={() => handleToggleTag(tag)}
+                      className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-150 ${
+                        active
+                          ? "bg-sage-100 dark:bg-sage-950/40 border-sage-200 dark:border-sage-800 text-sage-700 dark:text-sage-400"
+                          : "bg-zinc-50 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:border-zinc-200 dark:hover:border-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-400"
+                      }`}
+                    >
+                      {active && (
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        >
+                          <path d="M3 8.5l3 3 7-7" />
+                        </svg>
+                      )}
+                      {tag.name}
+                    </button>
+                  );
+                })}
             </div>
             <form onSubmit={handleCreateTag} className="flex gap-2 mt-2.5">
               <input
@@ -603,6 +725,7 @@ export function ListingDetail({
                 {t("add")}
               </button>
             </form>
+            {tagError && <p className="text-xs text-red-500 mt-2">{tagError}</p>}
           </div>
 
           <div className="border-t border-zinc-100 dark:border-zinc-800 pt-5">
@@ -711,7 +834,25 @@ export function ListingDetail({
             </form>
           </div>
 
-          <div className="border-t border-zinc-100 dark:border-zinc-800 mt-6 pt-4">
+          <div className="border-t border-zinc-100 dark:border-zinc-800 mt-6 pt-4 flex items-center justify-between gap-3">
+            <button
+              onClick={() => handleArchive(!listing.archivedAt)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-sage-200 hover:text-sage-600 dark:hover:text-sage-400 transition-colors"
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              >
+                <rect x="1.5" y="2.5" width="13" height="3" rx="0.75" />
+                <path d="M2.5 5.5v7a1 1 0 001 1h9a1 1 0 001-1v-7M6.5 8.5h3" />
+              </svg>
+              {listing.archivedAt ? t("restoreListing") : t("archiveListing")}
+            </button>
             <button
               onClick={handleDelete}
               className="text-xs text-red-400 hover:text-red-600 transition-colors"
@@ -719,6 +860,7 @@ export function ListingDetail({
               {t("deleteListing")}
             </button>
           </div>
+          {archiveError && <p className="text-xs text-red-500 mt-2">{t("archiveError")}</p>}
         </div>
       </div>
     </div>

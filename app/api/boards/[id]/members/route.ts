@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isBoardOwner } from "@/lib/board-access";
 import { sendBoardInviteEmail } from "@/lib/email";
 import { rateLimit } from "@/lib/ratelimit";
 
@@ -32,7 +33,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const { id: boardId } = await params;
   const board = await prisma.board.findUnique({ where: { id: boardId } });
-  if (!board || board.ownerId !== user.id) {
+  if (!board || !(await isBoardOwner(board.id, user.id))) {
     return NextResponse.json({ error: "Only the owner can invite members" }, { status: 403 });
   }
 
@@ -96,13 +97,49 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   );
 }
 
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getOrCreateUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id: boardId } = await params;
+  if (!(await isBoardOwner(boardId, user.id))) {
+    return NextResponse.json({ error: "Only owners can change roles" }, { status: 403 });
+  }
+
+  const body: unknown = await req.json();
+  const { userId, role } = (body ?? {}) as { userId?: unknown; role?: unknown };
+  if (typeof userId !== "string" || (role !== "OWNER" && role !== "COLLABORATOR")) {
+    return NextResponse.json({ error: "userId and a valid role required" }, { status: 400 });
+  }
+
+  const target = await prisma.boardMember.findUnique({
+    where: { boardId_userId: { boardId, userId } },
+  });
+  if (!target) return NextResponse.json({ error: "Not a member" }, { status: 404 });
+
+  if (target.role === "OWNER" && role === "COLLABORATOR") {
+    const ownerCount = await prisma.boardMember.count({ where: { boardId, role: "OWNER" } });
+    if (ownerCount <= 1) {
+      return NextResponse.json({ error: "A board needs at least one owner" }, { status: 400 });
+    }
+  }
+
+  const updated = await prisma.boardMember.update({
+    where: { boardId_userId: { boardId, userId } },
+    data: { role },
+    include: { user: { select: { id: true, name: true, email: true } } },
+  });
+
+  return NextResponse.json(updated);
+}
+
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id: boardId } = await params;
   const board = await prisma.board.findUnique({ where: { id: boardId } });
-  if (!board || board.ownerId !== user.id) {
+  if (!board || !(await isBoardOwner(board.id, user.id))) {
     return NextResponse.json({ error: "Only the owner can remove members" }, { status: 403 });
   }
 

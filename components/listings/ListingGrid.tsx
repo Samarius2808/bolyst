@@ -8,7 +8,7 @@ import { AddListingModal } from "./AddListingModal";
 import { ListingDetail } from "./ListingDetail";
 import { ListingMapWrapper } from "./ListingMapWrapper";
 import { PinManager } from "./PinManager";
-import { SortControls, type SortKey } from "./SortControls";
+import { SortControls, LISTING_STATUSES, type SortKey } from "./SortControls";
 import { nearestPinDistance } from "@/lib/haversine";
 
 type ListingStatus =
@@ -31,10 +31,16 @@ interface Listing {
   latitude: number | null;
   longitude: number | null;
   status: ListingStatus;
+  archivedAt: Date | string | null;
   createdAt: Date | string;
   addedBy: { id: string; name: string | null; email: string } | null;
   tags: { tag: { id: string; name: string } }[];
   _count: { comments: number };
+}
+
+function statusRank(status: string): number {
+  const i = (LISTING_STATUSES as readonly string[]).indexOf(status);
+  return i === -1 ? LISTING_STATUSES.length : i;
 }
 
 export interface BoardPin {
@@ -89,6 +95,7 @@ export function ListingGrid({
   const [boardPins, setBoardPins] = useState<BoardPin[]>(pins);
   const [sortKey, setSortKey] = useState<SortKey>("newest");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set(favoritedIds));
   const [compareMode, setCompareMode] = useState(false);
   const [compareSet, setCompareSet] = useState<Set<string>>(new Set());
@@ -130,7 +137,8 @@ export function ListingGrid({
   }, [listings, boardPins, sortKey]);
 
   const sortedListings = useMemo(() => {
-    const filtered = showFavoritesOnly ? listings.filter((l) => favorites.has(l.id)) : listings;
+    const pool = listings.filter((l) => (l.archivedAt != null) === showArchived);
+    const filtered = showFavoritesOnly ? pool.filter((l) => favorites.has(l.id)) : pool;
 
     const sorted = [...filtered];
     switch (sortKey) {
@@ -164,21 +172,16 @@ export function ListingGrid({
           (a, b) => (distanceMap.get(a.id) ?? Infinity) - (distanceMap.get(b.id) ?? Infinity),
         );
         break;
-      case "status": {
-        const statusOrder: Record<string, number> = {
-          NEW: 0,
-          VIEWING: 1,
-          APPLIED: 2,
-          ACCEPTED: 3,
-          REJECTED: 4,
-          UNAVAILABLE_TIMEFRAME: 5,
-          DELISTED: 6,
-        };
-        sorted.sort((a, b) => (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99));
+      case "status":
+        sorted.sort((a, b) => statusRank(a.status) - statusRank(b.status));
         break;
-      }
       default:
-        if (sortKey.startsWith("distance:")) {
+        if (sortKey.startsWith("status:")) {
+          // Chosen status first, everything else after it in workflow order
+          const chosen = sortKey.slice(7);
+          const rank = (l: Listing) => (l.status === chosen ? -1 : statusRank(l.status));
+          sorted.sort((a, b) => rank(a) - rank(b));
+        } else if (sortKey.startsWith("distance:")) {
           sorted.sort(
             (a, b) => (distanceMap.get(a.id) ?? Infinity) - (distanceMap.get(b.id) ?? Infinity),
           );
@@ -199,7 +202,9 @@ export function ListingGrid({
         }
     }
     return sorted;
-  }, [listings, sortKey, showFavoritesOnly, favorites, distanceMap]);
+  }, [listings, sortKey, showFavoritesOnly, showArchived, favorites, distanceMap]);
+
+  const archivedCount = listings.filter((l) => l.archivedAt != null).length;
 
   async function toggleFavorite(listingId: string) {
     setFavorites((prev) => {
@@ -309,7 +314,37 @@ export function ListingGrid({
                 </svg>
                 {t("compare")}
               </button>
+              {(archivedCount > 0 || showArchived) && (
+                <button
+                  onClick={() => setShowArchived(!showArchived)}
+                  className={`inline-flex items-center gap-1 px-3.5 py-2.5 text-xs font-medium rounded-lg border transition-all ${
+                    showArchived
+                      ? "bg-sage-50 dark:bg-sage-950/40 border-sage-200 dark:border-sage-800 text-sage-600 dark:text-sage-400"
+                      : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
+                  }`}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="1.5" y="2.5" width="13" height="3" rx="0.75" />
+                    <path d="M2.5 5.5v7a1 1 0 001 1h9a1 1 0 001-1v-7M6.5 8.5h3" />
+                  </svg>
+                  {t("archivedCount", { count: archivedCount })}
+                </button>
+              )}
             </div>
+
+            {showArchived && (
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-lg px-3.5 py-2.5 mb-4">
+                {t("archivedHint")}
+              </p>
+            )}
 
             <div
               className={
@@ -355,9 +390,16 @@ export function ListingGrid({
                   onHoverEnd={() => setHoveredId(null)}
                 />
               ))}
-              {sortedListings.length === 0 && showFavoritesOnly && (
+              {sortedListings.length === 0 && (showFavoritesOnly || showArchived) && (
                 <div className="text-center py-12 col-span-full">
-                  <p className="text-sm text-zinc-400">{t("noFavorites")}</p>
+                  <p className="text-sm text-zinc-400">
+                    {showFavoritesOnly ? t("noFavorites") : t("noArchived")}
+                  </p>
+                </div>
+              )}
+              {sortedListings.length === 0 && !showFavoritesOnly && !showArchived && (
+                <div className="text-center py-12 col-span-full">
+                  <p className="text-sm text-zinc-400">{t("allArchived")}</p>
                 </div>
               )}
             </div>
@@ -453,15 +495,28 @@ export function ListingGrid({
       )}
 
       {/* Compare floating bar */}
-      {compareMode && compareSet.size >= 2 && (
+      {compareMode && (
         <div className="fixed bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-40 bg-sage-600 text-white px-4 sm:px-6 py-3 rounded-2xl shadow-xl shadow-sage-600/30 flex items-center justify-between sm:justify-start gap-4">
-          <span className="text-sm font-medium">{t("selected", { count: compareSet.size })}</span>
-          <button
-            onClick={openCompare}
-            className="px-4 py-1.5 bg-white text-sage-700 text-sm font-semibold rounded-xl hover:bg-sage-50 transition-colors"
-          >
-            {t("compareArrow")}
-          </button>
+          <span className="text-sm font-medium">
+            {compareSet.size >= 2 ? t("selected", { count: compareSet.size }) : t("pickToCompare")}
+          </span>
+          {compareSet.size >= 2 ? (
+            <button
+              onClick={openCompare}
+              className="px-4 py-1.5 bg-white text-sage-700 text-sm font-semibold rounded-xl hover:bg-sage-50 transition-colors"
+            >
+              {t("compareArrow")}
+            </button>
+          ) : (
+            listings.length >= 2 && (
+              <button
+                onClick={() => router.push(`/boards/${boardId}/compare`)}
+                className="px-4 py-1.5 bg-white text-sage-700 text-sm font-semibold rounded-xl hover:bg-sage-50 transition-colors whitespace-nowrap"
+              >
+                {t("compareAll")}
+              </button>
+            )
+          )}
         </div>
       )}
 

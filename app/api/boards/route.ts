@@ -11,7 +11,7 @@ export async function GET() {
       OR: [{ ownerId: user.id }, { members: { some: { userId: user.id } } }],
     },
     include: {
-      _count: { select: { listings: true, members: true } },
+      _count: { select: { listings: { where: { archivedAt: null } }, members: true } },
     },
     orderBy: { createdAt: "desc" },
   });

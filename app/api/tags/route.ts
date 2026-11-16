@@ -36,6 +36,11 @@ export async function POST(req: Request) {
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  const existing = await prisma.tag.findUnique({
+    where: { boardId_name: { boardId, name: name.trim() } },
+  });
+  if (existing) return NextResponse.json({ error: "Tag already exists" }, { status: 409 });
+
   const tag = await prisma.tag.create({
     data: { boardId, name: name.trim() },
   });

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isBoardOwner } from "@/lib/board-access";
 
 async function getBoardMembership(boardId: string, userId: string) {
   return prisma.boardMember.findUnique({
@@ -20,7 +21,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     where: { id },
     include: {
       members: { include: { user: { select: { id: true, name: true, email: true } } } },
-      _count: { select: { listings: true } },
+      _count: { select: { listings: { where: { archivedAt: null } } } },
     },
   });
 
@@ -33,7 +34,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const { id } = await params;
   const board = await prisma.board.findUnique({ where: { id } });
-  if (!board || board.ownerId !== user.id) {
+  if (!board || !(await isBoardOwner(board.id, user.id))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -56,7 +57,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
 
   const { id } = await params;
   const board = await prisma.board.findUnique({ where: { id } });
-  if (!board || board.ownerId !== user.id) {
+  if (!board || !(await isBoardOwner(board.id, user.id))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

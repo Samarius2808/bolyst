@@ -19,6 +19,18 @@ interface BoardPin {
   name: string;
 }
 
+export const LISTING_STATUSES = [
+  "NEW",
+  "VIEWING",
+  "APPLIED",
+  "ACCEPTED",
+  "REJECTED",
+  "UNAVAILABLE_TIMEFRAME",
+  "DELISTED",
+] as const;
+
+export type ListingStatus = (typeof LISTING_STATUSES)[number];
+
 export type SortKey =
   | "newest"
   | "price-asc"
@@ -29,6 +41,7 @@ export type SortKey =
   | "size-desc"
   | "distance-asc"
   | "status"
+  | `status:${ListingStatus}`
   | `addedby:${string}`
   | `tag:${string}`
   | `distance:${string}`;
@@ -184,7 +197,9 @@ export function SortControls({
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const lastPointerType = useRef<string>("");
   const t = useTranslations("sortControls");
+  const tStatus = useTranslations("listingCard.status");
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -207,6 +222,9 @@ export function SortControls({
     if (key === "size-desc") return `${t("size")}: ${t("largestFirst")}`;
     if (key === "distance-asc") return `${t("distance")}: ${t("nearestAnyPin")}`;
     if (key === "status") return t("status");
+    if (key.startsWith("status:")) {
+      return t("statusPrefix", { status: tStatus(key.slice(7) as ListingStatus) });
+    }
     if (key.startsWith("addedby:")) {
       const userId = key.slice(8);
       const m = members.find((u) => u.id === userId);
@@ -275,7 +293,13 @@ export function SortControls({
     {
       label: t("status"),
       icon: icons.status,
-      options: [{ key: "status", label: t("byWorkflowStage") }],
+      options: [
+        { key: "status", label: t("byWorkflowStage") },
+        ...LISTING_STATUSES.map((s) => ({
+          key: `status:${s}` as SortKey,
+          label: t("statusFirst", { status: tStatus(s) }),
+        })),
+      ],
     },
   ];
 
@@ -363,6 +387,9 @@ export function SortControls({
                 <button
                   key={group.label}
                   onClick={() => select(opt.key)}
+                  onPointerEnter={(e) => {
+                    if (e.pointerType === "mouse") setExpandedGroup(null);
+                  }}
                   className={`w-full text-left px-3.5 py-2 text-xs flex items-center gap-2.5 transition-colors ${
                     value === opt.key
                       ? "bg-sage-50 dark:bg-sage-950/40 text-sage-600 dark:text-sage-400 font-medium"
@@ -377,9 +404,26 @@ export function SortControls({
             }
 
             return (
-              <div key={group.label}>
+              <div
+                key={group.label}
+                className="relative"
+                // Mouse: open the submenu on hover. Touch keeps tap-to-toggle.
+                onPointerEnter={(e) => {
+                  if (e.pointerType === "mouse") setExpandedGroup(group.label);
+                }}
+                onPointerLeave={(e) => {
+                  if (e.pointerType === "mouse") setExpandedGroup(null);
+                }}
+              >
                 <button
-                  onClick={() => setExpandedGroup(isExpanded ? null : group.label)}
+                  onPointerDown={(e) => {
+                    lastPointerType.current = e.pointerType;
+                  }}
+                  onClick={() => {
+                    // With a mouse, hover already opened it; a click shouldn't close it
+                    if (lastPointerType.current === "mouse") setExpandedGroup(group.label);
+                    else setExpandedGroup(isExpanded ? null : group.label);
+                  }}
                   className={`w-full text-left px-3.5 py-2 text-xs flex items-center gap-2.5 transition-colors ${
                     groupActive
                       ? "bg-sage-50 dark:bg-sage-950/40 text-sage-600 dark:text-sage-400 font-medium"
@@ -388,26 +432,32 @@ export function SortControls({
                 >
                   <span className="w-4 flex justify-center text-zinc-400">{group.icon}</span>
                   {group.label}
-                  <span className={`ml-auto transition-transform ${isExpanded ? "rotate-90" : ""}`}>
+                  <span
+                    className={`ml-auto transition-transform ${isExpanded ? "rotate-90 sm:rotate-0" : ""}`}
+                  >
                     {icons.chevron}
                   </span>
                 </button>
                 {isExpanded && (
-                  <div className="bg-zinc-50/50 dark:bg-zinc-800">
-                    {group.options.map((opt) => (
-                      <button
-                        key={opt.key}
-                        onClick={() => select(opt.key)}
-                        className={`w-full text-left pl-10 pr-3.5 py-1.5 text-xs flex items-center gap-2 transition-colors ${
-                          value === opt.key
-                            ? "text-sage-600 dark:text-sage-400 font-medium"
-                            : "text-zinc-500 dark:text-zinc-300 hover:text-zinc-700 dark:hover:text-zinc-100 hover:bg-zinc-100/50 dark:hover:bg-zinc-700"
-                        }`}
-                      >
-                        {opt.label}
-                        {value === opt.key && <span className="ml-auto">{icons.check}</span>}
-                      </button>
-                    ))}
+                  // Phone: expands inline. Desktop: flyout to the right; the
+                  // transparent left padding bridges the gap so hover isn't lost.
+                  <div className="sm:absolute sm:left-full sm:-top-1 sm:pl-1 sm:z-10">
+                    <div className="bg-zinc-50/50 dark:bg-zinc-800 sm:bg-white sm:dark:bg-zinc-900 sm:w-52 sm:max-h-80 sm:overflow-y-auto sm:py-1 sm:rounded-xl sm:border sm:border-zinc-100 sm:dark:border-zinc-800 sm:shadow-lg sm:shadow-black/5">
+                      {group.options.map((opt) => (
+                        <button
+                          key={opt.key}
+                          onClick={() => select(opt.key)}
+                          className={`w-full text-left pl-10 sm:pl-3.5 pr-3.5 py-1.5 text-xs flex items-center gap-2 transition-colors ${
+                            value === opt.key
+                              ? "text-sage-600 dark:text-sage-400 font-medium"
+                              : "text-zinc-500 dark:text-zinc-300 hover:text-zinc-700 dark:hover:text-zinc-100 hover:bg-zinc-100/50 dark:hover:bg-zinc-700"
+                          }`}
+                        >
+                          {opt.label}
+                          {value === opt.key && <span className="ml-auto">{icons.check}</span>}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

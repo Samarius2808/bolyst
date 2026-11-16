@@ -63,7 +63,7 @@ export default async function BoardDetailPage({ params }: { params: Promise<{ id
     memberFavoritesMap[fav.listingId].push(fav.user);
   }
 
-  const isOwner = board.ownerId === user.id;
+  const isOwner = membership.role === "OWNER";
 
   return (
     <main className="max-w-[1600px] mx-auto px-4 sm:px-8 py-6 sm:py-10">
@@ -72,7 +72,7 @@ export default async function BoardDetailPage({ params }: { params: Promise<{ id
           id: board.id,
           name: board.name,
           members: board.members,
-          listingCount: board.listings.length,
+          listingCount: board.listings.filter((l) => !l.archivedAt).length,
           pendingInvites: board.invites.map((i) => i.email),
         }}
         isOwner={isOwner}

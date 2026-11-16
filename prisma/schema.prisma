@@ -75,6 +75,7 @@ model Listing {
   latitude    Float?
   longitude   Float?
   status      ListingStatus @default(NEW)
+  archivedAt  DateTime? // set = archived (hidden from the board, restorable)
   createdAt   DateTime @default(now())
 
   board     Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)

@@ -123,25 +123,6 @@ export function BoardHeader({
           >
             {t("addListing")}
           </button>
-          {board.listingCount >= 2 && (
-            <Link
-              href={`/boards/${board.id}/compare`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-sage-200 hover:text-sage-600 transition-all"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <rect x="1" y="2" width="5" height="12" rx="1" />
-                <rect x="10" y="2" width="5" height="12" rx="1" />
-              </svg>
-              {t("compare")}
-            </Link>
-          )}
           <button
             onClick={() => setShowSettings(true)}
             className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-sage-200 hover:text-sage-600 transition-all"
@@ -192,26 +173,6 @@ export function BoardHeader({
             </button>
             {showMobileMenu && (
               <div className="absolute right-0 top-full mt-1.5 z-50 w-48 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl shadow-lg shadow-black/5 py-1">
-                {board.listingCount >= 2 && (
-                  <Link
-                    href={`/boards/${board.id}/compare`}
-                    className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-2.5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                    >
-                      <rect x="1" y="2" width="5" height="12" rx="1" />
-                      <rect x="10" y="2" width="5" height="12" rx="1" />
-                    </svg>
-                    {t("compare")}
-                  </Link>
-                )}
                 <button
                   onClick={() => {
                     setShowSettings(true);

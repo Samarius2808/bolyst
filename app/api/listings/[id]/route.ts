@@ -47,7 +47,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if (!result) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const body = await req.json();
-  const { title, sourceUrl, price, size, location, description, imageUrls, status } = body;
+  const { title, sourceUrl, price, size, location, description, imageUrls, status, archived } =
+    body;
+  if (archived !== undefined && typeof archived !== "boolean") {
+    return NextResponse.json({ error: "archived must be a boolean" }, { status: 400 });
+  }
 
   let coordsUpdate = {};
   if (location !== undefined) {
@@ -70,6 +74,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       ...(description !== undefined && { description }),
       ...(imageUrls !== undefined && { imageUrls }),
       ...(status !== undefined && { status }),
+      ...(archived !== undefined && { archivedAt: archived ? new Date() : null }),
       ...coordsUpdate,
     },
   });

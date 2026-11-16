@@ -42,7 +42,7 @@ export default async function ComparePage({
   const selectedIds = ids ? ids.split(",").filter(Boolean) : null;
   const listings = selectedIds
     ? board.listings.filter((l) => selectedIds.includes(l.id))
-    : board.listings;
+    : board.listings.filter((l) => !l.archivedAt);
 
   return (
     <main className="max-w-full mx-auto px-4 sm:px-8 py-6 sm:py-10">

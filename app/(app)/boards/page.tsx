@@ -22,12 +22,13 @@ export default async function BoardsPage() {
       OR: [{ ownerId: user.id }, { members: { some: { userId: user.id } } }],
     },
     include: {
-      _count: { select: { listings: true, members: true } },
+      _count: { select: { listings: { where: { archivedAt: null } }, members: true } },
       members: {
         include: { user: { select: { name: true, email: true } } },
         take: 4,
       },
       listings: {
+        where: { archivedAt: null },
         take: 4,
         select: { imageUrls: true },
         orderBy: { createdAt: "desc" },

@@ -18,6 +18,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const { name } = await req.json();
   if (!name?.trim()) return NextResponse.json({ error: "Name required" }, { status: 400 });
 
+  const duplicate = await prisma.tag.findFirst({
+    where: { boardId: tag.boardId, name: name.trim(), NOT: { id } },
+  });
+  if (duplicate) return NextResponse.json({ error: "Tag already exists" }, { status: 409 });
+
   const updated = await prisma.tag.update({
     where: { id },
     data: { name: name.trim() },

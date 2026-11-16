@@ -147,7 +147,11 @@
     "inviteError": "Failed to invite",
     "dangerZone": "Danger zone",
     "deleteBoard": "Delete this board",
-    "deleteConfirm": "Delete this board and all its listings? This cannot be undone."
+    "deleteConfirm": "Delete this board and all its listings? This cannot be undone.",
+    "makeOwner": "Make owner",
+    "makeMember": "Make member",
+    "lastOwner": "A board needs at least one owner",
+    "roleError": "Could not change role"
   },
   "createBoard": {
     "title": "Create a board",
@@ -173,7 +177,13 @@
     "noFavorites": "No favorites yet. Click the heart on a listing to save it.",
     "favoriteCount": "{count} favorite",
     "favoriteCountPlural": "{count} favorites",
-    "map": "Map"
+    "map": "Map",
+    "pickToCompare": "Pick 2+ listings to compare",
+    "compareAll": "Compare all",
+    "archivedCount": "Archived ({count})",
+    "archivedHint": "These listings are archived and hidden from the board. Open one to restore it.",
+    "noArchived": "No archived listings.",
+    "allArchived": "All listings are archived. Open “Archived” to bring one back."
   },
   "listingCard": {
     "status": {
@@ -238,7 +248,16 @@
     "reply": "Reply",
     "replyingTo": "Replying to {name}",
     "deleteListing": "Delete listing",
-    "deleteConfirm": "Delete this listing?"
+    "deleteConfirm": "Delete this listing for good? To hide it but keep it for later, use Archive instead.",
+    "manageTags": "Edit tags",
+    "doneManagingTags": "Done",
+    "deleteTagConfirm": "Delete the tag \"{name}\"? It will be removed from all listings on this board.",
+    "tagExists": "A tag with that name already exists",
+    "renameTag": "Rename tag",
+    "deleteTag": "Delete tag",
+    "archiveListing": "Archive",
+    "restoreListing": "Restore to board",
+    "archiveError": "Couldn’t update this listing. Please try again."
   },
   "compareTable": {
     "title": "Compare listings",
@@ -274,7 +293,9 @@
     "sort": "Sort",
     "byPrefix": "By: {name}",
     "tagPrefix": "Tag: {name}",
-    "nearPrefix": "Near: {name}"
+    "nearPrefix": "Near: {name}",
+    "statusFirst": "{status} first",
+    "statusPrefix": "Status: {status}"
   },
   "pinManager": {
     "referencePoints": "Reference points",

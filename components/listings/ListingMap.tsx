@@ -188,13 +188,7 @@ function ClosePopups({ active }: { active: boolean }) {
 }
 
 // Fits the map to show the full route whenever coordinates change
-function FitRoute({
-  coordinates,
-  bottomPadding,
-}: {
-  coordinates: [number, number][];
-  bottomPadding: number;
-}) {
+function FitRoute({ coordinates }: { coordinates: [number, number][] }) {
   const map = useMap();
   // Serialize coordinates to a string so we only fit when they actually change
   const coordKey =
@@ -205,14 +199,24 @@ function FitRoute({
   useEffect(() => {
     if (!coordKey || coordKey === lastCoordKey.current) return;
     lastCoordKey.current = coordKey;
+    // The map may have just shrunk to make room for the route panel
+    map.invalidateSize();
     const bounds = L.latLngBounds(coordinates);
-    map.fitBounds(bounds, {
-      paddingTopLeft: [40, 40],
-      paddingBottomRight: [40, bottomPadding + 20],
-      animate: true,
-      duration: 0.3,
-    });
-  }, [map, coordKey, coordinates, bottomPadding]);
+    map.fitBounds(bounds, { padding: [40, 40], animate: true, duration: 0.3 });
+  }, [map, coordKey, coordinates]);
+  return null;
+}
+
+// Leaflet only tracks window resizes; keep it in sync when the container
+// changes size (e.g. the route panel opening below the map)
+function InvalidateOnResize() {
+  const map = useMap();
+  useEffect(() => {
+    const container = map.getContainer();
+    const observer = new ResizeObserver(() => map.invalidateSize());
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [map]);
   return null;
 }
 
@@ -401,8 +405,6 @@ export function ListingMap({
   const [routePanelListingId, setRoutePanelListingId] = useState<string | null>(null);
   const [routeCache, setRouteCache] = useState<RouteCache>({});
   const [activePinId, setActivePinId] = useState<string | null>(null);
-  const routePanelRef = useRef<HTMLDivElement>(null);
-  const [routePanelHeight, setRoutePanelHeight] = useState(0);
   const [leafletMap, setLeafletMap] = useState<L.Map | null>(null);
   // The branded vector basemap needs WebGL; without it, use raster tiles.
   const [vectorBasemap, setVectorBasemap] = useState(supportsWebGL);
@@ -493,15 +495,6 @@ export function ListingMap({
       l.latitude != null && l.longitude != null,
   );
 
-  // Measure route panel height for map padding
-  useEffect(() => {
-    if (routePanelRef.current) {
-      setRoutePanelHeight(routePanelRef.current.offsetHeight);
-    } else {
-      setRoutePanelHeight(0);
-    }
-  }, []);
-
   // Pins drop in west-to-east on mount; once the entrance has played the
   // container is marked settled so later icon changes (favourite, hover,
   // new listings) appear instantly instead of re-animating.
@@ -536,9 +529,9 @@ export function ListingMap({
     : null;
 
   return (
-    <>
+    <div className="h-full flex flex-col gap-2">
       <div
-        className={`bmap${settled ? " pins-settled" : ""} rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 h-full relative`}
+        className={`bmap${settled ? " pins-settled" : ""} rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 flex-1 min-h-0 relative`}
       >
         <MapContainer
           ref={setLeafletMap}
@@ -546,7 +539,7 @@ export function ListingMap({
           zoom={13}
           maxZoom={19}
           className="h-full w-full"
-          style={{ minHeight: "400px" }}
+          style={{ minHeight: routePanelListing ? "240px" : "400px" }}
           scrollWheelZoom={true}
           attributionControl={false}
           zoomControl={false}
@@ -559,7 +552,8 @@ export function ListingMap({
           <FitBounds points={allPoints} />
           <ClosePopups active={routePanelListingId !== null} />
           {route && <RouteLayer route={route} />}
-          {route && <FitRoute coordinates={route.coordinates} bottomPadding={routePanelHeight} />}
+          {route && <FitRoute coordinates={route.coordinates} />}
+          <InvalidateOnResize />
 
           {/* Reference pins */}
           {pins.map((p, i) => (
@@ -702,137 +696,134 @@ export function ListingMap({
             <p className="text-xs text-zinc-500 dark:text-zinc-400">{t("addPinNudge")}</p>
           </div>
         )}
-
-        {/* Floating route panel */}
-        {routePanelListing && pins.length > 0 && (
-          <div
-            ref={routePanelRef}
-            className="absolute bottom-2 left-2 right-2 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-xl shadow-lg border border-zinc-100 dark:border-zinc-800 p-3"
-          >
-            {/* Header: listing name + mode tabs + close */}
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-200 truncate flex-1">
-                {routePanelListing.title}
-              </p>
-              <div className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5">
-                {(["walking", "cycling", "transit"] as TransportMode[]).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => {
-                      setTransportMode(m);
-                      // Re-fetch active route with new mode
-                      if (activePinId && routePanelListing) {
-                        const pin = pins.find((p) => p.id === activePinId);
-                        if (pin) {
-                          fetchRoute(
-                            routePanelListing.id,
-                            routePanelListing.latitude,
-                            routePanelListing.longitude,
-                            pin,
-                            m,
-                          );
-                        }
-                      }
-                    }}
-                    className={`p-1.5 rounded-md transition-all ${
-                      transportMode === m
-                        ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-700 dark:text-zinc-200"
-                        : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
-                    }`}
-                    title={t(`mode_${m}`)}
-                  >
-                    <ModeIcon mode={m} size={14} />
-                  </button>
-                ))}
-              </div>
-              <button
-                onClick={closeRoutePanel}
-                className="p-1 text-zinc-300 hover:text-zinc-500 transition-colors"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                >
-                  <path d="M4 4L12 12M12 4L4 12" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Pin rows */}
-            <div className="space-y-1">
-              {pins.map((p) => {
-                const cacheKey = routeCacheKey(routePanelListing.id, p.id, transportMode);
-                const cached = routeCache[cacheKey];
-                const isActive = route?.pinId === p.id && route?.listingId === routePanelListing.id;
-                const isLoading = routeLoading === p.id;
-
-                // If transit is slower than walking, show a hint instead
-                const walkCacheKey = routeCacheKey(routePanelListing.id, p.id, "walking");
-                const walkCached = routeCache[walkCacheKey];
-                const transitSlowerThanWalk =
-                  transportMode === "transit" &&
-                  cached &&
-                  walkCached &&
-                  cached.duration >= walkCached.duration;
-
-                return (
-                  <button
-                    key={p.id}
-                    disabled={isLoading || transitSlowerThanWalk}
-                    onClick={() =>
-                      fetchRoute(
-                        routePanelListing.id,
-                        routePanelListing.latitude,
-                        routePanelListing.longitude,
-                        p,
-                        transportMode,
-                      )
-                    }
-                    className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all ${
-                      transitSlowerThanWalk
-                        ? "opacity-50 border border-transparent"
-                        : isActive
-                          ? "bg-sage-50 dark:bg-sage-950/40 border border-sage-200 dark:border-sage-800"
-                          : "hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-transparent"
-                    }`}
-                  >
-                    <span className="text-sage-600 text-xs flex-shrink-0">★</span>
-                    <span className="text-xs text-zinc-600 dark:text-zinc-300 flex-1 truncate">
-                      {p.name}
-                    </span>
-                    <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex-shrink-0">
-                      {isLoading ? (
-                        <span className="inline-block w-3 h-3 border-2 border-zinc-300 border-t-sage-500 rounded-full animate-spin" />
-                      ) : transitSlowerThanWalk ? (
-                        <span className="text-zinc-400">{t("fasterToWalk")}</span>
-                      ) : cached ? (
-                        <span
-                          className="inline-flex items-center gap-1.5"
-                          style={{ color: ROUTE_COLORS[transportMode] }}
-                        >
-                          {cached.transitLegs && cached.transitLegs.length > 0 && (
-                            <TransitLegSequence legs={cached.transitLegs} />
-                          )}
-                          {formatDuration(cached.duration)}
-                          <span className="text-zinc-300">·</span>
-                          {formatDistance(cached.distance)}
-                        </span>
-                      ) : (
-                        t("calculate")
-                      )}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Route panel — sits below the map so it never covers the route */}
+      {routePanelListing && pins.length > 0 && (
+        <div className="shrink-0 bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-zinc-100 dark:border-zinc-800 p-3">
+          {/* Header: listing name + mode tabs + close */}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-200 truncate flex-1">
+              {routePanelListing.title}
+            </p>
+            <div className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5">
+              {(["walking", "cycling", "transit"] as TransportMode[]).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => {
+                    setTransportMode(m);
+                    // Re-fetch active route with new mode
+                    if (activePinId && routePanelListing) {
+                      const pin = pins.find((p) => p.id === activePinId);
+                      if (pin) {
+                        fetchRoute(
+                          routePanelListing.id,
+                          routePanelListing.latitude,
+                          routePanelListing.longitude,
+                          pin,
+                          m,
+                        );
+                      }
+                    }
+                  }}
+                  className={`p-1.5 rounded-md transition-all ${
+                    transportMode === m
+                      ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-700 dark:text-zinc-200"
+                      : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
+                  }`}
+                  title={t(`mode_${m}`)}
+                >
+                  <ModeIcon mode={m} size={14} />
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={closeRoutePanel}
+              className="p-1 text-zinc-300 hover:text-zinc-500 transition-colors"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M4 4L12 12M12 4L4 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Pin rows */}
+          <div className="space-y-1">
+            {pins.map((p) => {
+              const cacheKey = routeCacheKey(routePanelListing.id, p.id, transportMode);
+              const cached = routeCache[cacheKey];
+              const isActive = route?.pinId === p.id && route?.listingId === routePanelListing.id;
+              const isLoading = routeLoading === p.id;
+
+              // If transit is slower than walking, show a hint instead
+              const walkCacheKey = routeCacheKey(routePanelListing.id, p.id, "walking");
+              const walkCached = routeCache[walkCacheKey];
+              const transitSlowerThanWalk =
+                transportMode === "transit" &&
+                cached &&
+                walkCached &&
+                cached.duration >= walkCached.duration;
+
+              return (
+                <button
+                  key={p.id}
+                  disabled={isLoading || transitSlowerThanWalk}
+                  onClick={() =>
+                    fetchRoute(
+                      routePanelListing.id,
+                      routePanelListing.latitude,
+                      routePanelListing.longitude,
+                      p,
+                      transportMode,
+                    )
+                  }
+                  className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all ${
+                    transitSlowerThanWalk
+                      ? "opacity-50 border border-transparent"
+                      : isActive
+                        ? "bg-sage-50 dark:bg-sage-950/40 border border-sage-200 dark:border-sage-800"
+                        : "hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-transparent"
+                  }`}
+                >
+                  <span className="text-sage-600 text-xs flex-shrink-0">★</span>
+                  <span className="text-xs text-zinc-600 dark:text-zinc-300 flex-1 truncate">
+                    {p.name}
+                  </span>
+                  <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex-shrink-0">
+                    {isLoading ? (
+                      <span className="inline-block w-3 h-3 border-2 border-zinc-300 border-t-sage-500 rounded-full animate-spin" />
+                    ) : transitSlowerThanWalk ? (
+                      <span className="text-zinc-400">{t("fasterToWalk")}</span>
+                    ) : cached ? (
+                      <span
+                        className="inline-flex items-center gap-1.5"
+                        style={{ color: ROUTE_COLORS[transportMode] }}
+                      >
+                        {cached.transitLegs && cached.transitLegs.length > 0 && (
+                          <TransitLegSequence legs={cached.transitLegs} />
+                        )}
+                        {formatDuration(cached.duration)}
+                        <span className="text-zinc-300">·</span>
+                        {formatDistance(cached.distance)}
+                      </span>
+                    ) : (
+                      t("calculate")
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       {geocoded.length < listings.length && (
         <p className="px-1 pt-1 text-[10px] text-zinc-300">
           {t("showingCount", {
@@ -842,6 +833,6 @@ export function ListingMap({
           })}
         </p>
       )}
-    </>
+    </div>
   );
 }

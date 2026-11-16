@@ -105,6 +105,22 @@ export function BoardSettings({
     }
   }
 
+  async function handleRoleChange(userId: string, role: "OWNER" | "COLLABORATOR") {
+    setError("");
+    const res = await fetch(`/api/boards/${boardId}/members`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, role }),
+    });
+    if (res.ok) {
+      setMemberList((prev) => prev.map((m) => (m.userId === userId ? { ...m, role } : m)));
+      router.refresh();
+    } else {
+      const data = await res.json();
+      setError(data.error === "A board needs at least one owner" ? t("lastOwner") : t("roleError"));
+    }
+  }
+
   async function handleDelete() {
     if (!confirm(t("deleteConfirm"))) return;
     await fetch(`/api/boards/${boardId}`, { method: "DELETE" });
@@ -217,6 +233,19 @@ export function BoardSettings({
                       >
                         {m.role === "OWNER" ? t("owner") : t("member")}
                       </span>
+                      {isOwner && (
+                        <button
+                          onClick={() =>
+                            handleRoleChange(
+                              m.userId,
+                              m.role === "OWNER" ? "COLLABORATOR" : "OWNER",
+                            )
+                          }
+                          className="text-xs text-sage-600 dark:text-sage-400 hover:text-sage-700 transition-colors"
+                        >
+                          {m.role === "OWNER" ? t("makeMember") : t("makeOwner")}
+                        </button>
+                      )}
                       {isOwner && m.role !== "OWNER" && (
                         <button
                           onClick={() => handleRemove(m.userId)}

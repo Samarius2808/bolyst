@@ -147,7 +147,11 @@
     "inviteError": "Einladung fehlgeschlagen",
     "dangerZone": "Gefahrenzone",
     "deleteBoard": "Dieses Board löschen",
-    "deleteConfirm": "Dieses Board und alle Inserate löschen? Dies kann nicht rückgängig gemacht werden."
+    "deleteConfirm": "Dieses Board und alle Inserate löschen? Dies kann nicht rückgängig gemacht werden.",
+    "makeOwner": "Zum Eigentümer machen",
+    "makeMember": "Zum Mitglied machen",
+    "lastOwner": "Ein Board braucht mindestens einen Eigentümer",
+    "roleError": "Rolle konnte nicht geändert werden"
   },
   "createBoard": {
     "title": "Board erstellen",
@@ -173,7 +177,13 @@
     "noFavorites": "Noch keine Favoriten. Klicke auf das Herz, um ein Inserat zu speichern.",
     "favoriteCount": "{count} Favorit",
     "favoriteCountPlural": "{count} Favoriten",
-    "map": "Karte"
+    "map": "Karte",
+    "pickToCompare": "Wähle mind. 2 Inserate zum Vergleichen",
+    "compareAll": "Alle vergleichen",
+    "archivedCount": "Archiviert ({count})",
+    "archivedHint": "Diese Inserate sind archiviert und auf dem Board ausgeblendet. Öffnet eins, um es wiederherzustellen.",
+    "noArchived": "Keine archivierten Inserate.",
+    "allArchived": "Alle Inserate sind archiviert. Unter „Archiviert“ könnt ihr sie zurückholen."
   },
   "listingCard": {
     "status": {
@@ -238,7 +248,16 @@
     "reply": "Antworten",
     "replyingTo": "Antwort an {name}",
     "deleteListing": "Inserat löschen",
-    "deleteConfirm": "Dieses Inserat löschen?"
+    "deleteConfirm": "Dieses Inserat endgültig löschen? Zum Ausblenden lieber archivieren.",
+    "manageTags": "Tags bearbeiten",
+    "doneManagingTags": "Fertig",
+    "deleteTagConfirm": "Tag „{name}“ löschen? Er wird von allen Inseraten auf diesem Board entfernt.",
+    "tagExists": "Diesen Tag gibt es schon",
+    "renameTag": "Tag umbenennen",
+    "deleteTag": "Tag löschen",
+    "archiveListing": "Archivieren",
+    "restoreListing": "Wiederherstellen",
+    "archiveError": "Das Inserat konnte nicht aktualisiert werden. Bitte versucht es nochmal."
   },
   "compareTable": {
     "title": "Inserate vergleichen",
@@ -274,7 +293,9 @@
     "sort": "Sortieren",
     "byPrefix": "Von: {name}",
     "tagPrefix": "Tag: {name}",
-    "nearPrefix": "Nähe: {name}"
+    "nearPrefix": "Nähe: {name}",
+    "statusFirst": "{status} zuerst",
+    "statusPrefix": "Status: {status}"
   },
   "pinManager": {
     "referencePoints": "Referenzpunkte",
