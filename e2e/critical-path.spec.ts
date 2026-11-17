@@ -131,8 +131,9 @@ test.describe.serial("Critical path", () => {
       timeout: 10_000,
     });
 
-    // Use the Compare link in the header to go to compare page
-    await page.getByRole("link", { name: /compare/i }).click();
+    // Enter compare mode from the toolbar, then compare all listings from the floating bar
+    await page.getByRole("button", { name: /^compare$/i }).click();
+    await page.getByRole("button", { name: /^compare all$/i }).click();
 
     // Should navigate to compare page
     await expect(page).toHaveURL(/\/compare/, { timeout: 5_000 });
