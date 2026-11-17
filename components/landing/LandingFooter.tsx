@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { BrandMark } from "@/components/BrandMark";
 
 /**
  * Shared footer for the public marketing pages (landing + about).
@@ -15,8 +16,8 @@ export async function LandingFooter() {
           {/* Brand */}
           <div>
             <Link href="/?browse" className="flex items-center gap-2.5 mb-4">
-              <span className="w-7 h-7 bg-sage-600 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shadow-sm">
-                B
+              <span className="w-7 h-7 bg-sage-600 rounded-lg flex items-center justify-center shadow-sm">
+                <BrandMark className="w-full h-full" />
               </span>
               <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">Bolyst</span>
             </Link>

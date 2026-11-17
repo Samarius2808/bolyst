@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { isPlausibleInviteToken } from "@/lib/invite-link";
 import { AuthMapBackground } from "@/components/auth/AuthMapBackground";
 import { JoinBoardButton } from "@/components/boards/JoinBoardButton";
+import { BrandMark } from "@/components/BrandMark";
 
 // Link previews in chat apps shouldn't index or cache someone's board invite
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -64,8 +65,8 @@ export default async function JoinBoardPage({ params }: { params: Promise<{ toke
       <AuthMapBackground />
       <div className="relative z-10 w-full max-w-sm">
         <Link href="/" className="flex items-center justify-center gap-2.5 mb-6">
-          <span className="w-9 h-9 bg-sage-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md shadow-sage-600/20">
-            B
+          <span className="w-9 h-9 bg-sage-600 rounded-xl flex items-center justify-center shadow-md shadow-sage-600/20">
+            <BrandMark className="w-full h-full" />
           </span>
           <span className="text-3xl font-extrabold tracking-tight text-zinc-900">Bolyst</span>
         </Link>

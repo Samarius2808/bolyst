@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { BrandMark } from "@/components/BrandMark";
 
 export default function PrivacyPage() {
   const t = useTranslations("privacy");
@@ -11,8 +12,8 @@ export default function PrivacyPage() {
       <nav className="border-b border-zinc-100 bg-white">
         <div className="max-w-3xl mx-auto px-6 py-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="w-7 h-7 bg-sage-600 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shadow-sm">
-              B
+            <span className="w-7 h-7 bg-sage-600 rounded-lg flex items-center justify-center shadow-sm">
+              <BrandMark className="w-full h-full" />
             </span>
             <span className="text-base font-bold text-zinc-900">Bolyst</span>
           </Link>

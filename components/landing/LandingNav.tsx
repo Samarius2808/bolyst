@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeSelector } from "@/components/settings/ThemeSelector";
+import { BrandMark } from "@/components/BrandMark";
 
 /**
  * Shared top navigation for the public marketing pages (landing + about).
@@ -18,8 +19,8 @@ export async function LandingNav({ isLoggedIn }: { isLoggedIn: boolean }) {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf9f7]/80 dark:bg-[#1c1c1a]/80 backdrop-blur-lg border-b border-sage-100/60 dark:border-zinc-800/60">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/?browse" className="flex items-center gap-2.5">
-          <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-sage-600/20">
-            B
+          <span className="w-8 h-8 bg-sage-600 rounded-lg flex items-center justify-center shadow-md shadow-sage-600/20">
+            <BrandMark className="w-full h-full" />
           </span>
           <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             Bolyst
