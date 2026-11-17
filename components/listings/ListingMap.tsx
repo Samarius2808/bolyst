@@ -413,6 +413,29 @@ function routeCacheKey(listing: RouteEnd, pin: RouteEnd, mode: TransportMode) {
   return `${listing.id}@${listing.latitude},${listing.longitude}>${pin.id}@${pin.latitude},${pin.longitude}:${mode}`;
 }
 
+// The routing API behind /api/route is rate-limited per IP and rejects bursts,
+// so route requests go out a couple at a time (first come, first served)
+// instead of all at once.
+const MAX_CONCURRENT_ROUTE_FETCHES = 2;
+let activeRouteFetches = 0;
+const routeFetchQueue: (() => void)[] = [];
+
+function queuedRouteFetch(url: string): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    const run = () => {
+      activeRouteFetches++;
+      fetch(url)
+        .then(resolve, reject)
+        .finally(() => {
+          activeRouteFetches--;
+          routeFetchQueue.shift()?.();
+        });
+    };
+    if (activeRouteFetches < MAX_CONCURRENT_ROUTE_FETCHES) run();
+    else routeFetchQueue.push(run);
+  });
+}
+
 export function ListingMap({
   listings,
   pins = [],
@@ -497,7 +520,7 @@ export function ListingMap({
         endLat: pin.latitude.toString(),
         mode,
       });
-      const request = fetch(`/api/route?${params}`)
+      const request = queuedRouteFetch(`/api/route?${params}`)
         .then((res) => {
           if (!res.ok) throw new Error("Route fetch failed");
           return res.json();
@@ -512,7 +535,20 @@ export function ListingMap({
             duration: data.duration,
             transitLegs: data.transitLegs,
           };
-          routeCacheRef.current = { ...routeCacheRef.current, [key]: result };
+          const updates: RouteCache = { [key]: result };
+          // Transit responses carry the walking route too, which saves a
+          // separate request (the routing API is rate-limited)
+          if (mode === "transit" && data.walking) {
+            const walkKey = routeCacheKey(listing, pin, "walking");
+            updates[walkKey] = {
+              listingId: listing.id,
+              pinId: pin.id,
+              mode: "walking",
+              ...data.walking,
+            };
+            updateKeySet(setFailedKeys, walkKey, false);
+          }
+          routeCacheRef.current = { ...routeCacheRef.current, ...updates };
           setRouteCache(routeCacheRef.current);
           inFlightRef.current.delete(key);
           return result;
@@ -534,10 +570,9 @@ export function ListingMap({
       const token = ++selectionRef.current;
       activePinIdRef.current = pin.id;
       setActivePinId(pin.id);
-      const [result, walk] = await Promise.all([
-        loadRoute(listing, pin, mode),
-        mode === "transit" ? loadRoute(listing, pin, "walking") : Promise.resolve(null),
-      ]);
+      const result = await loadRoute(listing, pin, mode);
+      // Usually cached by the transit response itself
+      const walk = mode === "transit" && result ? await loadRoute(listing, pin, "walking") : null;
       if (token !== selectionRef.current) return;
       const transitSlower =
         mode === "transit" && result && walk && result.duration >= walk.duration;
@@ -558,12 +593,16 @@ export function ListingMap({
   useEffect(() => {
     if (!routePanelListingId || panelLat == null || panelLng == null) return;
     const listing = { id: routePanelListingId, latitude: panelLat, longitude: panelLng };
-    for (const p of pins) {
-      void loadRoute(listing, p, transportMode);
-      if (transportMode === "transit") void loadRoute(listing, p, "walking");
-    }
+    // The drawn route goes first so it isn't queued behind the other pins
     const target = pins.find((p) => p.id === activePinIdRef.current) ?? pins[0];
     if (target) void showRoute(listing, target, transportMode);
+    for (const p of pins) {
+      const request = loadRoute(listing, p, transportMode);
+      // Transit seeds the walking route; fetch it only if that didn't happen
+      if (transportMode === "transit") {
+        void request.then((r) => (r ? loadRoute(listing, p, "walking") : null));
+      }
+    }
     // pinsKey stands in for `pins` so a re-render with equal pins doesn't refetch
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routePanelListingId, panelLat, panelLng, pinsKey, transportMode, loadRoute, showRoute]);
