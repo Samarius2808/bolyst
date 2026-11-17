@@ -33,7 +33,7 @@ export default async function Home({
       {/* Hero tagline */}
       <section className="min-h-screen relative flex items-center justify-center px-6 overflow-hidden">
         {/* Isometric city illustration — right-side background */}
-        <IsometricCity className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-40" />
+        <IsometricCity className="hero-city-fade absolute inset-0 w-full h-full pointer-events-none select-none opacity-40" />
         {/* Fade center so hero text stays readable, both sides even */}
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_#faf9f7cc_0%,_#faf9f700_70%)] dark:bg-[radial-gradient(ellipse_at_center,_#1c1c1acc_0%,_#1c1c1a00_70%)]" />
         <div className="max-w-4xl mx-auto text-center relative z-10">

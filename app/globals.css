@@ -2,6 +2,9 @@
 
 /* Class-based dark mode for next-themes */
 @custom-variant dark (&:where(.dark, .dark *));
+/* Like dark:, but not inside [data-light-only] (the light-only sign-in/up pages).
+   Used for Clerk's elements, whose classes are shared app-wide. */
+@custom-variant clerk-dark (&:where(.dark, .dark *):not([data-light-only], [data-light-only] *));
 
 :root {
   color-scheme: light;
@@ -78,6 +81,20 @@ textarea::placeholder {
 
 .modal-content {
   animation: slideUp 200ms ease-out;
+}
+
+/* Landing hero city: dissolve into the page instead of ending in a hard
+   edge. Bottom fades out fully; left/right edges soften a little. Two masks
+   intersected, so it works on any background (light and dark). */
+.hero-city-fade {
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 60%, rgb(0 0 0 / 0.6) 80%, transparent 98%),
+    linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, #000 60%, rgb(0 0 0 / 0.6) 80%, transparent 98%),
+    linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-composite: intersect;
 }
 
 /* Custom scrollbar for modals */

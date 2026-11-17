@@ -32,7 +32,7 @@
     },
     "howItWorks": {
       "eyebrow": "How it works",
-      "heading": "Up and running in under a minute",
+      "heading": "Three steps to your next home",
       "step1": {
         "title": "Create a board",
         "description": "Give it a name like \"Berlin Q2\" or \"Stockholm summer\" and invite your co-searchers."
@@ -63,7 +63,7 @@
       "outroAccent": "together"
     },
     "details": {
-      "eyebrow": "And more",
+      "eyebrow": "Features",
       "pasteUrl": {
         "title": "Paste any listing URL",
         "description": "Works with any apartment site. Finn.no, Immobilienscout, Hemnet, Funda, you name it. We extract what we can and you fill in the rest.",
@@ -99,7 +99,7 @@
       "features": "Features",
       "company": "Company",
       "contact": "Contact",
-      "impressum": "Impressum",
+      "impressum": "Legal notice",
       "privacy": "Privacy",
       "instagram": "Bolyst on Instagram",
       "linkedin": "Bolyst on LinkedIn",
@@ -412,7 +412,7 @@
     "description": "Collaborative apartment search"
   },
   "impressum": {
-    "title": "Impressum (Legal Notice)",
+    "title": "Legal notice",
     "infoTitle": "Information according to § 5 DDG",
     "infoBody": "Sam Wallmeier\nRingofenstraße 87\n63773 Goldbach\nGermany",
     "contactTitle": "Contact",

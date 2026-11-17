@@ -13,7 +13,10 @@ export default async function SignUpPage({
   const t = await getTranslations("auth");
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
+    <div
+      data-light-only
+      className="min-h-screen flex flex-col items-center justify-center [color-scheme:light]"
+    >
       <AuthMapBackground />
 
       {/* Content */}
