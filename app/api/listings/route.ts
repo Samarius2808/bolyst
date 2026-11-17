@@ -23,15 +23,21 @@ export async function POST(req: Request) {
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  if (tagIds?.length) {
-    const validTags = await prisma.tag.findMany({
-      where: { id: { in: tagIds }, boardId },
-      select: { id: true },
-    });
-    if (validTags.length !== tagIds.length) {
-      return NextResponse.json({ error: "One or more tags are invalid" }, { status: 400 });
-    }
+  if (tagIds !== undefined && !Array.isArray(tagIds)) {
+    return NextResponse.json({ error: "Invalid tagIds" }, { status: 400 });
   }
+  const requestedTagIds = Array.from(
+    new Set(((tagIds ?? []) as unknown[]).filter((v): v is string => typeof v === "string")),
+  );
+  // Only this board's tags; a tag deleted while the add form was open is just skipped
+  const validTagIds = requestedTagIds.length
+    ? (
+        await prisma.tag.findMany({
+          where: { id: { in: requestedTagIds }, boardId },
+          select: { id: true },
+        })
+      ).map((t) => t.id)
+    : [];
 
   const coords = location ? await geocodeLocation(location) : null;
 
@@ -48,7 +54,7 @@ export async function POST(req: Request) {
       imageUrls: images,
       latitude: coords?.lat ?? null,
       longitude: coords?.lng ?? null,
-      tags: tagIds?.length ? { create: tagIds.map((tagId: string) => ({ tagId })) } : undefined,
+      tags: validTagIds.length ? { create: validTagIds.map((tagId) => ({ tagId })) } : undefined,
     },
   });
 

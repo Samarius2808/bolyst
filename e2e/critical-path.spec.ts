@@ -81,8 +81,10 @@ test.describe.serial("Critical path", () => {
     await page.getByPlaceholder(/new tag/i).fill("great-location");
     await page.getByRole("button", { name: /^add$/i }).click();
 
-    // Tag should appear as a pill/badge
-    await expect(page.locator("text=great-location")).toBeVisible();
+    // Tag should appear as an applied chip in the listing detail
+    await expect(
+      page.getByRole("button", { name: "great-location", exact: true, pressed: true }),
+    ).toBeVisible();
 
     // Close the detail modal
     await page.keyboard.press("Escape");

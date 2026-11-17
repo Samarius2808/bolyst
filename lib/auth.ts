@@ -1,28 +1,38 @@
+import { cache } from "react";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { prisma } from "./prisma";
 
-export async function getOrCreateUser() {
+/**
+ * The signed-in user's DB row, created on first sign-in.
+ *
+ * `auth()` only verifies the session token locally. `currentUser()` is an HTTP
+ * call to Clerk's API (~200 ms), so it is only made when the user isn't in our
+ * database yet: known users are served from a single DB lookup. `cache` dedupes
+ * repeat calls within one server render.
+ */
+export const getOrCreateUser = cache(async function getOrCreateUser() {
   const { userId } = await auth();
   if (!userId) return null;
 
+  const known = await prisma.user.findUnique({ where: { clerkId: userId } });
+  if (known) return known;
+
+  // First sign-in (or a relink): now we need the email and name from Clerk
   const clerkUser = await currentUser();
   if (!clerkUser) return null;
 
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
   const name = [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || null;
 
-  let existing = await prisma.user.findUnique({ where: { clerkId: userId } });
-
   // If no user found by clerkId, check if one exists with the same email
   // (handles migration from dev to production Clerk instance)
-  if (!existing) {
-    const byEmail = await prisma.user.findUnique({ where: { email } });
-    if (byEmail) {
-      existing = await prisma.user.update({
-        where: { email },
-        data: { clerkId: userId, name },
-      });
-    }
+  let existing: Awaited<ReturnType<typeof prisma.user.findUnique>> = null;
+  const byEmail = await prisma.user.findUnique({ where: { email } });
+  if (byEmail) {
+    existing = await prisma.user.update({
+      where: { email },
+      data: { clerkId: userId, name },
+    });
   }
 
   const user =
@@ -56,4 +66,4 @@ export async function getOrCreateUser() {
   }
 
   return user;
-}
+});

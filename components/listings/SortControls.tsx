@@ -179,6 +179,43 @@ const icons = {
   ),
 };
 
+export const MAX_SORT_LEVELS = 3;
+
+/** Drop keys that point at a tag / pin / member that no longer exists, and duplicates. */
+export function validSortKeys(
+  keys: readonly string[],
+  ctx: { tagIds: string[]; pinIds: string[]; memberIds: string[] },
+): SortKey[] {
+  const seen = new Set<string>();
+  const out: SortKey[] = [];
+  for (const key of keys) {
+    if (seen.has(key)) continue;
+    const ok =
+      [
+        "newest",
+        "price-asc",
+        "price-desc",
+        "ppm2-asc",
+        "ppm2-desc",
+        "size-asc",
+        "size-desc",
+        "status",
+      ].includes(key) ||
+      (key === "distance-asc" && ctx.pinIds.length > 0) ||
+      (key.startsWith("status:") &&
+        (LISTING_STATUSES as readonly string[]).includes(key.slice(7))) ||
+      (key.startsWith("addedby:") && ctx.memberIds.includes(key.slice(8))) ||
+      (key.startsWith("tag:") && ctx.tagIds.includes(key.slice(4))) ||
+      (key.startsWith("distance:") && ctx.pinIds.includes(key.slice(9)));
+    if (!ok) continue;
+    seen.add(key);
+    out.push(key as SortKey);
+    if (out.length === MAX_SORT_LEVELS) break;
+  }
+  // "Newest" is the default order, so it only means something as the sole key
+  return out.length > 1 ? out.filter((k) => k !== "newest") : out.length ? out : ["newest"];
+}
+
 export function SortControls({
   value,
   onChange,
@@ -187,29 +224,44 @@ export function SortControls({
   members = [],
   pins = [],
 }: {
-  value: SortKey;
-  onChange: (key: SortKey) => void;
+  /** Sort levels, most important first. ["newest"] = default order. */
+  value: SortKey[];
+  onChange: (keys: SortKey[]) => void;
   hasPins: boolean;
   boardTags: BoardTag[];
   members?: BoardMember[];
   pins?: BoardPin[];
 }) {
-  const [open, setOpen] = useState(false);
+  // Which level the menu edits: 0 = primary, value.length = adding a new level
+  const [openLevel, setOpenLevel] = useState<number | null>(null);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const lastPointerType = useRef<string>("");
   const t = useTranslations("sortControls");
   const tStatus = useTranslations("listingCard.status");
+  const open = openLevel !== null;
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
+        setOpenLevel(null);
         setExpandedGroup(null);
       }
     }
-    if (open) document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpenLevel(null);
+        setExpandedGroup(null);
+      }
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClick);
+      document.addEventListener("keydown", handleKey);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
   }, [open]);
 
   function getLabelForKey(key: SortKey): string {
@@ -232,7 +284,7 @@ export function SortControls({
     }
     if (key.startsWith("tag:")) {
       const tag = boardTags.find((tg) => tg.id === key.slice(4));
-      return tag ? t("tagPrefix", { name: tag.name }) : "Tag";
+      return tag ? t("tagPrefix", { name: tag.name }) : t("hasTag");
     }
     if (key.startsWith("distance:")) {
       const pinId = key.slice(9);
@@ -242,13 +294,39 @@ export function SortControls({
     return t("sort");
   }
 
-  const activeLabel = getLabelForKey(value);
-  const isActive = value !== "newest";
+  const primary = value[0] ?? "newest";
+  const isActive = primary !== "newest";
+  const canAddLevel = isActive && value.length < MAX_SORT_LEVELS;
+  // The key the open menu is editing (undefined while adding a new level)
+  const editingKey = openLevel !== null ? value[openLevel] : undefined;
+
+  function toggleMenu(level: number) {
+    setOpenLevel(openLevel === level ? null : level);
+    setExpandedGroup(null);
+  }
 
   function select(key: SortKey) {
-    onChange(key);
-    setOpen(false);
+    if (openLevel === null) return;
+    let next: SortKey[];
+    if (openLevel === 0 && key === "newest") {
+      next = ["newest"]; // back to the default clears every level
+    } else {
+      next = [...value];
+      next[openLevel] = key;
+    }
+    onChange(next.filter((k, i) => next.indexOf(k) === i));
+    setOpenLevel(null);
     setExpandedGroup(null);
+  }
+
+  function removeLevel(level: number) {
+    const next = value.filter((_, i) => i !== level);
+    onChange(next.length ? next : ["newest"]);
+  }
+
+  // A key already used on another level can't be picked again
+  function isTaken(key: SortKey) {
+    return value.some((k, i) => k === key && i !== openLevel);
   }
 
   const groups: SortGroup[] = [
@@ -256,6 +334,7 @@ export function SortControls({
       label: t("newest"),
       icon: icons.clock,
       options: [{ key: "newest", label: t("newestFirst") }],
+      hidden: openLevel !== 0, // "newest" is already the final tie-breaker
     },
     {
       label: t("price"),
@@ -334,16 +413,28 @@ export function SortControls({
   ];
 
   function isGroupActive(group: SortGroup) {
-    return group.options.some((o) => o.key === value);
+    return group.options.some((o) => o.key === editingKey);
   }
 
+  const chevronDown = (
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className="transition-transform"
+    >
+      <path d="M4 6l4 4 4-4" />
+    </svg>
+  );
+
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative flex items-center gap-1.5 flex-wrap" ref={ref}>
       <button
-        onClick={() => {
-          setOpen(!open);
-          setExpandedGroup(null);
-        }}
+        onClick={() => toggleMenu(0)}
+        aria-expanded={openLevel === 0}
         className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium rounded-lg border transition-all ${
           isActive
             ? "bg-sage-50 dark:bg-sage-950/40 border-sage-200 dark:border-sage-800 text-sage-600 dark:text-sage-400"
@@ -360,22 +451,75 @@ export function SortControls({
         >
           <path d="M2 4h12M4 8h8M6 12h4" />
         </svg>
-        {activeLabel}
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          className={`transition-transform ${open ? "rotate-180" : ""}`}
-        >
-          <path d="M4 6l4 4 4-4" />
-        </svg>
+        {getLabelForKey(primary)}
+        <span className={openLevel === 0 ? "rotate-180" : ""}>{chevronDown}</span>
       </button>
 
+      {/* Tie-breaker levels: "then by …" */}
+      {value.slice(1).map((key, i) => {
+        const level = i + 1;
+        return (
+          <span
+            key={key}
+            className="inline-flex items-center rounded-lg border border-sage-200 dark:border-sage-800 bg-sage-50/60 dark:bg-sage-950/30 text-sage-600 dark:text-sage-400 text-xs"
+          >
+            <button
+              onClick={() => toggleMenu(level)}
+              aria-expanded={openLevel === level}
+              className="inline-flex items-center gap-1 pl-2.5 pr-1.5 py-2.5 font-medium"
+            >
+              <span className="text-sage-400 dark:text-sage-600 font-normal">{t("thenBy")}</span>
+              {getLabelForKey(key)}
+            </button>
+            <button
+              onClick={() => removeLevel(level)}
+              aria-label={t("removeLevel", { label: getLabelForKey(key) })}
+              className="w-7 h-full py-2.5 flex items-center justify-center rounded-r-lg text-sage-400 hover:text-sage-700 dark:hover:text-sage-300 hover:bg-sage-100/60 dark:hover:bg-sage-900/40 transition-colors"
+            >
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M4 4l8 8M12 4l-8 8" />
+              </svg>
+            </button>
+          </span>
+        );
+      })}
+
+      {canAddLevel && (
+        <button
+          onClick={() => toggleMenu(value.length)}
+          aria-expanded={openLevel === value.length}
+          className="inline-flex items-center gap-1 px-2.5 py-2.5 text-xs font-medium rounded-lg border border-dashed border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 hover:text-sage-600 hover:border-sage-300 dark:hover:text-sage-400 transition-colors"
+        >
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M8 3v10M3 8h10" />
+          </svg>
+          {t("addLevel")}
+        </button>
+      )}
+
       {open && (
-        <div className="absolute top-full left-0 sm:left-0 right-0 sm:right-auto mt-1.5 z-50 w-auto sm:w-56 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl shadow-lg shadow-black/5 py-1 modal-content">
+        <div className="absolute top-full left-0 right-0 sm:right-auto mt-1.5 z-50 w-auto sm:w-56 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-xl shadow-lg shadow-black/5 py-1 modal-content">
+          {openLevel !== null && openLevel > 0 && (
+            <p className="px-3.5 pt-1.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+              {t("thenByHeading")}
+            </p>
+          )}
           {allGroups.map((group) => {
             const groupActive = isGroupActive(group);
             const isExpanded = expandedGroup === group.label;
@@ -383,22 +527,24 @@ export function SortControls({
 
             if (!hasSub) {
               const opt = group.options[0];
+              const taken = isTaken(opt.key);
               return (
                 <button
                   key={group.label}
                   onClick={() => select(opt.key)}
+                  disabled={taken}
                   onPointerEnter={(e) => {
                     if (e.pointerType === "mouse") setExpandedGroup(null);
                   }}
-                  className={`w-full text-left px-3.5 py-2 text-xs flex items-center gap-2.5 transition-colors ${
-                    value === opt.key
+                  className={`w-full text-left px-3.5 py-2 text-xs flex items-center gap-2.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                    editingKey === opt.key
                       ? "bg-sage-50 dark:bg-sage-950/40 text-sage-600 dark:text-sage-400 font-medium"
                       : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                   }`}
                 >
                   <span className="w-4 flex justify-center text-zinc-400">{group.icon}</span>
                   {group.label}
-                  {value === opt.key && <span className="ml-auto">{icons.check}</span>}
+                  {editingKey === opt.key && <span className="ml-auto">{icons.check}</span>}
                 </button>
               );
             }
@@ -447,14 +593,15 @@ export function SortControls({
                         <button
                           key={opt.key}
                           onClick={() => select(opt.key)}
-                          className={`w-full text-left pl-10 sm:pl-3.5 pr-3.5 py-1.5 text-xs flex items-center gap-2 transition-colors ${
-                            value === opt.key
+                          disabled={isTaken(opt.key)}
+                          className={`w-full text-left pl-10 sm:pl-3.5 pr-3.5 py-1.5 text-xs flex items-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                            editingKey === opt.key
                               ? "text-sage-600 dark:text-sage-400 font-medium"
                               : "text-zinc-500 dark:text-zinc-300 hover:text-zinc-700 dark:hover:text-zinc-100 hover:bg-zinc-100/50 dark:hover:bg-zinc-700"
                           }`}
                         >
                           {opt.label}
-                          {value === opt.key && <span className="ml-auto">{icons.check}</span>}
+                          {editingKey === opt.key && <span className="ml-auto">{icons.check}</span>}
                         </button>
                       ))}
                     </div>

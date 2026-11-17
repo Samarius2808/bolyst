@@ -30,6 +30,7 @@ function getInitial(name: string | null, email: string): string {
 export function BoardHeader({
   board,
   isOwner,
+  currentUserId,
   boardTags = [],
 }: {
   board: {
@@ -41,8 +42,11 @@ export function BoardHeader({
     coverImageUrl: string | null;
     startDate: string | null;
     endDate: string | null;
+    /** Only passed to owners; null = link turned off */
+    inviteToken?: string | null;
   };
   isOwner: boolean;
+  currentUserId: string;
   boardTags?: { id: string; name: string }[];
 }) {
   const [showSettings, setShowSettings] = useState(false);
@@ -237,8 +241,10 @@ export function BoardHeader({
           boardId={board.id}
           boardName={board.name}
           isOwner={isOwner}
+          currentUserId={currentUserId}
           members={board.members}
           initialPendingInvites={board.pendingInvites}
+          initialInviteToken={board.inviteToken ?? null}
           coverImageUrl={board.coverImageUrl}
           startDate={board.startDate}
           endDate={board.endDate}

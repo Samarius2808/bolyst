@@ -15,11 +15,23 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { tagId } = await req.json();
-  if (!tagId) return NextResponse.json({ error: "tagId required" }, { status: 400 });
+  const body: unknown = await req.json().catch(() => null);
+  const tagId = (body as { tagId?: unknown } | null)?.tagId;
+  if (typeof tagId !== "string") {
+    return NextResponse.json({ error: "tagId required" }, { status: 400 });
+  }
 
-  const listingTag = await prisma.listingTag.create({
-    data: { listingId, tagId },
+  // The tag must belong to the same board as the listing
+  const tag = await prisma.tag.findUnique({ where: { id: tagId }, select: { boardId: true } });
+  if (!tag || tag.boardId !== listing.boardId) {
+    return NextResponse.json({ error: "Tag not found" }, { status: 404 });
+  }
+
+  // Upsert: a double-click or a collaborator tagging at the same time isn't an error
+  const listingTag = await prisma.listingTag.upsert({
+    where: { listingId_tagId: { listingId, tagId } },
+    create: { listingId, tagId },
+    update: {},
   });
 
   return NextResponse.json(listingTag, { status: 201 });
@@ -38,12 +50,13 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { tagId } = await req.json();
-  if (!tagId) return NextResponse.json({ error: "tagId required" }, { status: 400 });
+  const body: unknown = await req.json().catch(() => null);
+  const tagId = (body as { tagId?: unknown } | null)?.tagId;
+  if (typeof tagId !== "string") {
+    return NextResponse.json({ error: "tagId required" }, { status: 400 });
+  }
 
-  await prisma.listingTag.delete({
-    where: { listingId_tagId: { listingId, tagId } },
-  });
+  await prisma.listingTag.deleteMany({ where: { listingId, tagId } });
 
   return NextResponse.json({ success: true });
 }

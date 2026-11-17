@@ -172,6 +172,38 @@ function TransitLegSequence({ legs, size = 11 }: { legs: TransitLegInfo[]; size?
   );
 }
 
+// While placing a reference point: crosshair cursor, a map click reports its
+// coordinates, and popups stay shut so taps land on the map.
+function LocationPicker({
+  active,
+  onPick,
+}: {
+  active: boolean;
+  onPick?: (lat: number, lng: number) => void;
+}) {
+  const map = useMap();
+  const onPickRef = useRef(onPick);
+  useEffect(() => {
+    onPickRef.current = onPick;
+  }, [onPick]);
+  useEffect(() => {
+    if (!active) return;
+    const container = map.getContainer();
+    container.classList.add("bmap-picking");
+    map.closePopup();
+    const handleClick = (e: L.LeafletMouseEvent) => onPickRef.current?.(e.latlng.lat, e.latlng.lng);
+    const blockPopup = () => map.closePopup();
+    map.on("click", handleClick);
+    map.on("popupopen", blockPopup);
+    return () => {
+      container.classList.remove("bmap-picking");
+      map.off("click", handleClick);
+      map.off("popupopen", blockPopup);
+    };
+  }, [active, map]);
+  return null;
+}
+
 // Closes all popups when the route panel is open
 function ClosePopups({ active }: { active: boolean }) {
   const map = useMap();
@@ -371,10 +403,14 @@ function ListingMarker({
 }
 
 // Cache route results so switching modes doesn't re-fetch
-type RouteCache = Record<string, RouteInfo>; // key: `${listingId}:${pinId}:${mode}`
+type RouteCache = Record<string, RouteInfo>;
 
-function routeCacheKey(listingId: string, pinId: string, mode: TransportMode) {
-  return `${listingId}:${pinId}:${mode}`;
+type RouteEnd = { id: string; latitude: number; longitude: number };
+
+// Coordinates are part of the key so editing a listing's or reference point's
+// address never serves a stale route.
+function routeCacheKey(listing: RouteEnd, pin: RouteEnd, mode: TransportMode) {
+  return `${listing.id}@${listing.latitude},${listing.longitude}>${pin.id}@${pin.latitude},${pin.longitude}:${mode}`;
 }
 
 export function ListingMap({
@@ -385,6 +421,9 @@ export function ListingMap({
   hoveredId = null,
   commuteListingId = null,
   hidePinNudge = false,
+  pickingLocation = false,
+  onLocationPick,
+  onCancelPick,
   onListingClick,
   onCommuteClose,
 }: {
@@ -397,88 +436,141 @@ export function ListingMap({
   hidePinNudge?: boolean;
   onListingClick: (id: string) => void;
   onCommuteClose?: () => void;
+  /** Placing a reference point: the next map click is reported via onLocationPick. */
+  pickingLocation?: boolean;
+  onLocationPick?: (lat: number, lng: number) => void;
+  onCancelPick?: () => void;
 }) {
   const t = useTranslations("map");
   const [route, setRoute] = useState<RouteInfo | null>(null);
-  const [routeLoading, setRouteLoading] = useState<string | null>(null); // pinId being loaded
   const [transportMode, setTransportMode] = useState<TransportMode>("walking");
   const [routePanelListingId, setRoutePanelListingId] = useState<string | null>(null);
   const [routeCache, setRouteCache] = useState<RouteCache>({});
+  const [failedKeys, setFailedKeys] = useState<Set<string>>(new Set());
   const [activePinId, setActivePinId] = useState<string | null>(null);
   const [leafletMap, setLeafletMap] = useState<L.Map | null>(null);
   // The branded vector basemap needs WebGL; without it, use raster tiles.
   const [vectorBasemap, setVectorBasemap] = useState(supportsWebGL);
+  // Refs mirror state so async route loads never read a stale cache
+  const routeCacheRef = useRef<RouteCache>({});
+  const inFlightRef = useRef(new Map<string, Promise<RouteInfo | null>>());
+  const activePinIdRef = useRef<string | null>(null);
+  // Bumped on every selection so a slow response can't override a newer choice
+  const selectionRef = useRef(0);
 
   // Allow parent to open the route panel for a specific listing
   useEffect(() => {
     if (commuteListingId) {
+      selectionRef.current++;
       setRoutePanelListingId(commuteListingId);
       setRoute(null);
     }
   }, [commuteListingId]);
 
-  const fetchRoute = useCallback(
-    async (
-      listingId: string,
-      listingLat: number,
-      listingLng: number,
-      pin: MapPin,
-      mode: TransportMode,
-    ) => {
-      // Check cache first
-      const cacheKey = routeCacheKey(listingId, pin.id, mode);
-      setActivePinId(pin.id);
-      const cached = routeCache[cacheKey];
-      if (cached) {
-        const walkKey = routeCacheKey(listingId, pin.id, "walking");
-        const walkCached = routeCache[walkKey];
-        if (mode === "transit" && walkCached && cached.duration >= walkCached.duration) {
-          setRoute(null);
-        } else {
-          setRoute(cached);
-        }
-        return;
-      }
-
-      setRouteLoading(pin.id);
-      try {
-        const params = new URLSearchParams({
-          startLng: listingLng.toString(),
-          startLat: listingLat.toString(),
-          endLng: pin.longitude.toString(),
-          endLat: pin.latitude.toString(),
-          mode,
-        });
-        const res = await fetch(`/api/route?${params}`);
-        if (!res.ok) throw new Error("Route fetch failed");
-        const data = await res.json();
-        const result: RouteInfo = {
-          listingId,
-          pinId: pin.id,
-          mode,
-          coordinates: data.coordinates,
-          distance: data.distance,
-          duration: data.duration,
-          transitLegs: data.transitLegs,
-        };
-        setRouteCache((prev) => ({ ...prev, [cacheKey]: result }));
-        const walkKey = routeCacheKey(listingId, pin.id, "walking");
-        const walkCached = routeCache[walkKey];
-        if (mode === "transit" && walkCached && result.duration >= walkCached.duration) {
-          setRoute(null);
-        } else {
-          setRoute(result);
-        }
-      } catch {
-        setRoute(null);
-      } finally {
-        setRouteLoading(null);
-      }
+  const updateKeySet = useCallback(
+    (setter: React.Dispatch<React.SetStateAction<Set<string>>>, key: string, present: boolean) => {
+      setter((prev) => {
+        if (prev.has(key) === present) return prev;
+        const next = new Set(prev);
+        if (present) next.add(key);
+        else next.delete(key);
+        return next;
+      });
     },
-    [routeCache],
+    [],
   );
 
+  /** Fetch (or reuse) one listing → pin route. Never touches what's drawn on the map. */
+  const loadRoute = useCallback(
+    (listing: RouteEnd, pin: MapPin, mode: TransportMode): Promise<RouteInfo | null> => {
+      const key = routeCacheKey(listing, pin, mode);
+      const cached = routeCacheRef.current[key];
+      if (cached) return Promise.resolve(cached);
+      const pending = inFlightRef.current.get(key);
+      if (pending) return pending;
+
+      updateKeySet(setFailedKeys, key, false);
+      const params = new URLSearchParams({
+        startLng: listing.longitude.toString(),
+        startLat: listing.latitude.toString(),
+        endLng: pin.longitude.toString(),
+        endLat: pin.latitude.toString(),
+        mode,
+      });
+      const request = fetch(`/api/route?${params}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Route fetch failed");
+          return res.json();
+        })
+        .then((data): RouteInfo => {
+          const result: RouteInfo = {
+            listingId: listing.id,
+            pinId: pin.id,
+            mode,
+            coordinates: data.coordinates,
+            distance: data.distance,
+            duration: data.duration,
+            transitLegs: data.transitLegs,
+          };
+          routeCacheRef.current = { ...routeCacheRef.current, [key]: result };
+          setRouteCache(routeCacheRef.current);
+          inFlightRef.current.delete(key);
+          return result;
+        })
+        .catch(() => {
+          updateKeySet(setFailedKeys, key, true);
+          inFlightRef.current.delete(key);
+          return null;
+        });
+      inFlightRef.current.set(key, request);
+      return request;
+    },
+    [updateKeySet],
+  );
+
+  /** Select a pin and draw its route (unless transit is slower than walking). */
+  const showRoute = useCallback(
+    async (listing: RouteEnd, pin: MapPin, mode: TransportMode) => {
+      const token = ++selectionRef.current;
+      activePinIdRef.current = pin.id;
+      setActivePinId(pin.id);
+      const [result, walk] = await Promise.all([
+        loadRoute(listing, pin, mode),
+        mode === "transit" ? loadRoute(listing, pin, "walking") : Promise.resolve(null),
+      ]);
+      if (token !== selectionRef.current) return;
+      const transitSlower =
+        mode === "transit" && result && walk && result.duration >= walk.duration;
+      setRoute(result && !transitSlower ? result : null);
+    },
+    [loadRoute],
+  );
+
+  // Commute times calculate themselves: when the panel opens, the mode changes
+  // or reference points change, load every pin's route and draw the selected
+  // (or first) one.
+  const panelListing = listings.find(
+    (l) => l.id === routePanelListingId && l.latitude != null && l.longitude != null,
+  );
+  const panelLat = panelListing?.latitude ?? null;
+  const panelLng = panelListing?.longitude ?? null;
+  const pinsKey = pins.map((p) => `${p.id}@${p.latitude},${p.longitude}`).join("|");
+  useEffect(() => {
+    if (!routePanelListingId || panelLat == null || panelLng == null) return;
+    const listing = { id: routePanelListingId, latitude: panelLat, longitude: panelLng };
+    for (const p of pins) {
+      void loadRoute(listing, p, transportMode);
+      if (transportMode === "transit") void loadRoute(listing, p, "walking");
+    }
+    const target = pins.find((p) => p.id === activePinIdRef.current) ?? pins[0];
+    if (target) void showRoute(listing, target, transportMode);
+    // pinsKey stands in for `pins` so a re-render with equal pins doesn't refetch
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routePanelListingId, panelLat, panelLng, pinsKey, transportMode, loadRoute, showRoute]);
+
   const closeRoutePanel = useCallback(() => {
+    selectionRef.current++;
+    activePinIdRef.current = null;
     setRoutePanelListingId(null);
     setRoute(null);
     setActivePinId(null);
@@ -531,7 +623,7 @@ export function ListingMap({
   return (
     <div className="h-full flex flex-col gap-2">
       <div
-        className={`bmap${settled ? " pins-settled" : ""} rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 flex-1 min-h-0 relative`}
+        className={`bmap${settled ? " pins-settled" : ""} rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 flex-1 min-h-0 relative isolate`}
       >
         <MapContainer
           ref={setLeafletMap}
@@ -551,6 +643,7 @@ export function ListingMap({
           )}
           <FitBounds points={allPoints} />
           <ClosePopups active={routePanelListingId !== null} />
+          <LocationPicker active={pickingLocation} onPick={onLocationPick} />
           {route && <RouteLayer route={route} />}
           {route && <FitRoute coordinates={route.coordinates} />}
           <InvalidateOnResize />
@@ -677,25 +770,58 @@ export function ListingMap({
         <ZoomControl map={leafletMap} />
         <CompactAttribution raster={!vectorBasemap} />
 
-        {/* Empty pins nudge */}
-        {pins.length === 0 && geocoded.length > 0 && !routePanelListingId && !hidePinNudge && (
-          <div className="absolute top-3 left-3 right-14 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-800 px-3 py-2 flex items-center gap-2">
-            <span className="text-sage-600 dark:text-sage-500 flex-shrink-0">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
+        {pickingLocation && (
+          <div
+            role="status"
+            className="absolute top-3 left-3 right-14 z-[1000] bg-sage-600 text-white rounded-lg shadow-md px-3 py-2 flex items-center gap-2"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="flex-shrink-0 animate-bounce"
+            >
+              <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
+              <circle cx="8" cy="6" r="1.5" />
+            </svg>
+            <p className="text-xs font-medium flex-1">{t("pickHint")}</p>
+            {onCancelPick && (
+              <button
+                onClick={onCancelPick}
+                className="text-xs font-semibold px-2 py-1 rounded-md bg-white/15 hover:bg-white/25 transition-colors"
               >
-                <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
-                <circle cx="8" cy="6" r="1.5" />
-              </svg>
-            </span>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">{t("addPinNudge")}</p>
+                {t("pickCancel")}
+              </button>
+            )}
           </div>
         )}
+
+        {/* Empty pins nudge */}
+        {pins.length === 0 &&
+          geocoded.length > 0 &&
+          !routePanelListingId &&
+          !hidePinNudge &&
+          !pickingLocation && (
+            <div className="absolute top-3 left-3 right-14 z-[1000] bg-white dark:bg-zinc-900 backdrop-blur-sm rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-800 px-3 py-2 flex items-center gap-2">
+              <span className="text-sage-600 dark:text-sage-500 flex-shrink-0">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z" />
+                  <circle cx="8" cy="6" r="1.5" />
+                </svg>
+              </span>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">{t("addPinNudge")}</p>
+            </div>
+          )}
       </div>
 
       {/* Route panel — sits below the map so it never covers the route */}
@@ -710,22 +836,7 @@ export function ListingMap({
               {(["walking", "cycling", "transit"] as TransportMode[]).map((m) => (
                 <button
                   key={m}
-                  onClick={() => {
-                    setTransportMode(m);
-                    // Re-fetch active route with new mode
-                    if (activePinId && routePanelListing) {
-                      const pin = pins.find((p) => p.id === activePinId);
-                      if (pin) {
-                        fetchRoute(
-                          routePanelListing.id,
-                          routePanelListing.latitude,
-                          routePanelListing.longitude,
-                          pin,
-                          m,
-                        );
-                      }
-                    }
-                  }}
+                  onClick={() => setTransportMode(m)}
                   className={`p-1.5 rounded-md transition-all ${
                     transportMode === m
                       ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-700 dark:text-zinc-200"
@@ -758,13 +869,15 @@ export function ListingMap({
           {/* Pin rows */}
           <div className="space-y-1">
             {pins.map((p) => {
-              const cacheKey = routeCacheKey(routePanelListing.id, p.id, transportMode);
+              const cacheKey = routeCacheKey(routePanelListing, p, transportMode);
               const cached = routeCache[cacheKey];
-              const isActive = route?.pinId === p.id && route?.listingId === routePanelListing.id;
-              const isLoading = routeLoading === p.id;
+              const isActive = activePinId === p.id;
+              const failed = !cached && failedKeys.has(cacheKey);
+              // Not loaded and not failed = loading (the effect fetches every pin)
+              const isLoading = !cached && !failed;
 
               // If transit is slower than walking, show a hint instead
-              const walkCacheKey = routeCacheKey(routePanelListing.id, p.id, "walking");
+              const walkCacheKey = routeCacheKey(routePanelListing, p, "walking");
               const walkCached = routeCache[walkCacheKey];
               const transitSlowerThanWalk =
                 transportMode === "transit" &&
@@ -776,15 +889,8 @@ export function ListingMap({
                 <button
                   key={p.id}
                   disabled={isLoading || transitSlowerThanWalk}
-                  onClick={() =>
-                    fetchRoute(
-                      routePanelListing.id,
-                      routePanelListing.latitude,
-                      routePanelListing.longitude,
-                      p,
-                      transportMode,
-                    )
-                  }
+                  onClick={() => showRoute(routePanelListing, p, transportMode)}
+                  title={failed ? t("routeRetry") : undefined}
                   className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all ${
                     transitSlowerThanWalk
                       ? "opacity-50 border border-transparent"
@@ -815,7 +921,9 @@ export function ListingMap({
                         {formatDistance(cached.distance)}
                       </span>
                     ) : (
-                      t("calculate")
+                      <span className="text-zinc-300 dark:text-zinc-600">
+                        {t("routeUnavailable")}
+                      </span>
                     )}
                   </span>
                 </button>

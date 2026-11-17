@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   "/impressum",
   "/privacy",
   "/api/health",
+  "/join(.*)", // invite-link preview; joining itself (POST /api/join/…) needs auth
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

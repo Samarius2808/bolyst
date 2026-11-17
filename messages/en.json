@@ -142,7 +142,6 @@
     "owner": "Owner",
     "member": "Member",
     "remove": "Remove",
-    "removeMember": "Remove this member?",
     "pending": "Pending",
     "invitePlaceholder": "Invite by email…",
     "invite": "Invite",
@@ -166,7 +165,27 @@
     "endDate": "End",
     "saveDates": "Save dates",
     "clearDates": "Clear",
-    "saved": "Saved"
+    "saved": "Saved",
+    "you": "(you)",
+    "ownerHint": "Can rename the board, invite and remove people",
+    "memberHint": "Can add listings, tag, comment and favorite",
+    "removeFromBoard": "Remove from board",
+    "removeConfirm": "Remove {name}? They’ll lose access to this board right away.",
+    "removeError": "Couldn’t remove this member",
+    "cancel": "Cancel",
+    "inviteLink": "Invite link",
+    "createLink": "Create an invite link",
+    "creatingLink": "Creating link…",
+    "createLinkHint": "Drop it in any chat. No email needed.",
+    "inviteLinkHint": "Anyone with this link can join as a member.",
+    "copyLink": "Copy",
+    "shareLink": "Share",
+    "copied": "Copied!",
+    "copyFailed": "Couldn’t copy. Select the link and copy it manually.",
+    "resetLink": "New link",
+    "disableLink": "Turn off",
+    "linkError": "Something went wrong with the link. Try again?",
+    "shareText": "Join me on Bolyst to find a place together: {board}"
   },
   "createBoard": {
     "title": "Create a board",
@@ -272,14 +291,18 @@
     "deleteConfirm": "Delete this listing for good? To hide it but keep it for later, use Archive instead.",
     "manageTags": "Edit tags",
     "doneManagingTags": "Done",
-    "deleteTagConfirm": "Delete the tag \"{name}\"? It will be removed from all listings on this board.",
     "tagExists": "A tag with that name already exists",
     "renameTag": "Rename tag",
     "deleteTag": "Delete tag",
     "archiveListing": "Archive",
     "restoreListing": "Restore to board",
     "archiveError": "Couldn’t update this listing. Please try again.",
-    "photos": "Photos"
+    "photos": "Photos",
+    "deleteTagTitle": "Delete “{name}”?",
+    "deleteTagBody": "{count, plural, =0 {Not used on any listing.} one {It will be removed from 1 listing.} other {It will be removed from # listings.}}",
+    "deleteTagKeep": "Cancel",
+    "deleteTagConfirmButton": "Delete tag",
+    "tagUpdateError": "Couldn’t save that change. Try again."
   },
   "compareTable": {
     "title": "Compare listings",
@@ -317,7 +340,11 @@
     "tagPrefix": "Tag: {name}",
     "nearPrefix": "Near: {name}",
     "statusFirst": "{status} first",
-    "statusPrefix": "Status: {status}"
+    "statusPrefix": "Status: {status}",
+    "thenBy": "then",
+    "thenByHeading": "Then sort by",
+    "addLevel": "Then by",
+    "removeLevel": "Remove “{label}” from sorting"
   },
   "pinManager": {
     "referencePoints": "Reference points",
@@ -325,7 +352,20 @@
     "addressPlaceholder": "Address or location",
     "adding": "Adding...",
     "addPin": "Add pin",
-    "failedToAdd": "Failed to add pin"
+    "failedToAdd": "Failed to add pin",
+    "droppedPin": "Dropped pin",
+    "exactSpot": "Exact spot on the map",
+    "pickOnMap": "Drop a pin on the map",
+    "pickOnMapShort": "Map",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "edit": "Edit",
+    "delete": "Delete",
+    "editPin": "Edit {name}",
+    "deletePin": "Delete {name}",
+    "failedToSave": "Couldn’t save changes",
+    "notFound": "Couldn’t find that place. Try another address or drop a pin."
   },
   "statusLabels": {
     "New": "New",
@@ -356,12 +396,15 @@
     "mode_cycling": "Bike",
     "mode_transit": "Transit",
     "commute": "Commute",
-    "calculate": "Calculate",
     "addPinNudge": "Add a reference point (work, uni, gym) to see distances and commute times.",
     "fasterToWalk": "Faster to walk",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
-    "credits": "Map credits"
+    "credits": "Map credits",
+    "routeUnavailable": "No route",
+    "routeRetry": "Couldn’t get this route. Tap to try again.",
+    "pickHint": "Tap the map where your point should go",
+    "pickCancel": "Cancel"
   },
   "metadata": {
     "aboutTitle": "About Bolyst",
@@ -425,5 +468,21 @@
       "storage_not_configured": "Photo uploads aren’t set up yet.",
       "upload_failed": "Upload failed. Please try again."
     }
+  },
+  "join": {
+    "eyebrow": "You’re invited to",
+    "whoOne": "{a} is searching here",
+    "whoTwo": "{a} and {b} are searching here",
+    "whoMany": "{a}, {b} and {count, plural, one {# other} other {# others}} are searching here",
+    "listingCount": "{count, plural, =0 {No listings yet} one {# listing saved} other {# listings saved}}",
+    "joinBoard": "Join board",
+    "joining": "Joining…",
+    "joinError": "Couldn’t join right now. Try again?",
+    "signUpToJoin": "Sign up to join",
+    "haveAccount": "I already have an account",
+    "invalidTitle": "This invite link doesn’t work anymore",
+    "invalidBody": "It may have been reset or turned off. Ask whoever sent it for a fresh one.",
+    "toBoards": "Go to my boards",
+    "toHome": "Go to Bolyst"
   }
 }

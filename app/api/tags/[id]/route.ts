@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { MAX_TAG_LENGTH, findDuplicateTag, isUniqueViolation, normalizeTagName } from "@/lib/tags";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getOrCreateUser();
@@ -15,20 +16,26 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { name } = await req.json();
-  if (!name?.trim()) return NextResponse.json({ error: "Name required" }, { status: 400 });
+  const body: unknown = await req.json().catch(() => null);
+  const name = normalizeTagName((body as { name?: unknown } | null)?.name);
+  if (!name) return NextResponse.json({ error: "Name required" }, { status: 400 });
+  if (name.length > MAX_TAG_LENGTH) {
+    return NextResponse.json({ error: "Tag name too long" }, { status: 400 });
+  }
 
-  const duplicate = await prisma.tag.findFirst({
-    where: { boardId: tag.boardId, name: name.trim(), NOT: { id } },
-  });
-  if (duplicate) return NextResponse.json({ error: "Tag already exists" }, { status: 409 });
+  if (await findDuplicateTag(tag.boardId, name, id)) {
+    return NextResponse.json({ error: "Tag already exists" }, { status: 409 });
+  }
 
-  const updated = await prisma.tag.update({
-    where: { id },
-    data: { name: name.trim() },
-  });
-
-  return NextResponse.json(updated);
+  try {
+    const updated = await prisma.tag.update({ where: { id }, data: { name } });
+    return NextResponse.json(updated);
+  } catch (e) {
+    if (isUniqueViolation(e)) {
+      return NextResponse.json({ error: "Tag already exists" }, { status: 409 });
+    }
+    throw e;
+  }
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -44,7 +51,8 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   });
   if (!membership) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  await prisma.tag.delete({ where: { id } });
+  // deleteMany: a second click / another member deleting it first isn't an error
+  await prisma.tag.deleteMany({ where: { id } });
 
   return NextResponse.json({ success: true });
 }

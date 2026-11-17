@@ -316,6 +316,13 @@ textarea::placeholder {
   transform: scale(1.1);
 }
 
+/* Placing a reference point: crosshair everywhere on the map, markers included */
+.bmap .bmap-picking,
+.bmap .bmap-picking .leaflet-interactive,
+.bmap .bmap-picking .leaflet-marker-icon {
+  cursor: crosshair !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bmap .bmap-pin-drop {
     animation: none;

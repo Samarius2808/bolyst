@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ListingCard } from "./ListingCard";
 import { AddListingModal } from "./AddListingModal";
 import { ListingDetail } from "./ListingDetail";
 import { ListingMapWrapper } from "./ListingMapWrapper";
-import { PinManager } from "./PinManager";
-import { SortControls, LISTING_STATUSES, type SortKey } from "./SortControls";
+import { PinManager, type StartPick } from "./PinManager";
+import { SortControls, LISTING_STATUSES, validSortKeys, type SortKey } from "./SortControls";
 import { nearestPinDistance } from "@/lib/haversine";
 
 // Statuses that usually mean "no longer an option"
@@ -59,6 +59,7 @@ function statusRank(status: string): number {
 export interface BoardPin {
   id: string;
   name: string;
+  address?: string | null;
   latitude: number;
   longitude: number;
 }
@@ -106,12 +107,34 @@ export function ListingGrid({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [boardPins, setBoardPins] = useState<BoardPin[]>(pins);
-  const [sortKey, setSortKey] = useState<SortKey>("newest");
+  const [rawSortKeys, setRawSortKeys] = useState<SortKey[]>(["newest"]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [hiddenStatuses, setHiddenStatuses] = useState<Set<ListingStatus>>(new Set());
   const tStatus = useTranslations("listingCard.status");
   const hiddenStorageKey = `bolyst:hiddenStatuses:${boardId}`;
+  const sortStorageKey = `bolyst:sort:${boardId}`;
+
+  // Remember the sort order per board in this browser
+  useEffect(() => {
+    try {
+      const saved: unknown = JSON.parse(localStorage.getItem(sortStorageKey) ?? "null");
+      if (Array.isArray(saved) && saved.every((k) => typeof k === "string") && saved.length) {
+        setRawSortKeys(saved as SortKey[]); // eslint-disable-line react-hooks/set-state-in-effect -- restoring a saved preference after hydration
+      }
+    } catch {
+      // storage unavailable — keep defaults
+    }
+  }, [sortStorageKey]);
+
+  function updateSortKeys(next: SortKey[]) {
+    setRawSortKeys(next);
+    try {
+      localStorage.setItem(sortStorageKey, JSON.stringify(next));
+    } catch {
+      // storage unavailable — preference just won't persist
+    }
+  }
 
   // Remember hidden statuses per board in this browser
   useEffect(() => {
@@ -142,6 +165,21 @@ export function ListingGrid({
   const [commuteListingId, setCommuteListingId] = useState<string | null>(null);
   const [showMobileMap, setShowMobileMap] = useState(false);
   const [pinManagerExpanded, setPinManagerExpanded] = useState(false);
+  // Placing a reference point by tapping the map
+  const [pickingPin, setPickingPin] = useState(false);
+  const pickHandlerRef = useRef<((lat: number, lng: number) => void) | null>(null);
+  const startPick: StartPick = (onPick) => {
+    pickHandlerRef.current = onPick;
+    setPickingPin(true);
+  };
+  function cancelPick() {
+    pickHandlerRef.current = null;
+    setPickingPin(false);
+  }
+  function handleMapPick(lat: number, lng: number) {
+    pickHandlerRef.current?.(lat, lng);
+    cancelPick();
+  }
 
   const hasGeocodedListings = listings.some((l) => l.latitude != null && l.longitude != null);
 
@@ -157,14 +195,43 @@ export function ListingGrid({
     return { lat, lng };
   }, [listings, boardPins]);
 
-  const distanceMap = useMemo(() => {
-    const map = new Map<string, number | null>();
-    let activePins = boardPins;
-    if (sortKey.startsWith("distance:")) {
-      const pinId = sortKey.slice(9);
-      const specific = boardPins.find((p) => p.id === pinId);
-      if (specific) activePins = [specific];
+  // Keys pointing at a deleted tag / pin / member are ignored rather than breaking the sort
+  const sortKeys = useMemo(
+    () =>
+      validSortKeys(rawSortKeys, {
+        tagIds: boardTags.map((tg) => tg.id),
+        pinIds: boardPins.map((p) => p.id),
+        memberIds: members.map((m) => m.id),
+      }),
+    [rawSortKeys, boardTags, boardPins, members],
+  );
+
+  // Distance to the relevant pin(s), per distance sort key in use
+  const distanceMaps = useMemo(() => {
+    const maps = new Map<SortKey, Map<string, number | null>>();
+    for (const key of sortKeys) {
+      if (key !== "distance-asc" && !key.startsWith("distance:")) continue;
+      const pinId = key.startsWith("distance:") ? key.slice(9) : null;
+      const activePins = pinId ? boardPins.filter((p) => p.id === pinId) : boardPins;
+      const map = new Map<string, number | null>();
+      for (const l of listings) {
+        map.set(
+          l.id,
+          l.latitude != null && l.longitude != null
+            ? nearestPinDistance(l.latitude, l.longitude, activePins)
+            : null,
+        );
+      }
+      maps.set(key, map);
     }
+    return maps;
+  }, [listings, boardPins, sortKeys]);
+
+  // Distance shown on cards: to the pin being sorted by, else the nearest pin
+  const cardDistances = useMemo(() => {
+    const pinKey = sortKeys.find((k) => k.startsWith("distance:"));
+    const activePins = pinKey ? boardPins.filter((p) => p.id === pinKey.slice(9)) : boardPins;
+    const map = new Map<string, number | null>();
     for (const l of listings) {
       map.set(
         l.id,
@@ -174,7 +241,7 @@ export function ListingGrid({
       );
     }
     return map;
-  }, [listings, boardPins, sortKey]);
+  }, [listings, boardPins, sortKeys]);
 
   const sortedListings = useMemo(() => {
     const pool = listings.filter(
@@ -182,69 +249,75 @@ export function ListingGrid({
     );
     const filtered = showFavoritesOnly ? pool.filter((l) => favorites.has(l.id)) : pool;
 
-    const sorted = [...filtered];
-    switch (sortKey) {
-      case "newest":
-        sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        break;
-      case "price-asc":
-        sorted.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
-        break;
-      case "price-desc":
-        sorted.sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
-        break;
-      case "ppm2-asc": {
-        const ppm2 = (l: Listing) => (l.price != null && l.size ? l.price / l.size : Infinity);
-        sorted.sort((a, b) => ppm2(a) - ppm2(b));
-        break;
+    // Listings missing a value always sink to the bottom, whatever the direction
+    const asc = (x: number | null | undefined, y: number | null | undefined) =>
+      (x ?? Infinity) - (y ?? Infinity) || 0; // || 0: Infinity - Infinity is NaN
+    const desc = (x: number | null | undefined, y: number | null | undefined) =>
+      (y ?? -Infinity) - (x ?? -Infinity) || 0;
+    const ppm2 = (l: Listing) => (l.price != null && l.size ? l.price / l.size : null);
+    const newest = (a: Listing, b: Listing) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+
+    function comparator(key: SortKey): (a: Listing, b: Listing) => number {
+      switch (key) {
+        case "newest":
+          return newest;
+        case "price-asc":
+          return (a, b) => asc(a.price, b.price);
+        case "price-desc":
+          return (a, b) => desc(a.price, b.price);
+        case "ppm2-asc":
+          return (a, b) => asc(ppm2(a), ppm2(b));
+        case "ppm2-desc":
+          return (a, b) => desc(ppm2(a), ppm2(b));
+        case "size-asc":
+          return (a, b) => asc(a.size, b.size);
+        case "size-desc":
+          return (a, b) => desc(a.size, b.size);
+        case "status":
+          return (a, b) => statusRank(a.status) - statusRank(b.status);
       }
-      case "ppm2-desc": {
-        const ppm2d = (l: Listing) => (l.price != null && l.size ? l.price / l.size : -1);
-        sorted.sort((a, b) => ppm2d(b) - ppm2d(a));
-        break;
+      if (key === "distance-asc" || key.startsWith("distance:")) {
+        const map = distanceMaps.get(key);
+        return (a, b) => asc(map?.get(a.id), map?.get(b.id));
       }
-      case "size-asc":
-        sorted.sort((a, b) => (a.size ?? Infinity) - (b.size ?? Infinity));
-        break;
-      case "size-desc":
-        sorted.sort((a, b) => (b.size ?? -1) - (a.size ?? -1));
-        break;
-      case "distance-asc":
-        sorted.sort(
-          (a, b) => (distanceMap.get(a.id) ?? Infinity) - (distanceMap.get(b.id) ?? Infinity),
-        );
-        break;
-      case "status":
-        sorted.sort((a, b) => statusRank(a.status) - statusRank(b.status));
-        break;
-      default:
-        if (sortKey.startsWith("status:")) {
-          // Chosen status first, everything else after it in workflow order
-          const chosen = sortKey.slice(7);
-          const rank = (l: Listing) => (l.status === chosen ? -1 : statusRank(l.status));
-          sorted.sort((a, b) => rank(a) - rank(b));
-        } else if (sortKey.startsWith("distance:")) {
-          sorted.sort(
-            (a, b) => (distanceMap.get(a.id) ?? Infinity) - (distanceMap.get(b.id) ?? Infinity),
-          );
-        } else if (sortKey.startsWith("addedby:")) {
-          const userId = sortKey.slice(8);
-          sorted.sort((a, b) => {
-            const aMatch = a.addedBy?.id === userId ? 0 : 1;
-            const bMatch = b.addedBy?.id === userId ? 0 : 1;
-            return aMatch - bMatch;
-          });
-        } else if (sortKey.startsWith("tag:")) {
-          const tagId = sortKey.slice(4);
-          sorted.sort((a, b) => {
-            const aHas = a.tags.some((t) => t.tag.id === tagId) ? 0 : 1;
-            const bHas = b.tags.some((t) => t.tag.id === tagId) ? 0 : 1;
-            return aHas - bHas;
-          });
-        }
+      if (key.startsWith("status:")) {
+        // Chosen status first, everything else after it in workflow order
+        const chosen = key.slice(7);
+        const rank = (l: Listing) => (l.status === chosen ? -1 : statusRank(l.status));
+        return (a, b) => rank(a) - rank(b);
+      }
+      if (key.startsWith("addedby:")) {
+        const userId = key.slice(8);
+        const rank = (l: Listing) => (l.addedBy?.id === userId ? 0 : 1);
+        return (a, b) => rank(a) - rank(b);
+      }
+      if (key.startsWith("tag:")) {
+        const tagId = key.slice(4);
+        const rank = (l: Listing) => (l.tags.some((lt) => lt.tag.id === tagId) ? 0 : 1);
+        return (a, b) => rank(a) - rank(b);
+      }
+      return () => 0;
     }
-    return sorted;
-  }, [listings, sortKey, showFavoritesOnly, showArchived, hiddenStatuses, favorites, distanceMap]);
+
+    // Each level breaks ties left by the one before; newest-first settles the rest
+    const chain = [...sortKeys.map(comparator), newest];
+    return [...filtered].sort((a, b) => {
+      for (const cmp of chain) {
+        const c = cmp(a, b);
+        if (c !== 0) return c;
+      }
+      return 0;
+    });
+  }, [
+    listings,
+    sortKeys,
+    showFavoritesOnly,
+    showArchived,
+    hiddenStatuses,
+    favorites,
+    distanceMaps,
+  ]);
 
   // Per-status counts for the current view (active or archived)
   const statusCounts = useMemo(() => {
@@ -318,8 +391,8 @@ export function ListingGrid({
             {/* Toolbar */}
             <div className="flex items-center gap-2 flex-wrap mb-4">
               <SortControls
-                value={sortKey}
-                onChange={setSortKey}
+                value={sortKeys}
+                onChange={updateSortKeys}
                 hasPins={boardPins.length > 0}
                 boardTags={boardTags}
                 members={members}
@@ -474,7 +547,7 @@ export function ListingGrid({
                   status={l.status}
                   tags={l.tags}
                   commentCount={l._count.comments}
-                  nearestPinKm={distanceMap.get(l.id) ?? null}
+                  nearestPinKm={cardDistances.get(l.id) ?? null}
                   addedBy={l.addedBy}
                   isFavorited={favorites.has(l.id)}
                   onToggleFavorite={() => toggleFavorite(l.id)}
@@ -524,6 +597,8 @@ export function ListingGrid({
                     onPinsChange={setBoardPins}
                     geoCenter={geoCenter}
                     onExpandedChange={setPinManagerExpanded}
+                    picking={pickingPin}
+                    onStartPick={startPick}
                   />
                 </div>
                 <div className="h-[calc(100vh-16rem)] mt-4">
@@ -537,6 +612,9 @@ export function ListingGrid({
                     hidePinNudge={pinManagerExpanded}
                     onListingClick={(id) => setSelectedId(id)}
                     onCommuteClose={() => setCommuteListingId(null)}
+                    pickingLocation={pickingPin}
+                    onLocationPick={handleMapPick}
+                    onCancelPick={cancelPick}
                   />
                 </div>
               </div>
@@ -569,7 +647,10 @@ export function ListingGrid({
           <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800">
             <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{t("map")}</h3>
             <button
-              onClick={() => setShowMobileMap(false)}
+              onClick={() => {
+                cancelPick();
+                setShowMobileMap(false);
+              }}
               className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
             >
               <svg
@@ -585,7 +666,18 @@ export function ListingGrid({
               </svg>
             </button>
           </div>
-          <div className="flex-1">
+          <div className="relative z-[500] px-3 pt-3">
+            <PinManager
+              boardId={boardId}
+              pins={boardPins}
+              onPinsChange={setBoardPins}
+              geoCenter={geoCenter}
+              onExpandedChange={setPinManagerExpanded}
+              picking={pickingPin}
+              onStartPick={startPick}
+            />
+          </div>
+          <div className="flex-1 min-h-0 p-3">
             <ListingMapWrapper
               listings={sortedListings}
               pins={boardPins}
@@ -593,11 +685,15 @@ export function ListingGrid({
               members={members}
               hoveredId={hoveredId}
               commuteListingId={commuteListingId}
+              hidePinNudge={pinManagerExpanded}
               onListingClick={(id) => {
                 setSelectedId(id);
                 setShowMobileMap(false);
               }}
               onCommuteClose={() => setCommuteListingId(null)}
+              pickingLocation={pickingPin}
+              onLocationPick={handleMapPick}
+              onCancelPick={cancelPick}
             />
           </div>
         </div>

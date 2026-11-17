@@ -27,6 +27,7 @@ model Board {
   coverImageUrl String? // replaces the listing-photo mosaic on the board card
   startDate     DateTime? @db.Date // when the stay / search period starts
   endDate       DateTime? @db.Date
+  inviteToken   String?   @unique // shareable join link; null = link turned off
   createdAt     DateTime  @default(now())
 
   owner    User          @relation(fields: [ownerId], references: [id])
@@ -110,9 +111,10 @@ model ListingTag {
 }
 
 model BoardPin {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   boardId   String
   name      String
+  address   String? // what the user typed / picked; null for pins made before it was stored
   latitude  Float
   longitude Float
 

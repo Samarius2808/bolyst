@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { LocationInput } from "@/components/ui/LocationInput";
@@ -9,7 +9,10 @@ import { PhotoEditor } from "@/components/ui/PhotoEditor";
 interface Tag {
   id: string;
   name: string;
+  listingCount?: number;
 }
+
+const MAX_TAG_LENGTH = 40;
 
 interface CommentParent {
   id: string;
@@ -121,6 +124,11 @@ export function ListingDetail({
   const [managingTags, setManagingTags] = useState(false);
   const [tagDrafts, setTagDrafts] = useState<Record<string, string>>({});
   const [tagError, setTagError] = useState("");
+  const [pendingTagIds, setPendingTagIds] = useState<Set<string>>(new Set());
+  const [tagToDelete, setTagToDelete] = useState<Tag | null>(null);
+  // Tag changes in flight; the server re-sync waits until all of them settle
+  const pendingTagOps = useRef(0);
+  const tempTagSeq = useRef(0);
   const [archiveError, setArchiveError] = useState(false);
   const [posting, setPosting] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -230,79 +238,159 @@ export function ListingDetail({
     setPosting(false);
   }
 
-  async function handleToggleTag(tag: Tag) {
-    const hasTag = listing?.tags.some((t) => t.tag.id === tag.id);
-    if (hasTag) {
-      await fetch(`/api/listings/${listingId}/tags`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tagId: tag.id }),
+  function setTagPending(tagId: string, pending: boolean) {
+    setPendingTagIds((prev) => {
+      const next = new Set(prev);
+      if (pending) next.add(tagId);
+      else next.delete(tagId);
+      return next;
+    });
+  }
+
+  const byName = (x: Tag, y: Tag) => x.name.localeCompare(y.name);
+
+  /** Apply a change to the listing's tags and the board's tag list at once. */
+  function updateTagsLocally(
+    listingTags: (tags: { tag: Tag }[]) => { tag: Tag }[],
+    board: (tags: Tag[]) => Tag[],
+  ) {
+    setListing((prev) => (prev ? { ...prev, tags: listingTags(prev.tags) } : prev));
+    setBoardTags((prev) => board(prev));
+  }
+
+  /**
+   * Every tag action updates the screen first and talks to the server after.
+   * Once the last pending action finishes, pull the real state (fixes anything
+   * that failed, picks up collaborators' changes) and refresh the board behind.
+   */
+  async function runTagOp(request: () => Promise<Response | null>): Promise<Response | null> {
+    pendingTagOps.current += 1;
+    const res = await request().catch(() => null);
+    pendingTagOps.current -= 1;
+    if (!res?.ok) setTagError(res?.status === 409 ? t("tagExists") : t("tagUpdateError"));
+    if (pendingTagOps.current === 0) {
+      void Promise.all([
+        fetch(`/api/listings/${listingId}`),
+        fetch(`/api/tags?boardId=${boardId}`),
+      ]).then(async ([listingRes, tagsRes]) => {
+        if (pendingTagOps.current > 0) return; // a newer change started; it will sync
+        if (listingRes.ok) setListing(await listingRes.json());
+        if (tagsRes.ok) setBoardTags(await tagsRes.json());
       });
-    } else {
-      await fetch(`/api/listings/${listingId}/tags`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tagId: tag.id }),
-      });
+      router.refresh();
     }
-    await loadData();
-    router.refresh();
+    return res;
+  }
+
+  function jsonRequest(url: string, method: string, body?: unknown) {
+    return fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+  }
+
+  async function handleToggleTag(tag: Tag) {
+    if (!listing || pendingTagIds.has(tag.id)) return;
+    const hadTag = listing.tags.some((lt) => lt.tag.id === tag.id);
+    const delta = hadTag ? -1 : 1;
+    updateTagsLocally(
+      (tags) =>
+        hadTag
+          ? tags.filter((lt) => lt.tag.id !== tag.id)
+          : [...tags, { tag: { id: tag.id, name: tag.name } }],
+      (tags) =>
+        tags.map((bt) =>
+          bt.id === tag.id ? { ...bt, listingCount: (bt.listingCount ?? 0) + delta } : bt,
+        ),
+    );
+    setTagPending(tag.id, true);
+    setTagError("");
+    await runTagOp(() =>
+      jsonRequest(`/api/listings/${listingId}/tags`, hadTag ? "DELETE" : "POST", {
+        tagId: tag.id,
+      }),
+    );
+    setTagPending(tag.id, false);
   }
 
   async function handleCreateTag(e: React.FormEvent) {
     e.preventDefault();
-    if (!newTagName.trim()) return;
+    const name = newTagName.trim().replace(/\s+/g, " ");
+    if (!name || !listing) return;
     setTagError("");
-    const res = await fetch("/api/tags", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ boardId, name: newTagName }),
-    });
-    if (res.ok) {
-      // A tag created from a listing is applied to that listing right away
-      const tag: Tag = await res.json();
-      await fetch(`/api/listings/${listingId}/tags`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tagId: tag.id }),
-      });
+
+    // Typing an existing tag's name just applies that tag
+    const existing = boardTags.find((bt) => bt.name.toLowerCase() === name.toLowerCase());
+    if (existing) {
       setNewTagName("");
-      await loadData();
-      router.refresh();
-    } else if (res.status === 409) {
-      setTagError(t("tagExists"));
+      if (!listing.tags.some((lt) => lt.tag.id === existing.id)) await handleToggleTag(existing);
+      return;
     }
+
+    // Show the new chip straight away under a temporary id
+    tempTagSeq.current += 1;
+    const tempId = `temp-${tempTagSeq.current}`;
+    const temp: Tag = { id: tempId, name, listingCount: 1 };
+    updateTagsLocally(
+      (tags) => [...tags, { tag: temp }],
+      (tags) => [...tags, temp].sort(byName),
+    );
+    setNewTagName("");
+    setTagPending(tempId, true);
+
+    // Created and applied to this listing in one request
+    const res = await runTagOp(() =>
+      jsonRequest("/api/tags", "POST", { boardId, name, listingId }),
+    );
+    if (res?.ok) {
+      const created: Tag = await res.json();
+      const real: Tag = { id: created.id, name: created.name, listingCount: 1 };
+      updateTagsLocally(
+        (tags) => tags.map((lt) => (lt.tag.id === tempId ? { tag: real } : lt)),
+        (tags) => tags.map((bt) => (bt.id === tempId ? real : bt)),
+      );
+    } else {
+      updateTagsLocally(
+        (tags) => tags.filter((lt) => lt.tag.id !== tempId),
+        (tags) => tags.filter((bt) => bt.id !== tempId),
+      );
+      setNewTagName(name); // give the text back so it can be fixed and retried
+    }
+    setTagPending(tempId, false);
   }
 
   async function handleRenameTag(tag: Tag) {
-    const draft = (tagDrafts[tag.id] ?? tag.name).trim();
-    if (!draft || draft === tag.name) {
+    const draft = (tagDrafts[tag.id] ?? tag.name).trim().replace(/\s+/g, " ");
+    if (!draft || draft === tag.name || pendingTagIds.has(tag.id)) {
       setTagDrafts((prev) => ({ ...prev, [tag.id]: tag.name }));
       return;
     }
     setTagError("");
-    const res = await fetch(`/api/tags/${tag.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: draft }),
-    });
-    if (res.ok) {
-      await loadData();
-      router.refresh();
-    } else {
-      if (res.status === 409) setTagError(t("tagExists"));
+    const rename = (name: string) =>
+      updateTagsLocally(
+        (tags) => tags.map((lt) => (lt.tag.id === tag.id ? { tag: { ...lt.tag, name } } : lt)),
+        (tags) => tags.map((bt) => (bt.id === tag.id ? { ...bt, name } : bt)).sort(byName),
+      );
+    rename(draft);
+    const res = await runTagOp(() => jsonRequest(`/api/tags/${tag.id}`, "PATCH", { name: draft }));
+    if (!res?.ok) {
+      rename(tag.name);
       setTagDrafts((prev) => ({ ...prev, [tag.id]: tag.name }));
     }
   }
 
-  async function handleDeleteTag(tag: Tag) {
-    if (!confirm(t("deleteTagConfirm", { name: tag.name }))) return;
+  async function confirmDeleteTag() {
+    if (!tagToDelete || pendingTagIds.has(tagToDelete.id)) return;
+    const tag = tagToDelete;
+    setTagToDelete(null);
     setTagError("");
-    const res = await fetch(`/api/tags/${tag.id}`, { method: "DELETE" });
-    if (res.ok) {
-      await loadData();
-      router.refresh();
-    }
+    // Gone right away; if the server refuses, the re-sync brings it back
+    updateTagsLocally(
+      (tags) => tags.filter((lt) => lt.tag.id !== tag.id),
+      (tags) => tags.filter((bt) => bt.id !== tag.id),
+    );
+    await runTagOp(() => jsonRequest(`/api/tags/${tag.id}`, "DELETE"));
   }
 
   async function handleArchive(archived: boolean) {
@@ -641,6 +729,7 @@ export function ListingDetail({
                     setManagingTags(!managingTags);
                     setTagDrafts({});
                     setTagError("");
+                    setTagToDelete(null);
                   }}
                   className="text-xs font-medium text-sage-600 dark:text-sage-400 hover:text-sage-700 transition-colors"
                 >
@@ -669,12 +758,16 @@ export function ListingDetail({
                           setTagDrafts((prev) => ({ ...prev, [tag.id]: tag.name }));
                         }
                       }}
+                      maxLength={MAX_TAG_LENGTH}
                       size={Math.max((tagDrafts[tag.id] ?? tag.name).length, 3)}
                       className="bg-transparent px-2 py-0.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 focus:outline-none"
                     />
                     <button
                       type="button"
-                      onClick={() => handleDeleteTag(tag)}
+                      onClick={() => {
+                        setTagError("");
+                        setTagToDelete(tag);
+                      }}
                       aria-label={t("deleteTag")}
                       title={t("deleteTag")}
                       className="w-6 h-6 flex items-center justify-center rounded-full text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
@@ -700,6 +793,8 @@ export function ListingDetail({
                     <button
                       key={tag.id}
                       onClick={() => handleToggleTag(tag)}
+                      aria-busy={pendingTagIds.has(tag.id)}
+                      aria-pressed={active}
                       className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-150 ${
                         active
                           ? "bg-sage-100 dark:bg-sage-950/40 border-sage-200 dark:border-sage-800 text-sage-700 dark:text-sage-400"
@@ -724,11 +819,51 @@ export function ListingDetail({
                   );
                 })}
             </div>
+            {managingTags && tagToDelete && (
+              <div
+                role="alertdialog"
+                aria-labelledby="tag-delete-title"
+                className="mt-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/60 p-3"
+              >
+                <div className="min-w-0">
+                  <p
+                    id="tag-delete-title"
+                    className="text-sm font-semibold text-zinc-800 dark:text-zinc-100 break-words"
+                  >
+                    {t("deleteTagTitle", { name: tagToDelete.name })}
+                  </p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    {t("deleteTagBody", { count: tagToDelete.listingCount ?? 0 })}
+                  </p>
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      type="button"
+                      onClick={() => setTagToDelete(null)}
+                      autoFocus
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 transition-colors"
+                    >
+                      {t("deleteTagKeep")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={confirmDeleteTag}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 transition-colors"
+                    >
+                      {t("deleteTagConfirmButton")}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             <form onSubmit={handleCreateTag} className="flex gap-2 mt-2.5">
               <input
                 type="text"
                 value={newTagName}
-                onChange={(e) => setNewTagName(e.target.value)}
+                onChange={(e) => {
+                  setNewTagName(e.target.value);
+                  setTagError("");
+                }}
+                maxLength={MAX_TAG_LENGTH}
                 placeholder={t("newTagPlaceholder")}
                 className="border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent"
               />

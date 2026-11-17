@@ -77,8 +77,11 @@ export default async function BoardDetailPage({ params }: { params: Promise<{ id
           coverImageUrl: board.coverImageUrl,
           startDate: board.startDate?.toISOString() ?? null,
           endDate: board.endDate?.toISOString() ?? null,
+          // The join link is an owner tool; collaborators never receive it
+          inviteToken: isOwner ? board.inviteToken : null,
         }}
         isOwner={isOwner}
+        currentUserId={user.id}
         boardTags={board.tags}
       />
       <ListingGrid

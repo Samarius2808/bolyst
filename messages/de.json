@@ -142,7 +142,6 @@
     "owner": "Eigentümer",
     "member": "Mitglied",
     "remove": "Entfernen",
-    "removeMember": "Dieses Mitglied entfernen?",
     "pending": "Ausstehend",
     "invitePlaceholder": "Per E-Mail einladen…",
     "invite": "Einladen",
@@ -166,7 +165,27 @@
     "endDate": "Bis",
     "saveDates": "Speichern",
     "clearDates": "Zurücksetzen",
-    "saved": "Gespeichert"
+    "saved": "Gespeichert",
+    "you": "(du)",
+    "ownerHint": "Kann das Board umbenennen, Leute einladen und entfernen",
+    "memberHint": "Kann Inserate hinzufügen, taggen, kommentieren und favorisieren",
+    "removeFromBoard": "Vom Board entfernen",
+    "removeConfirm": "{name} entfernen? Der Zugriff auf dieses Board ist dann sofort weg.",
+    "removeError": "Mitglied konnte nicht entfernt werden",
+    "cancel": "Abbrechen",
+    "inviteLink": "Einladungslink",
+    "createLink": "Einladungslink erstellen",
+    "creatingLink": "Link wird erstellt…",
+    "createLinkHint": "Einfach in jeden Chat werfen. Keine E-Mail nötig.",
+    "inviteLinkHint": "Alle mit diesem Link können als Mitglied beitreten.",
+    "copyLink": "Kopieren",
+    "shareLink": "Teilen",
+    "copied": "Kopiert!",
+    "copyFailed": "Kopieren hat nicht geklappt. Markier den Link und kopier ihn selbst.",
+    "resetLink": "Neuer Link",
+    "disableLink": "Ausschalten",
+    "linkError": "Mit dem Link hat etwas nicht geklappt. Nochmal versuchen?",
+    "shareText": "Komm zu Bolyst, lass uns zusammen eine Wohnung finden: {board}"
   },
   "createBoard": {
     "title": "Board erstellen",
@@ -272,14 +291,18 @@
     "deleteConfirm": "Dieses Inserat endgültig löschen? Zum Ausblenden lieber archivieren.",
     "manageTags": "Tags bearbeiten",
     "doneManagingTags": "Fertig",
-    "deleteTagConfirm": "Tag „{name}“ löschen? Er wird von allen Inseraten auf diesem Board entfernt.",
     "tagExists": "Diesen Tag gibt es schon",
     "renameTag": "Tag umbenennen",
     "deleteTag": "Tag löschen",
     "archiveListing": "Archivieren",
     "restoreListing": "Wiederherstellen",
     "archiveError": "Das Inserat konnte nicht aktualisiert werden. Bitte versucht es nochmal.",
-    "photos": "Fotos"
+    "photos": "Fotos",
+    "deleteTagTitle": "„{name}“ löschen?",
+    "deleteTagBody": "{count, plural, =0 {Wird bei keinem Inserat verwendet.} one {Wird von 1 Inserat entfernt.} other {Wird von # Inseraten entfernt.}}",
+    "deleteTagKeep": "Abbrechen",
+    "deleteTagConfirmButton": "Tag löschen",
+    "tagUpdateError": "Änderung konnte nicht gespeichert werden. Bitte nochmal versuchen."
   },
   "compareTable": {
     "title": "Inserate vergleichen",
@@ -317,7 +340,11 @@
     "tagPrefix": "Tag: {name}",
     "nearPrefix": "Nähe: {name}",
     "statusFirst": "{status} zuerst",
-    "statusPrefix": "Status: {status}"
+    "statusPrefix": "Status: {status}",
+    "thenBy": "dann",
+    "thenByHeading": "Danach sortieren nach",
+    "addLevel": "Danach nach",
+    "removeLevel": "„{label}“ aus der Sortierung entfernen"
   },
   "pinManager": {
     "referencePoints": "Referenzpunkte",
@@ -325,7 +352,20 @@
     "addressPlaceholder": "Adresse oder Standort",
     "adding": "Wird hinzugefügt...",
     "addPin": "Pin hinzufügen",
-    "failedToAdd": "Pin konnte nicht hinzugefügt werden"
+    "failedToAdd": "Pin konnte nicht hinzugefügt werden",
+    "droppedPin": "Gesetzter Pin",
+    "exactSpot": "Genauer Punkt auf der Karte",
+    "pickOnMap": "Pin auf der Karte setzen",
+    "pickOnMapShort": "Karte",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "saving": "Speichert…",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "editPin": "{name} bearbeiten",
+    "deletePin": "{name} löschen",
+    "failedToSave": "Änderungen konnten nicht gespeichert werden",
+    "notFound": "Ort nicht gefunden. Probier eine andere Adresse oder setz einen Pin."
   },
   "statusLabels": {
     "New": "Neu",
@@ -356,12 +396,15 @@
     "mode_cycling": "Rad",
     "mode_transit": "ÖPNV",
     "commute": "Pendelweg",
-    "calculate": "Berechnen",
     "addPinNudge": "Referenzpunkt hinzufügen (Arbeit, Uni, Gym), um Entfernungen und Pendelzeiten zu sehen.",
     "fasterToWalk": "Zu Fuß schneller",
     "zoomIn": "Vergrößern",
     "zoomOut": "Verkleinern",
-    "credits": "Kartennachweis"
+    "credits": "Kartennachweis",
+    "routeUnavailable": "Keine Route",
+    "routeRetry": "Route nicht gefunden – tippen, um es nochmal zu versuchen.",
+    "pickHint": "Tipp auf die Karte, wo dein Punkt hin soll",
+    "pickCancel": "Abbrechen"
   },
   "metadata": {
     "aboutTitle": "Über Bolyst",
@@ -425,5 +468,21 @@
       "storage_not_configured": "Foto-Uploads sind noch nicht eingerichtet.",
       "upload_failed": "Hochladen fehlgeschlagen. Bitte nochmal versuchen."
     }
+  },
+  "join": {
+    "eyebrow": "Du bist eingeladen zu",
+    "whoOne": "{a} sucht hier",
+    "whoTwo": "{a} und {b} suchen hier",
+    "whoMany": "{a}, {b} und {count, plural, one {# weitere Person} other {# weitere}} suchen hier",
+    "listingCount": "{count, plural, =0 {Noch keine Inserate} one {# Inserat gespeichert} other {# Inserate gespeichert}}",
+    "joinBoard": "Board beitreten",
+    "joining": "Trete bei…",
+    "joinError": "Beitreten hat gerade nicht geklappt. Nochmal versuchen?",
+    "signUpToJoin": "Registrieren und beitreten",
+    "haveAccount": "Ich habe schon ein Konto",
+    "invalidTitle": "Dieser Einladungslink funktioniert nicht mehr",
+    "invalidBody": "Vielleicht wurde er zurückgesetzt oder ausgeschaltet. Frag nach einem neuen.",
+    "toBoards": "Zu meinen Boards",
+    "toHome": "Zu Bolyst"
   }
 }

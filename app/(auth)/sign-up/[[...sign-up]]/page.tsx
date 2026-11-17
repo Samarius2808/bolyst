@@ -1,9 +1,15 @@
 import { SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { joinRedirect } from "@/lib/invite-link";
 import { AuthMapBackground } from "@/components/auth/AuthMapBackground";
 
-export default async function SignUpPage() {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const joinUrl = joinRedirect((await searchParams).redirect_url);
   const t = await getTranslations("auth");
 
   return (
@@ -24,7 +30,7 @@ export default async function SignUpPage() {
           </p>
         </div>
 
-        <SignUp />
+        <SignUp forceRedirectUrl={joinUrl} signInForceRedirectUrl={joinUrl} />
       </div>
     </div>
   );
